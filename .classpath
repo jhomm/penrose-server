@@ -10,7 +10,6 @@
 	<classpathentry kind="lib" path="services/OpenDS/SERVICE-INF/lib/activation.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant-junit.jar"/>
-	<classpathentry kind="lib" path="server/lib/jbossall-client.jar"/>
 	<classpathentry kind="lib" path="server/lib/jboss/jboss-system.jar"/>
 	<classpathentry kind="lib" path="services/OpenDS/SERVICE-INF/lib/je.jar"/>
 	<classpathentry kind="lib" path="lib/ant/junit-3.8.1.jar"/>
@@ -33,7 +32,6 @@
 	<classpathentry kind="lib" path="services/LDAP/SERVICE-INF/lib/shared-ldap-0.9.5.4.jar"/>
 	<classpathentry kind="lib" path="services/LDAP/SERVICE-INF/lib/shared-asn1-codec-0.9.5.4.jar"/>
 	<classpathentry kind="lib" path="services/ApacheDS/SERVICE-INF/lib/spring-context-1.2.8.jar"/>
-	<classpathentry kind="lib" path="server/lib/wrapper.jar"/>
 	<classpathentry kind="lib" path="services/LDAP/SERVICE-INF/lib/shared-asn1-0.9.5.4.jar"/>
 	<classpathentry kind="lib" path="services/ApacheDS/SERVICE-INF/lib/maven-embedder-2.0.2-dep.jar"/>
 	<classpathentry kind="lib" path="services/ApacheDS/SERVICE-INF/lib/backport-util-concurrent-2.2.jar"/>
@@ -53,9 +51,7 @@
 	<classpathentry kind="lib" path="common/lib/openldap-jldap.jar"/>
 	<classpathentry kind="lib" path="common/lib/slf4j-log4j12.jar"/>
 	<classpathentry kind="lib" path="server/lib/hsqldb.jar"/>
-	<classpathentry kind="lib" path="server/lib/java-backend-1.2.jar"/>
-	<classpathentry kind="lib" path="server/lib/jbossall-client.jar"/>
-	<classpathentry kind="lib" path="server/lib/wrapper.jar"/>
+	<classpathentry kind="lib" path="G:/Entwicklung/Metro/mcs/penrose-src/penrose-server/server/lib/ldap-backend-1.2.jar"/>
 	<classpathentry kind="lib" path="core/lib/bsh-2.0b4.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-beanutils-1.6.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-cli-1.0.jar"/>

@@ -34,8 +34,9 @@
     </target>
 
     <path id="lib.path">
-        <fileset dir="../../common/lib">
-            <include name="**/*.jar"/>
+        <fileset dir="../../common">
+            <include name="lib/*.jar"/>
+            <include name="target/*.jar"/>
         </fileset>
         <fileset dir="../../core/lib">
             <include name="**/*.jar"/>

@@ -32,3 +32,9 @@ To build ${project.title} execute the following command:
    ant dist
 
 The distribution files can be found under the target directory.
+
+--------------------------
+2017.06.03 [jhomm]
+The target dist-all or dist-win32 requires inno setup installed on build server. If missing the build failes with error message
+'Cannot run program "ISCC.exe"...'
+ 
