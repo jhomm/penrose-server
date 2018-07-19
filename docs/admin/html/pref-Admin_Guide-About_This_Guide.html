@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>About This Guide</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="index.html" title="Admin Guide"/><link rel="next" href="chap-Admin_Guide-Overview_of_RHVD.html" title="Chapter 1. Overview of Penrose Virtual Directory"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>About This Guide</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="index.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Overview_of_RHVD.html"><strong>Next</strong></a></li></ul><div class="preface" lang="en-US"><div class="titlepage"><div><div><h1 id="pref-Admin_Guide-About_This_Guide" class="title">About This Guide</h1></div></div></div><p>
+		Penrose Virtual Directory is a lightweight and flexible server which creates a bridge between LDAP, database, Active Directory, and NIS servers, and any application which stores its content in databases or directory services, and combines the information from all of these separate data sources into a single, LDAP-style directory. The entries and hierarchy of this directory tree are created dynamically as operations come into the server, based on predefined directory configuration parameters and mapping rules for entries and attributes. Since data are not copied to a central source, just pulled as necessary, this is a <span class="emphasis"><em>virtual</em></span> directory.
+	</p><p>
+		Penrose Virtual Directory is simple to configure and use. Its interface, Penrose Studio, makes it easy to navigate both the configuration and the virtual directory. Penrose Server is based on widely-known standard protocols and easily edited XML files.
+	</p><p>
+		This guide is intended for experienced system administrators who are deploying and managing a virtual directory.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-About_This_Guide-Content_Overview">1. Content Overview</h2></div></div></div><p>
+			This admin guide describes how to create virtual directories, set up identity federation between NIS and LDAP sources, manage data sources, install the Penrose Server and Penrose Studio, and configure the server.
+		</p><p>
+			The first section in this guide contains general concepts, installation, and basic usage for Penrose Server and Penrose Studio:
+		</p><div class="itemizedlist"><ul><li><p>
+					<a href="chap-Admin_Guide-Overview_of_RHVD.html" title="Chapter 1. Overview of Penrose Virtual Directory">Chapter 1, <i xmlns:xlink="http://www.w3.org/1999/xlink">Overview of Penrose Virtual Directory</i></a> describes the general concepts behind virtual directories, metadirectories, and proxies. This also covers planning considerations for deploying Penrose Virtual Directory.
+				</p></li><li><p>
+					<a href="chap-Admin_Guide-Installing_RHVD.html" title="Chapter 2. Installing Penrose Virtual Directory">Chapter 2, <i xmlns:xlink="http://www.w3.org/1999/xlink">Installing Penrose Virtual Directory</i></a> contains installation procedures and requirements for Penrose Server.
+				</p></li><li><p>
+					<a href="chap-Admin_Guide-Basic_Usage.html" title="Chapter 3. Basic Usage">Chapter 3, <i xmlns:xlink="http://www.w3.org/1999/xlink">Basic Usage</i></a> contains basic configuration for the Penrose Server, such as configuring SSL, checking logs, and changing the server properties.
+				</p></li><li><p>
+					<a href="chap-Admin_Guide-Using_VDST.html" title="Chapter 4. Using Penrose Studio">Chapter 4, <i xmlns:xlink="http://www.w3.org/1999/xlink">Using Penrose Studio</i></a> contains a walkthrough of Penrose Studio and common actions for managing virtual directory entries in Penrose Studio.
+				</p></li></ul></div><p>
+			The second section covers setting up the virtual directory and its required entries and configuring identity federation:
+		</p><div class="itemizedlist"><ul><li><p>
+					<a href="chap-Admin_Guide-Configuring_Partitions.html" title="Chapter 5. Managing Partitions">Chapter 5, <i xmlns:xlink="http://www.w3.org/1999/xlink">Managing Partitions</i></a> describes creating <span class="emphasis"><em>partition</em></span> entries, the container for a virtual directory and all of its elements.
+				</p></li><li><p>
+					<a href="chap-Admin_Guide-Configuring_connections.html" title="Chapter 6. Configuring Connections">Chapter 6, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring Connections</i></a> describes how to create <span class="emphasis"><em>connections</em></span>, entries which define server machines that Penrose Virtual Directory can access.
+				</p></li><li><p>
+					<a href="chap-Admin_Guide-Configuring_sources.html" title="Chapter 7. Configuring Data Sources">Chapter 7, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring Data Sources</i></a> describes how to configure data <span class="emphasis"><em>sources</em></span>, applications, servers, or databases which contain information polled by Penrose Server to create virtual directory entries.
+				</p></li><li><p>
+					<a href="chap-Admin_Guide-Configuring_Entry_Mapping.html" title="Chapter 8. Configuring the Virtual Directory">Chapter 8, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring the Virtual Directory</i></a> describes how to configure the virtual directory tree.
+				</p></li><li><p>
+					<a href="Mapping.html" title="Chapter 9. Mapping Entries and Attributes">Chapter 9, <i xmlns:xlink="http://www.w3.org/1999/xlink">Mapping Entries and Attributes</i></a> describes how to configure mappings between source attributes and virtual entry attributes.
+				</p></li><li><p>
+					<a href="chap-Admin_Guide-Configuring_Identity-Federation.html" title="Chapter 10. Configuring Identity Federation">Chapter 10, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring Identity Federation</i></a> describes how to configure identity federation, a way of uniting NIS, Active Directory, and LDAP sources in a global repository. This method can also be used for NIS migrations to LDAP or LDAP migrations to Red Hat IPA.
+				</p></li></ul></div><p>
+			The next section contains additional and advanced configuration options for Penrose Server:
+		</p><div class="itemizedlist"><ul><li><p>
+					<a href="chap-Admin_Guide-Configuring_Modules.html" title="Chapter 11. Configuring Modules">Chapter 11, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring Modules</i></a> describes how to add additional modules to extend the functionality of Penrose Server.
+				</p></li><li><p>
+					<a href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html" title="Chapter 12. Using Services with Penrose Virtual Directory">Chapter 12, <i xmlns:xlink="http://www.w3.org/1999/xlink">Using Services with Penrose Virtual Directory</i></a> describes the default services for Penrose Virtual Directory, additional LDAP and database servers integrated with Penrose Virtual Directory to communicate with sources.
+				</p></li><li><p>
+					<a href="chap-Admin_Guide-Customizing_Schema.html" title="Chapter 13. Customizing Schema">Chapter 13, <i xmlns:xlink="http://www.w3.org/1999/xlink">Customizing Schema</i></a> contains information on the default schema files contained with Penrose Server and procedures for creating custom schema to use for virtual directory entries.
+				</p></li><li><p>
+					<a href="chap-Admin_Guide-Configuring_Cache.html" title="Chapter 14. Configuring Cache">Chapter 14, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring Cache</i></a> describes the different cache settings for Penrose Virtual Directory and the different performance impacts, depending on the load and operations for the virtual directory.
+				</p></li></ul></div><p>
+			The appendix covers the management tools included with Penrose Virtual Directory (<a href="chap-Admin_Guide-Using_RHVD_Command_Line_Tools.html" title="Appendix A. Using Penrose Virtual Directory Command-Line Tools">Appendix A, <i xmlns:xlink="http://www.w3.org/1999/xlink">Using Penrose Virtual Directory Command-Line Tools</i></a>).
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="Document_Conventions">2. Examples and Formatting</h2></div></div></div><p>
+		All of the examples for Penrose Virtual Directory commands, file locations, and other usage are given for Red Hat Enterprise Linux 5 32-bit systems. Be certain to use the appropriate commands and files for your platform.
+	</p><div class="example" id="example"><div class="example-contents"><p>
+			To start the Penrose Virtual Directory:
+		</p><pre class="screen">service vd-server start</pre></div><h6>Example 1. Example Command</h6></div><br class="example-break"/><p>
+		All of the tools for Penrose Virtual Directory are located in the <code class="filename">/opt/vd-server-2.0/bin</code> directory on Red Hat Enterprise Linux 5 32-bit systems. These tools can be run from any location without specifying the tool location.
+	</p><p>
+		Certain words are represented in different fonts, styles, and weights. Different character formatting is used to indicate the function or purpose of the phrase being highlighted.
+	</p><div class="informaltable"><table border="1"><colgroup><col width="3in"/><col width="4in"/></colgroup><thead><tr valign="top"><th valign="top">
+						Formatting Style
+					</th><th valign="top">
+						Purpose
+					</th></tr></thead><tbody><tr valign="top"><td valign="top">
+						<code class="command">Monospace font </code>
+					</td><td valign="top">
+						Monospace is used for commands, package names, files and directory paths, and any text displayed in a prompt.
+					</td></tr><tr valign="top"><td valign="top">
+<pre class="screen">Monospace 
+with a
+background</pre>
+					</td><td valign="top">
+						This type of formatting is used for anything entered or returned in a command prompt.
+					</td></tr><tr valign="top"><td valign="top">
+						<span class="emphasis"><em>Italicized text</em></span>
+					</td><td valign="top">
+						Any text which is italicized is a variable, such as <span class="emphasis"><em>instance_name</em></span> or <span class="emphasis"><em>hostname</em></span>. Occasionally, this is also used to emphasize a new term or other phrase.
+					</td></tr><tr valign="top"><td valign="top">
+						<span><strong class="guilabel">Bolded text</strong></span>
+					</td><td valign="top">
+						Most phrases which are in bold are application names, such as <span><strong class="application">Cygwin</strong></span>, or are fields or options in a user interface, such as a <span><strong class="guilabel">User Name Here:</strong></span> field or <span><strong class="guibutton">Save</strong></span> button.
+					</td></tr></tbody></table></div><p>
+		Other formatting styles draw attention to important text.
+	</p><div class="note"><h2>NOTE</h2><p>
+			A note provides additional information that can help illustrate the behavior of the system or provide more detail for a specific issue.
+		</p></div><div class="important"><h2>IMPORTANT</h2><p>
+			Important information is necessary, but possibly unexpected, such as a configuration change that will not persist after a reboot.
+		</p></div><div class="warning"><h2>WARNING</h2><p>
+			A warning indicates potential data loss, as may happen when tuning hardware for maximum performance.
+		</p></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Additional_Reading">3. Additional Reading</h2></div></div></div><p>
+		The <em class="citetitle">Penrose Admin's Guide</em> describes how to install, configure, and administer Penrose Virtual Directory services, as well as set up other services to integrate with the virtual directory, browse and search the directory, and organize information. This guide is targeted for Penrose administrators.
+	</p><p>
+		The documentation for Penrose Virtual Directory includes the following guides:
+	</p><div class="itemizedlist"><ul><li><p>
+				<em class="citetitle">Penrose Admin's Guide</em> explains all administrative functions for the Penrose, such as adding users, mapping entries, adding services, and using Penrose Server.
+			</p></li><li><p>
+				<em class="citetitle">Release Notes</em> contains important information on new features, fixed bugs, known issues and workarounds, and other important deployment information for Penrose Virtual Directory 2.0.
+			</p></li></ul></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sample-files">4. Samples Files</h2></div></div></div><p>
+			There are dozens of example configurations in the <code class="filename">/opt/vd-server-2.0/samples</code>, including files for identity federation and synchronization, access controls, Active Directory schema, referrals and proxies, and different types of sources. This is an excellent reference to use for setting up many of the features and scenarios in Penrose Virtual Directory, so refer to those files frequently as you configure the virtual directory.
+		</p></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="index.html"><strong>Prev</strong>Admin Guide</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Overview_of_RHVD.html"><strong>Next</strong>Chapter 1. Overview of Penrose Virtual Directory</a></li></ul></body></html>

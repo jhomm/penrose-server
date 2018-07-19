@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 2. Installing Penrose Virtual Directory</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Overview_of_RHVD.html" title="Chapter 1. Overview of Penrose Virtual Directory"/><link rel="next" href="chap-Admin_Guide-Basic_Usage.html" title="Chapter 3. Basic Usage"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 2. Installing Penrose Virtual Directory</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Overview_of_RHVD.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Basic_Usage.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="chap-Admin_Guide-Installing_RHVD">Chapter 2. Installing Penrose Virtual Directory</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="chap-Admin_Guide-Installing_RHVD.html#sect-Admin_Guide-Installing_RHVD-Supported_Platforms">2.1. Supported Platforms</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Installing_RHVD.html#sect-Admin_Guide-Installing_RHVD-Required_Software">2.2. Required Software</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Installing_RHVD.html#sect-Admin_Guide-Installing_RHVD-Installing_VD">2.3. Installing Penrose Server</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Installing_RHVD.html#sect-Admin_Guide-Installing_RHVD-Installing_Additional_Libraries">2.4. Installing Additional Libraries</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Installing_RHVD.html#additional-security-providers">2.5. Installing Additional Security Providers</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Installing_RHVD.html#sect-Admin_Guide-Required_Software-Bouncy_Castle_Security_Provider">2.5.1. Bouncy Castle Security Provider</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Installing_RHVD.html#sect-Admin_Guide-Required_Software-JCE_Unlimited_Strength_Jurisdiction_Policy_Files">2.5.2. JCE Unlimited Strength Jurisdiction Policy Files</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Installing_RHVD.html#sect-Admin_Guide-Installing_RHVD-Uninstalling_VDS">2.6. Uninstalling Penrose Server</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Installing_RHVD.html#upgrading">2.7. Upgrading Penrose Virtual Directory</a></span></dt></dl></div><p>
+		This chapter describes the complete procedure to install Penrose Virtual Directory, along with dependencies.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Installing_RHVD-Supported_Platforms">2.1. Supported Platforms</h2></div></div></div><a id="d0e1124" class="indexterm"/><a id="d0e1129" class="indexterm"/><p>
+			Penrose Server 2.0 is supported on the following platforms:
+		</p><div class="itemizedlist"><ul><li><p>
+					Red Hat Enterprise Linux 4.7 i386 (32-bit)
+				</p></li><li><p>
+					Red Hat Enterprise Linux 4.7 x86_64 (64-bit)
+				</p></li><li><p>
+					Red Hat Enterprise Linux 5.2 i386 (32-bit)
+				</p></li><li><p>
+					Red Hat Enterprise Linux 5.2 x86_64 (64-bit)
+				</p><div class="note"><h2>NOTE</h2><p>
+						Penrose Virtual Directory 2.0 is supported running on a virtual guest on Red Hat Enterprise Linux 5 Virtualization Server.
+					</p></div></li></ul></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Installing_RHVD-Required_Software">2.2. Required Software</h2></div></div></div><a id="d0e1157" class="indexterm"/><a id="d0e1162" class="indexterm"/><a id="d0e1167" class="indexterm"/><p>
+			Penrose Virtual Directory requires Sun Java Development Kit (JDK) version 1.5.0.
+		</p><div class="orderedlist"><ol><li><p>
+					Download Sun JDK 5.0 from <a href="http://java.sun.com/javase/downloads/index_jdk5.jsp">http://java.sun.com/javase/downloads/index_jdk5.jsp</a>.
+				</p></li><li><p>
+					Install the JDK. This may be downloaded as an RPM or as an executable binary. For example:
+				</p><pre class="screen">./jdk-1_5_0_17-linux-amd64.bin</pre></li></ol></div><a id="d0e1183" class="indexterm"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Installing_RHVD-Installing_VD">2.3. Installing Penrose Server</h2></div></div></div><a id="d0e1191" class="indexterm"/><a id="d0e1196" class="indexterm"/><a id="d0e1201" class="indexterm"/><p>
+			A virtual directory maps information from disparate data sources, such as directory services and databases, into a single location for users to access, while keeping the virtual service lightweight and simple to administer.
+		</p><div class="orderedlist"><ol><li><p>
+					Download the RPMs. There are two packages for Penrose Server, one for the core server and the other for client tools.
+				</p></li><li><p>
+					Install the packages. For example:
+				</p><pre class="screen">rpm -i vd-server-2.0-<em class="replaceable"><code>build#</code></em>.el5.noarch.rpm vd-client-2.0-<em class="replaceable"><code>build#</code></em>.el5.noarch.rpm</pre><p>
+					The Penrose Server components are installed in the <code class="filename">/opt/vd-server-2.0</code> and <code class="filename">/opt/vd-client-2.0</code> directories.
+				</p></li><li><p>
+					Make sure that the proper JDK is configured for Penrose Server to use:
+				</p><div class="orderedlist"><ol><li><p>
+							Open the <code class="filename">vd.conf</code> file with the Penrose Server directory.
+						</p><pre class="screen">vim /opt/vd-server-2.0/etc/vd.conf</pre></li><li><p>
+							Add the <code class="command">JAVA_HOME</code> environment variable, pointing to Sun JDK 1.5.0. For example:
+						</p><pre class="screen">JAVA_HOME=/usr/lib/jdk1.5.0_17/</pre></li><li><p>
+							After editing the <code class="filename">vd.conf</code> file, copy it into the host's <code class="filename">/etc</code> directory.
+						</p><pre class="screen">cp /opt/vd-server-2.0/etc/vd.conf /etc</pre></li></ol></div></li><li><p>
+					Optionally, configure the Penrose Server to run as a service:
+				</p><div class="orderedlist"><ol><li><p>
+							Open the init script directory.
+						</p><pre class="screen">cd /opt/vd-server-2.0/etc/init.d</pre></li><li><p>
+							Edit the <code class="command">vd-server</code> script so that the Penrose Server home and script locations are correct. For example:
+						</p><pre class="screen">VD_SERVER_HOME=/opt/vd-server-2.0
+VD_SERVER_SCRIPT=$VD_SERVER_HOME/bin/vd-server.sh</pre></li><li><p>
+							Copy the init file to the <code class="filename">/etc/init.d</code> directory.
+						</p><pre class="screen">cp /opt/vd-server-2.0/etc/init.d/vd-server /etc/init.d</pre></li><li><p>
+							Make the init script executable.
+						</p><pre class="screen">chmod +x /etc/init.d/vd-server</pre></li></ol></div></li><li><p>
+					Run a configuration script to reset the server hostname, give the admin username and password, and set the port numbers and other information for the associated LDAP and JMX services. Hitting <span><strong class="keycap">Enter</strong></span> accepts the defaults in the brackets.
+				</p><p>
+					For example:
+				</p><pre class="screen">[root@server bin]# ./vd-config.sh
+Configuring VD Server:
+----------------------
+
+Hostname [server.example.com]:
+Root DN [uid=admin,ou=system]:
+Root Password [*****]: secret12
+User account [root]:
+Group account [root]:
+
+Configuring OpenDS Service:
+---------------------------
+
+LDAP Enabled [true]:
+LDAP Port [389]:
+Secure LDAP Enabled [true]:
+Secure LDAP Port [636]:
+SSL Certificate Name [server-cert]:
+Key Store Type (JKS/PKCS12) [PKCS12]:
+Key Store File [config/keystore.p12]:
+Key Store PIN File [config/keystore.pin]:
+
+
+Configuring JMX Service:
+------------------------
+
+RMI Port [1099]:
+RMI Transport Port [40888]:</pre></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Installing_RHVD-Installing_Additional_Libraries">2.4. Installing Additional Libraries</h2></div></div></div><a id="d0e1305" class="indexterm"/><a id="d0e1310" class="indexterm"/><a id="d0e1317" class="indexterm"/><p>
+			Additional libraries can be installed on Penrose Server so that extended functions can be deployed. These libraries cover a range of different Penrose functions, including JDBC drivers, custom adapters, custom modules, and other third party libraries.
+		</p><div class="note"><h2>NOTE</h2><p>
+				Any additional libraries <span class="emphasis"><em>must</em></span> be JAR files.
+			</p></div><div class="orderedlist"><ol><li><p>
+					Copy the JAR files into the <code class="filename">lib/ext/</code> directory in the Penrose Server home directory; for example:
+				</p><pre class="screen">cp /export/example.jar /opt/vd-server-2.0/lib/ext/example.jar</pre></li><li><p>
+					Restart Penrose Server.
+				</p><pre class="screen">service vd-server restart</pre></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="additional-security-providers">2.5. Installing Additional Security Providers</h2></div></div></div><a id="d0e1349" class="indexterm"/><a id="d0e1354" class="indexterm"/><a id="d0e1361" class="indexterm"/><a id="d0e1366" class="indexterm"/><p>
+			Although some encryption support is included with the required JDK, some directory resources or clients may require additional encryption support.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="sect-Admin_Guide-Required_Software-Bouncy_Castle_Security_Provider">2.5.1. Bouncy Castle Security Provider</h3></div></div></div><a id="d0e1374" class="indexterm"/><a id="d0e1381" class="indexterm"/><a id="d0e1388" class="indexterm"/><a id="d0e1395" class="indexterm"/><a id="d0e1400" class="indexterm"/><p>
+				Bouncy Castle Crypto package provides additional encryption methods, including <code class="command">SHA</code> algorithms used by Penrose Virtual Directory, through a Java implementation. The Bouncy Castle security provider is required to run Penrose Virtual Directory and provides additional encryption and security services for Penrose Server.
+			</p><div class="note"><h2>NOTE</h2><p>
+					JDK 1.5 or higher must be installed in the Java home directory specified in the Bouncy Castle installation.
+				</p></div><div class="orderedlist"><ol><li><p>
+						Download the Bouncy Castle provider for the JDK from <a href="http://www.bouncycastle.org/latest_releases.html">http://www.bouncycastle.org/latest_releases.html</a>.
+					</p></li><li><p>
+						Copy the Bouncy Castle JAR file, such as <code class="filename">bcprov-jdk15-140.jar</code>, to the Java home directory, such as <code class="filename">/usr/lib/jdk1.5.0_17/</code>.
+					</p></li><li><p>
+						Open the <code class="filename">java.security</code> file. For example:
+					</p><pre class="screen">vim /usr/lib/jdk1.5.0_17//jre/lib/security/java.security</pre></li><li><p>
+						Add the Bouncy Castle provider to the list of registered security providers. For example:
+					</p><pre class="screen"> security.provider.1=sun.security.provider.Sun
+ security.provider.2=com.sun.net.ssl.internal.ssl.Provider
+ security.provider.3=com.sun.rsajca.Provider
+ security.provider.4=com.sun.crypto.provider.SunJCE
+ security.provider.5=sun.security.jgss.SunProvider
+ <strong class="userinput"><code>security.provider.6=org.bouncycastle.jce.provider.BouncyCastleProvider</code></strong></pre></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="sect-Admin_Guide-Required_Software-JCE_Unlimited_Strength_Jurisdiction_Policy_Files">2.5.2. JCE Unlimited Strength Jurisdiction Policy Files</h3></div></div></div><a id="d0e1446" class="indexterm"/><a id="d0e1453" class="indexterm"/><a id="d0e1460" class="indexterm"/><a id="d0e1467" class="indexterm"/><a id="d0e1472" class="indexterm"/><p>
+				Because of some governmental restrictions, some countries do not allow unlimited encryption strength. The JDK can be extended from its standard <span class="emphasis"><em>strong but limited</em></span> encryption to unlimited strength by installing Java Cryptography Extension (JCE) files.
+			</p><div class="orderedlist"><ol><li><p>
+						Download the JCE Unlimited Strength Jurisdiction Policy Files for the JDK.
+					</p><div class="itemizedlist"><ul><li><p>
+								<a href="http://java.sun.com/j2se/1.4.2/download.html">http://java.sun.com/j2se/1.4.2/download.html</a>
+							</p></li><li><p>
+								<a href="http://java.sun.com/j2se/1.5.0/download.jsp">http://java.sun.com/j2se/1.5.0/download.jsp</a>
+							</p></li></ul></div></li><li><p>
+						Back up the existing policy files in the JDK home directory. For example:
+					</p><pre class="screen">zip security_files.zip /usr/lib/jdk1.5.0_17//jre/lib/security/</pre></li><li><p>
+						Copy the <code class="filename">local_policy.jar</code> and <code class="filename">US_export_policy.jar</code> files into the <code class="filename">jre/lib/security</code> directory in the JDK directory.
+					</p></li></ol></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Installing_RHVD-Uninstalling_VDS">2.6. Uninstalling Penrose Server</h2></div></div></div><a id="d0e1515" class="indexterm"/><a id="d0e1520" class="indexterm"/><a id="d0e1525" class="indexterm"/><p>
+			The Penrose Server packages can be uninstalled using Red Hat's package management tools, the same as used to install it. To remove Penrose Server, use the <code class="option">-e</code> option with <code class="command">rpm</code>:
+		</p><pre class="screen">rpm -ev vd-server-2.0-<em class="replaceable"><code>build#</code></em>.el5.noarch vd-client-2.0-<em class="replaceable"><code>build#</code></em>.el5.noarch</pre></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="upgrading">2.7. Upgrading Penrose Virtual Directory</h2></div></div></div><p>
+			There is no direct upgrade or migration path to Penrose Virtual Directory 2.0. Updating the version requires updating the packages:
+		</p><div class="orderedlist"><ol><li><p>
+					Stop the Penrose Server process, and verify the server is stopped.
+				</p><pre class="screen">service vd-server stop
+
+ps -ef | grep vd-server</pre></li><li><p>
+					Back up or copy the <code class="filename">/opt/vd-server-2.0/partitions/</code> directory to save any custom partitions. If there are templates used for identity linking, save the templates and the federation domain's <code class="filename">federation.xml</code> file and configuration; it's not necessary to save the generated federation partitions.
+				</p><p>
+					Also back up or copy the <code class="filename">server.xml</code> file in the <code class="filename">/opt/vd-server-2.0/conf/</code> directory. If SSL has been configured, save the <code class="filename">cacerts</code> file in the <code class="filename">/opt/vd-server-2.0/conf/</code> directory.
+				</p><p>
+					Be sure to save these files to a different directory.
+				</p></li><li><p>
+					Uninstall all Penrose Virtual Directory RPMs. For example:
+				</p><pre class="screen">rpm -e vd-server
+rpm -e vd-studio
+rpm -e vd-client</pre></li><li><p>
+					Remove the remaining files.
+				</p><pre class="screen">rm -rf /opt/vd-server-2.0
+rm -rf /opt/vd-studio-2.0
+rm -rf /opt/vd-client-2.0</pre></li><li><p>
+					Install the new RPMs, and configure the services and configuation files as described in <a href="chap-Admin_Guide-Installing_RHVD.html#sect-Admin_Guide-Installing_RHVD-Installing_VD" title="2.3. Installing Penrose Server">Section 2.3, “Installing Penrose Server”</a>.
+				</p></li><li><p>
+					Copy in the saved <code class="filename">partitions/</code> directory and the <code class="filename">server.xml</code> and <code class="filename">cacerts</code> files.
+				</p><p>
+					If there are templates used for identity linking, the restart the server to generate the federation partitions.
+				</p><pre class="screen">service vd-server restart</pre></li><li><p>
+					If NIS synchronization or identity federation was configured in the original Penrose Virtual Directory instance, then re-configure the <code class="filename">/etc/yp.conf</code> file.
+				</p><div class="orderedlist"><ol><li><p>
+							Open Penrose Studio.
+						</p><pre class="screen">/opt/vd-studio-2.0/vd-studio</pre></li><li><p>
+							Expand the <span><strong class="guilabel">Federation</strong></span> folder in the lower left of the navigation tree.
+						</p></li><li><p>
+							Select the federation domain.
+						</p></li><li><p>
+							Open the <span><strong class="guilabel">NIS</strong></span> folder.
+						</p></li><li><p>
+							There is a tab in the main window labeled <span><strong class="guilabel">yp.conf</strong></span>. Copy the information there into the <code class="filename">/etc/yp.conf</code> file on the Penrose Server host machine.
+						</p></li></ol></div></li><li><p>
+					Check that you can connect to the Penrose directory by checking the directories using LDAP tools.
+				</p><div class="itemizedlist"><ul><li><p>
+							For example, verify a regular virtual directory configuration:
+						</p><pre class="screen">ldapsearch -h localhost -p 389 -x -b "" -s base</pre></li><li><p>
+							If identity federation is configured, check both the local and global directories. For example:
+						</p><pre class="screen">ldapsearch -h localhost -p 389 -x -b "uid=jsmith,ou=Users,ou=local-nis,ou=NSS,dc=example,dc=com" 
+
+ldapsearch -h localhost -p 389 -x -b "uid=jsmith,ou=Users,ou=Global,dc=example,dc=com"</pre></li><li><p>
+							If Penrose Server is used for user authentication, then attempt to log into a server using the proper credentials:
+						</p><pre class="screen">ldapsearch -h localhost -p 389 -x -D "uid=jsmith,ou=Users,ou=local-nis,ou=NSS,dc=example,dc=com" -w secret -b "" -s base</pre></li><li><p>
+							Last, check that NIS synchronization is working. For example:
+						</p><pre class="screen">/opt/vd-server-2.0/bin/nis.sh D uid=admin,ou=system -w secret synchronize exampleDomain otherDomain</pre></li></ul></div></li></ol></div></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Overview_of_RHVD.html"><strong>Prev</strong>Chapter 1. Overview of Penrose Virtual Directory</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Basic_Usage.html"><strong>Next</strong>Chapter 3. Basic Usage</a></li></ul></body></html>

@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 9. Mapping Entries and Attributes</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Configuring_Entry_Mapping.html" title="Chapter 8. Configuring the Virtual Directory"/><link rel="next" href="chap-Admin_Guide-Configuring_Identity-Federation.html" title="Chapter 10. Configuring Identity Federation"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 9. Mapping Entries and Attributes</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_Entry_Mapping.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_Identity-Federation.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="Mapping">Chapter 9. Mapping Entries and Attributes</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="Mapping.html#planning-mapping">9.1. Planning How to Map Entries</a></span></dt><dd><dl><dt><span class="section"><a href="Mapping.html#sect.basic-mapping">9.1.1. Basic Mapping</a></span></dt><dt><span class="section"><a href="Mapping.html#sect.nested-mapping">9.1.2. Nested Mapping</a></span></dt><dt><span class="section"><a href="Mapping.html#sect.join-mapping">9.1.3. Joined Mapping</a></span></dt></dl></dd><dt><span class="section"><a href="Mapping.html#sect-Admin_Guide-Configuring_Entry_Mapping-Configuring_Entry_Mapping">9.2. Creating a Single Subtree from Multiple Sources</a></span></dt><dt><span class="section"><a href="Mapping.html#configuring-basic-mapping">9.3. Configuring Basic Mapping</a></span></dt><dd><dl><dt><span class="section"><a href="Mapping.html#configuring-basic-mapping-studio">9.3.1. Configuring Basic Mapping in Penrose Studio</a></span></dt><dt><span class="section"><a href="Mapping.html#configuring-basic-mapping-cmd">9.3.2. Configuring Basic Mapping Manually</a></span></dt></dl></dd><dt><span class="section"><a href="Mapping.html#nested-mapping">9.4. Configuring Nested Mapping</a></span></dt><dd><dl><dt><span class="section"><a href="Mapping.html#nested-mapping-console">9.4.1. Creating a Nested Mapping in Penrose Studio</a></span></dt><dt><span class="section"><a href="Mapping.html#nested-mapping-cmd">9.4.2. Creating a Nested Mapping Manually</a></span></dt></dl></dd><dt><span class="section"><a href="Mapping.html#sect-Admin_Guide-join-mapping">9.5. Joining Entities into a Single Virtual Entry</a></span></dt><dd><dl><dt><span class="section"><a href="Mapping.html#sect-Admin_Guide-join-mapping-studio">9.5.1. Setting up Join Mapping in Penrose Studio</a></span></dt><dt><span class="section"><a href="Mapping.html#sect-Admin_Guide-join-mapping-cmd">9.5.2. Manually Joining Entries</a></span></dt></dl></dd><dt><span class="section"><a href="Mapping.html#id-mapping">9.6. Creating Advanced Mappings</a></span></dt><dd><dl><dt><span class="section"><a href="Mapping.html#mapping-fields">9.6.1. Mapping Attribute Fields</a></span></dt><dt><span class="section"><a href="Mapping.html#mapping-scripts">9.6.2. Using Scripts</a></span></dt><dt><span class="section"><a href="Mapping.html#mapping-fields-cmd">9.6.3. Mapping Attribute Fields and Scripts Manually</a></span></dt></dl></dd></dl></div><a id="d0e7697" class="indexterm"/><a id="d0e7700" class="indexterm"/><p>
+		Many forms of mapping described in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html" title="Chapter 8. Configuring the Virtual Directory">Chapter 8, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring the Virtual Directory</i></a> depend on having common attribute values which can be matched and mapped to define virtual entries. Some infrastructure situations do not have that consistency of data. In other situations, Penrose Virtual Directory is a bridge for migrating from one kind of data storage (NIS servers) to another (LDAP servers). In both of those scenarios, Penrose Virtual Directory provides an additional way to link entries, called <span class="emphasis"><em>identity federation</em></span>.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="planning-mapping">9.1. Planning How to Map Entries</h2></div></div></div><a id="d0e7713" class="indexterm"/><p>
+			The next step is to define how the individual entries (leaves on the tree) are created. Again, there are many options, which can all be used depending on the type of information which is in the sources and the kind of information that should be included in the virtual directory entries.
+		</p><p>
+			Penrose Virtual Directory has several different mapping styles: basic, nested, joined, and identity linking, described in the sections below. These mappings are applied to the <span class="emphasis"><em>attributes</em></span> for each identity, so any or all of the different mapping styles can be applied to any attribute, entry, or data source (though there can only be one mapping per attribute per source).
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="sect.basic-mapping">9.1.1. Basic Mapping</h3></div></div></div><a id="d0e7730" class="indexterm"/><a id="d0e7737" class="indexterm"/><a id="d0e7744" class="indexterm"/><p>
+				This simplest mapping is <span class="emphasis"><em>basic mapping</em></span>, which is a one-to-one mapping of attributes. For example, if a users table in a database has an employee's username, first name, last name, and password, the mapping entry can simply convert the tuples to the <em class="parameter"><code>cn</code></em>, <em class="parameter"><code>givenName</code></em>, <em class="parameter"><code>sn</code></em>, and <em class="parameter"><code>userPassword</code></em> LDAP attributes.
+			</p><div class="figure" id="fig.basic-mapping"><div class="figure-contents"><div class="mediaobject"><img src="images/basicmapping.png" alt="Basic Mapping"/></div></div><h6>Figure 9.1. Basic Mapping</h6></div><br class="figure-break"/><p>
+				Basic mapping is configured in the <code class="filename">directory.xml</code> file for the partition, as described in <a href="Mapping.html#configuring-basic-mapping" title="9.3. Configuring Basic Mapping">Section 9.3, “Configuring Basic Mapping”</a>.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="sect.nested-mapping">9.1.2. Nested Mapping</h3></div></div></div><a id="d0e7782" class="indexterm"/><a id="d0e7789" class="indexterm"/><a id="d0e7796" class="indexterm"/><p>
+				A <span class="emphasis"><em>nested mapping</em></span> is a dynamic entry created beneath another dynamic entry. In this case, the generated entry for the first entry is used as input for the second dynamic entry.
+			</p><p>
+				Each of the dynamic entries has its own source defined, and the content of these sources is joined when the entries are processed. The scope of the values for the second entry is restricted to areas where its source overlaps with the information in the first source.
+			</p><p>
+				For example, a parent entry is created which generates user entrys (<code class="command">uid=...</code>). Its child entry generates a list of group entries (<code class="command">cn=...</code>) which the user belongs to. The user entry is generated first, and the possible group entries under that user are limited to groups in the second source which that user belongs to.
+			</p><div class="figure" id="fig.nested-mapping"><div class="figure-contents"><div class="mediaobject"><img src="images/nestedmapping2.png" alt="Nested Mapping"/></div></div><h6>Figure 9.2. Nested Mapping</h6></div><br class="figure-break"/><p>
+				Nested mapping is configured in the <code class="filename">directory.xml</code> file for the partition, as described in <a href="Mapping.html#nested-mapping" title="9.4. Configuring Nested Mapping">Section 9.4, “Configuring Nested Mapping”</a>.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="sect.join-mapping">9.1.3. Joined Mapping</h3></div></div></div><a id="d0e7832" class="indexterm"/><a id="d0e7839" class="indexterm"/><a id="d0e7846" class="indexterm"/><p>
+				Basic mapping is very simple correlation between attributes, but it doesn't handle correlations between entries. Many environments have multiple applications, and each entity has a different entry in each application. Penrose Virtual Directory can combine these separate entries into a single virtual directory entry.
+			</p><div class="figure" id="fig.join-mapping"><div class="figure-contents"><div class="mediaobject"><img src="images/joinmapping.png" alt="Join Mapping to Merge Entries"/></div></div><h6>Figure 9.3. Join Mapping to Merge Entries</h6></div><br class="figure-break"/><p>
+				Join mapping can also be used to create new entries from two existing entries. For example, if one database holds user information (including group membership) and another holds group names and descriptions, Penrose Virtual Directory can create a new entry in the virtual directory.
+			</p><a id="d0e7861" class="indexterm"/><a id="d0e7866" class="indexterm"/><p>
+				For join mapping, a common attribute, a <span class="emphasis"><em>key</em></span>, has to exist on all of the sources so that the entry in both sources can be linked from in one source to another. One of these sources is the <span class="emphasis"><em>primary key</em></span>, which determines whether the entity exists on any of the other sources. The joined entry is dependent on the primary key, and if that primary key value does not exist in the primary source, then the entry will no show up in the virtual directory.
+			</p><div class="figure" id="fig.join-mapping2"><div class="figure-contents"><div class="mediaobject"><img src="images/joinmapping2.png" alt="Join Mapping to Create New Entries"/></div></div><h6>Figure 9.4. Join Mapping to Create New Entries</h6></div><br class="figure-break"/><p>
+				Join mapping is configured in the <code class="filename">directory.xml</code> in the directory entry, as described in <a href="Mapping.html#sect-Admin_Guide-join-mapping" title="9.5. Joining Entities into a Single Virtual Entry">Section 9.5, “Joining Entities into a Single Virtual Entry”</a>.
+			</p></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Configuring_Entry_Mapping-Configuring_Entry_Mapping">9.2. Creating a Single Subtree from Multiple Sources</h2></div></div></div><a id="d0e7893" class="indexterm"/><a id="d0e7898" class="indexterm"/><a id="d0e7903" class="indexterm"/><p>
+			The same kind of information can be contained in multiple sources, such as having employee information spread out with authoritative sources at each branch office or distributing the load across several databases for high-traffic systems. It makes sense to design the virtual directory tree according to those data groups. For example, creating subtrees for all employee data, for all customer data, for servers, and for other kinds of infrastructure, such as buildings and conference rooms. If the same identities are not stored in different locations, only the same kind of entries, then the mapping is as simple as mapping each source to the same subtree.
+		</p><div class="important"><h2>IMPORTANT</h2><p>
+				A separate subtree entry needs to be created for every source which is merged into the subtree is because of how the attributes are mapped. Multi-valued attributes can be mapped to multiple sources; however, many required attributes, such as <em class="parameter"><code>uid</code></em>, are single-valued. This means that there has to be a separate entry to allow more than one source to supply the attribute.
+			</p></div><p>
+			In Penrose Studio, create a new subtree entry with the same name for each source, as shown in <a href="Mapping.html#fig.merged-mapping" title="Figure 9.5. Two Entry Mappings under ou=People">Figure 9.5, “Two Entry Mappings under ou=People”</a>. In this case, two dynamic entries are created for the <code class="command">cn="..."</code> entry under the the <code class="command">ou=People,dc=example,dc=com</code> subtree. Creating subrees is described in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-studio" title="8.2.1. Creating the Virtual Directory in Penrose Studio">Section 8.2.1, “Creating the Virtual Directory in Penrose Studio”</a>.
+		</p><div class="figure" id="fig.merged-mapping"><div class="figure-contents"><div class="mediaobject"><img src="images/mergedmapping1.png" alt="Two Entry Mappings under ou=People"/></div></div><h6>Figure 9.5. Two Entry Mappings under ou=People</h6></div><br class="figure-break"/><p>
+			To create the entries mapping manually (as in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-cmd" title="8.2.3. Configuring the Virtual Directory Manually">Section 8.2.3, “Configuring the Virtual Directory Manually”</a>, add entries with the same <code class="command">dn=</code> value (the same entry name) and a different <code class="command">&lt;source&gt;</code> entry, pointing to each source being merged into the subtree. As a simplified example, <a href="Mapping.html#ex.merged-example" title="Example 9.1. Merging User Database and LDAP Entries into a Virtual Directory">Example 9.1, “Merging User Database and LDAP Entries into a Virtual Directory”</a> combines employee entries from a database (<code class="command">MySQL1</code>) and a Red Hat Directory Server instance (<code class="command">LDAP1</code>) into the virtual <code class="command">ou=People,dc=example,dc=com</code> subtree.
+		</p><a id="d0e7957" class="indexterm"/><a id="d0e7964" class="indexterm"/><div class="example" id="ex.merged-example"><div class="example-contents"><pre class="screen">&lt;entry <strong class="userinput"><code>dn="uid=...,ou=People,dc=example,dc=com"</code></strong>&gt;
+    &lt;oc&gt;person&lt;/oc&gt;
+    &lt;oc&gt;organizationalPerson&lt;/oc&gt;
+    &lt;oc&gt;inetOrgPerson&lt;/oc&gt;
+ <em class="lineannotation"><span class="lineannotation">mapping</span></em> 
+    &lt;at name="uid" rdn="true"&gt;
+        &lt;variable&gt;MySQL1.username&lt;/variable&gt;
+    &lt;/at&gt;
+ <em class="lineannotation"><span class="lineannotation">reverse mapping</span></em> 
+    &lt;source name="MySQL1"&gt;
+        &lt;source-name&gt;MySQL1&lt;/source-name&gt;
+        &lt;field name="username"&gt;
+            &lt;variable&gt;uid&lt;/variable&gt;
+        &lt;/field&gt;
+    &lt;/source&gt;
+&lt;/entry&gt;
+
+&lt;entry <strong class="userinput"><code>dn="uid=...,ou=Users,dc=Example,dc=com"</code></strong>&gt;
+    &lt;oc&gt;person&lt;/oc&gt;
+    &lt;oc&gt;organizationalPerson&lt;/oc&gt;
+    &lt;oc&gt;inetOrgPerson&lt;/oc&gt;
+ <em class="lineannotation"><span class="lineannotation">mapping</span></em> 
+    &lt;at name="uid" rdn="true"&gt;
+        &lt;variable&gt;LDAP1.uid&lt;/variable&gt;
+    &lt;/at&gt;
+ <em class="lineannotation"><span class="lineannotation">reverse mapping</span></em> 
+    &lt;source name="LDAP1"&gt;
+        &lt;source-name&gt;LDAP1&lt;/source-name&gt;
+        &lt;field name="uid"&gt;
+            &lt;variable&gt;uid&lt;/variable&gt;
+        &lt;/field&gt;
+    &lt;/source&gt;
+&lt;/entry&gt;</pre></div><h6>Example 9.1. Merging User Database and LDAP Entries into a Virtual Directory</h6></div><br class="example-break"/><div class="important"><h2>IMPORTANT</h2><p>
+				Always restart Penrose Server after editing the configuration file. For example:
+			</p><pre class="screen">service vd-server restart</pre></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="configuring-basic-mapping">9.3. Configuring Basic Mapping</h2></div></div></div><a id="d0e8004" class="indexterm"/><a id="d0e8011" class="indexterm"/><a id="d0e8018" class="indexterm"/><p>
+			Basic mapping is a direct connection between one attribute in the virtual directory and one attribute on a source. There are two parts to any mapping: configuring the mapping between the virtual directory attribute and the source and then mapping back from the source to the virtual directory attribute.
+		</p><div class="note"><h2>NOTE</h2><p>
+				For multi-valued attributes, there can be more than one attribute mapping, but only one virtual attribute and one source attribute are referenced in a mapping.
+			</p></div><div class="note"><h2>TIP</h2><p>
+				Mappings for virtual directory attributes and reverse mappings for source attributes can be configured in the <code class="filename">directory.xml</code> file, but more complex mappings can be configured in the <code class="filename">mappings.xml</code>, which allows BeanShell scripts to be called before and after mapping attributes to perform futher transformations on the virtual entry data. For more information, see <a href="Mapping.html#id-mapping" title="9.6. Creating Advanced Mappings">Section 9.6, “Creating Advanced Mappings”</a>.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="configuring-basic-mapping-studio">9.3.1. Configuring Basic Mapping in Penrose Studio</h3></div></div></div><p>
+				To create a basic mapping in the Penrose Studio:
+			</p><div class="orderedlist"><ol><li><p>
+						Double-click the subtree entry to open the entry editor in the main window.
+					</p><div class="note"><h2>NOTE</h2><p>
+							Mapping can be configured when a directory subtree is created or can be added to a subtree entry.
+						</p></div></li><li><p>
+						Double-click the virtual attribute to map, listed in the <span><strong class="guilabel">Attributes</strong></span> section of the <span><strong class="guilabel">LDAP</strong></span> tab.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/basicmapping2.png"/></div></div></li><li><p>
+						Select the radio button for how the value will be supplied. <span><strong class="guilabel">text</strong></span> sets an exact value, <span><strong class="guilabel">variable</strong></span> allows you to choose from all attributes configured for the virtual directory sources, and <span><strong class="guilabel">expression</strong></span> accepts BeanShell scripts.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/basicmapping1.png"/></div></div></li><li><p>
+						In the subtree editor window, open the <span><strong class="guilabel">Sources</strong></span> tab, and, if there is more than one source, select the correct source tab at the top of the section.
+					</p></li><li><p>
+						Double-click the corresponding source attribute in the list.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/basicmapping4.png"/></div></div><p>
+						If the attribute is not listed, click the <span><strong class="guilabel">Add field</strong></span> link at the bottom, and add the attribute, then select it.
+					</p></li><li><p>
+						Select the radio button for how the value will be supplied. <span><strong class="guilabel">text</strong></span> sets an exact value, <span><strong class="guilabel">variable</strong></span> includes the attributes configured for all virtual directory sources as well as the virtual directory itself, and <span><strong class="guilabel">expression</strong></span> accepts BeanShell scripts. For both <span><strong class="guilabel">variable</strong></span> and the<span><strong class="guilabel">expression</strong></span> scripts, make sure that the attribute referenced is the virtual directory attribute.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/basicmapping3.png"/></div></div></li><li><p>
+						Close the editor window and save the changes when prompted.
+					</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="configuring-basic-mapping-cmd">9.3.2. Configuring Basic Mapping Manually</h3></div></div></div><p>
+				Configuring basic mapping manually requires adding a pair of mapping entries for the attribute to the subtree entry in the <code class="filename">directory.xml</code> file.
+			</p><div class="itemizedlist"><ul><li><p>
+						One entry adds the attribute and mapping in the subtree entry, linking back to the source
+					</p></li><li><p>
+						The other entry adds a reverse mapping in the source description for the subtree, linking back to the virtual directory attribute
+					</p></li></ul></div><a id="d0e8144" class="indexterm"/><a id="d0e8151" class="indexterm"/><a id="d0e8158" class="indexterm"/><a id="d0e8163" class="indexterm"/><p>
+				The first entry is an attribute entry (<code class="command">&lt;at&gt;</code>) in the subtree definition. The attribute requires the <code class="option">name</code> argument to identify the LDAP attribute and then a mapping entry to link it back to the source. The mapping tags and parameters are listed in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#tab.subtree-parameters" title="Table 8.1. Parameters for Subtree Entries">Table 8.1, “Parameters for Subtree Entries”</a>.
+			</p><p>
+				For example, to map the <em class="parameter"><code>givenName</code></em> attribute to the JDBC1 source attribute, add these lines to the subtree entry:
+			</p><pre class="screen">&lt;entry dn="ou=people,dc=example,dc=com"&gt;
+      &lt;at&gt;
+           &lt;variable&gt;JDBC1.firstname&lt;/variable&gt;
+      &lt;/at&gt;
+...</pre><a id="d0e8185" class="indexterm"/><p>
+				The second entry is a reverse mapping (<code class="command">&lt;field&gt;</code>) within the source definition in the subtree. Like the <code class="command">&lt;at&gt;</code> attribute, the <code class="command">&lt;field&gt;</code> is a mapping entry which uses the <code class="option">name</code> argument to identify the source attribute and then a mapping entry linking it back to the virtual directory.
+			</p><p>
+				For example, to map the <em class="parameter"><code>firstname</code></em> attribute in the database back to the virtual directory's <em class="parameter"><code>givenName</code></em> attribute, add these lines to the subtree entry:
+			</p><pre class="screen">&lt;source&gt;
+...
+      &lt;field name="firstname"&gt;
+           &lt;variable&gt;givenName&lt;/variable&gt;
+      &lt;/field&gt;
+...
+&lt;/source&gt;</pre><div class="important"><h2>IMPORTANT</h2><p>
+					Always restart Penrose Server after editing the configuration file. For example:
+				</p><pre class="screen">service vd-server restart</pre></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="nested-mapping">9.4. Configuring Nested Mapping</h2></div></div></div><a id="d0e8224" class="indexterm"/><a id="d0e8231" class="indexterm"/><a id="d0e8238" class="indexterm"/><p>
+			Nested mapping is a way of embedding a dynamic subtree under another dynamic subtree. The child subtree can inherit entries from its parent, even though both subtrees can have different sources. This is one way to organize information from different sources. The DN of the nested mapping will have two dynamic components:
+		</p><pre class="screen">dn="uid=...,cn=...,ou=Locations,dc=Example,dc=com"</pre><p>
+			This can be useful to group entries and simplify the relationships between different sources. For example, Example Corp. has three database tables used by their resources group:
+		</p><div class="itemizedlist"><ul><li><p>
+					<span class="emphasis"><em>users</em></span> contains a complete list of user information, including their usernames, first names, and last names.
+				</p></li><li><p>
+					<span class="emphasis"><em>officepeople</em></span> contains a list of office locations and their members' usernames.
+				</p></li><li><p>
+					<span class="emphasis"><em>offices</em></span> contains a complete list of office details, including the locations and descriptions.
+				</p></li></ul></div><p>
+			The virtual directory is organization to contain two subtrees: one for users and one for locations. The hierarchy can be arranged so that the users are grouped by their location, meaning that the users subtree is a child of the location subtree.
+		</p><p>
+			The key to configuring the nested mapping is in selecting the right attribute mapping and reverse mapping, as illustrated in <a href="Mapping.html#fig.nestedmapping" title="Figure 9.6. Example Nested Mapping">Figure 9.6, “Example Nested Mapping”</a>. The parent is the locations subtree. The office information is linked to the <code class="command">officepeople</code> database through the location attribute, which both the <code class="command">offices</code> and <code class="command">officepeople</code> table share; the user information is pulled into the entry through the <code class="command">username</code> attribute which both the <code class="command">officepeople</code> and <code class="command">users</code> tables share.
+		</p><div class="figure" id="fig.nestedmapping"><div class="figure-contents"><div class="mediaobject"><img src="images/nestedmapping.png" alt="Example Nested Mapping"/></div></div><h6>Figure 9.6. Example Nested Mapping</h6></div><br class="figure-break"/><div class="note"><h2>TIP</h2><p>
+				Mappings for virtual directory attributes and reverse mappings for source attributes can be configured in the <code class="filename">directory.xml</code> file, but more complex mappings can be configured in the <code class="filename">mappings.xml</code>, which allows BeanShell scripts to be called before and after mapping attributes to perform futher transformations on the virtual entry data. For more information, see <a href="Mapping.html#id-mapping" title="9.6. Creating Advanced Mappings">Section 9.6, “Creating Advanced Mappings”</a>.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="nested-mapping-console">9.4.1. Creating a Nested Mapping in Penrose Studio</h3></div></div></div><p>
+				For the nested mapping example, there are three entries which need defined:
+			</p><div class="itemizedlist"><ul><li><p>
+						A directory entry, source entry, and mapping for the <code class="command">offices</code> table which defines the location.
+					</p></li><li><p>
+						A directory entry, source entry, and mapping for the <code class="command">users</code> table which defines the username and other user attributes.
+					</p></li><li><p>
+						A source entry and mapping for the <code class="command">officepeople</code> table which links to the username in the <code class="command">users</code> table and the location in the <code class="command">offices</code> table.
+					</p></li></ul></div><p>
+				To create a nested mapping:
+			</p><div class="orderedlist"><ol><li><p>
+						Open the <span><strong class="guilabel">Directory</strong></span> folder.
+					</p></li><li><p>
+						Create a static entry for <code class="command">ou=Locations</code>, as in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-studio-static" title="8.2.1.2. Adding a Static Directory Entry">Section 8.2.1.2, “Adding a Static Directory Entry”</a>.
+					</p></li><li><p>
+						Create a dynamic entry for the location subtree, as in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-studio-dynamic" title="8.2.1.3. Adding a Dynamic Directory Entry">Section 8.2.1.3, “Adding a Dynamic Directory Entry”</a>.
+					</p><div class="itemizedlist"><ul><li><p>
+								Add the <code class="command">office</code> table as a source.
+							</p></li><li><p>
+								Set the naming attribute to the <em class="parameter"><code>l</code></em> and the object class to <em class="parameter"><code>locality</code></em>.
+							</p></li><li><p>
+								Map the the <em class="parameter"><code>l</code></em> attribute in the virtual entry to to the <code class="command">offices</code> entry in the <code class="command">offices</code> table.
+							</p></li><li><p>
+								Map the the <em class="parameter"><code>description</code></em> attribute in the virtual entry to to the <code class="command">description</code> entry in the <code class="command">offices</code> table.
+							</p></li></ul></div></li><li><p>
+						Open the <span><strong class="guilabel">Sources</strong></span> folder, and double-click the <code class="command">offices</code>'s source. Edit the source's fields to create reverse mappings on the source from the <code class="command">offices</code> and <code class="command">description</code> attributes back to the <em class="parameter"><code>l</code></em> and <em class="parameter"><code>description</code></em> attributes in the <code class="command">offices</code> table, respectively.
+					</p><p>
+						For more information on creating reverse mappings on sources, see <a href="chap-Admin_Guide-Configuring_sources.html#source-cmd" title="7.3. Creating and Editing Sources Manually">Section 7.3, “Creating and Editing Sources Manually”</a>.
+					</p></li><li><p>
+						Right-click the dynamic <code class="command">l=...</code> subtree in the virtual directory, and create a dynamic subtree underneath it for the user entries, as in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-studio-dynamic" title="8.2.1.3. Adding a Dynamic Directory Entry">Section 8.2.1.3, “Adding a Dynamic Directory Entry”</a>.
+					</p><div class="itemizedlist"><ul><li><p>
+								Add the <code class="command">users</code> table as a source.
+							</p></li><li><p>
+								Set the naming attribute to the <em class="parameter"><code>uid</code></em> and the object class to <em class="parameter"><code>inetorgperson</code></em>.
+							</p></li><li><p>
+								Map the <em class="parameter"><code>uid</code></em> attribute in the virtual entry to the <code class="command">username</code> attribute in the <code class="command">officepeople</code> table.
+							</p></li><li><p>
+								Create the <em class="parameter"><code>cn</code></em> attribute in the virtual entry from the <code class="command">firstname</code> and <code class="command">lastname</code> attributes in the <code class="command">users</code> table.
+							</p></li><li><p>
+								Map the <em class="parameter"><code>surname</code></em> attribute in the virtual entry to the <code class="command">lastname</code> attribute in the <code class="command">users</code> table.
+							</p></li></ul></div></li><li><p>
+						Open the <span><strong class="guilabel">Sources</strong></span> folder, and double-click the <code class="command">users</code>'s source. Edit the fields to create reverse mappings from the table's <code class="command">firstname</code> and <code class="command">lastname</code> attributes back to the <em class="parameter"><code>cn</code></em>, <em class="parameter"><code>givenname</code></em>, and <em class="parameter"><code>surname</code></em> attributes, respectively.
+					</p><p>
+						For more information on creating reverse mappings on sources, see <a href="chap-Admin_Guide-Configuring_sources.html#source-cmd" title="7.3. Creating and Editing Sources Manually">Section 7.3, “Creating and Editing Sources Manually”</a>.
+					</p></li><li><p>
+						In the <span><strong class="guilabel">Sources</strong></span> folder, double-click the <code class="command">officepeople</code>'s source, and edit it to create reverse mappings from the table's <code class="command">username</code> and and <code class="command">offices</code> attributes to the <em class="parameter"><code>uid</code></em> and <em class="parameter"><code>l</code></em> attributes, respectively.
+					</p><p>
+						For more information on creating reverse mappings on sources, see <a href="chap-Admin_Guide-Configuring_sources.html#source-cmd" title="7.3. Creating and Editing Sources Manually">Section 7.3, “Creating and Editing Sources Manually”</a>.
+					</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="nested-mapping-cmd">9.4.2. Creating a Nested Mapping Manually</h3></div></div></div><p>
+				To create a nested mapping, create two dynamic subtrees in the <code class="filename">directory.xml</code> file, one beneath the other in the directory hierarchy. The different tag and parameter values are listed in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#tab.subtree-parameters" title="Table 8.1. Parameters for Subtree Entries">Table 8.1, “Parameters for Subtree Entries”</a>.
+			</p><div class="orderedlist"><ol><li><p>
+						Create a directory entry and source for the <code class="command">offices</code> table. Two attributes, the <code class="command">offices</code> and <code class="command">description</code> attributes, are mapped to the <em class="parameter"><code>l</code></em> and <em class="parameter"><code>description</code></em> attributes in the virtual entry. A reverse mapping is given mapping the attributes back to the virtual directory.
+					</p><pre class="screen">&lt;entry dn="<strong class="userinput"><code>l=...,ou=Locations</code></strong>,dc=Example,dc=com"&gt;
+
+    &lt;oc&gt;locality&lt;/oc&gt;
+    &lt;at name="l" rdn="true"&gt;
+        &lt;variable&gt;offices.offices&lt;/variable&gt;
+    &lt;/at&gt;
+    &lt;at name="description"&gt;
+        &lt;variable&gt;offices.description&lt;/variable&gt;
+    &lt;/at&gt;
+
+    &lt;source name="offices"&gt;
+        &lt;source-name&gt;offices&lt;/source-name&gt;
+        &lt;field name="offices"&gt;
+            &lt;expression&gt;l&lt;/expression&gt;
+        &lt;/field&gt;
+        &lt;field name="description"&gt;
+            &lt;expression&gt;description&lt;/expression&gt;
+        &lt;/field&gt;
+    &lt;/source&gt;
+
+&lt;/entry&gt;</pre><p>
+						This defines the entry beneath the <code class="command">ou=Locations</code> subtree.
+					</p></li><li><p>
+						Create the directory entry and source for the users entries. This information is taken from the <code class="command">users</code> table. The mapping takes the username from the <code class="command">officepeople</code> table for the virtual entry's <em class="parameter"><code>uid</code></em> attribute and the first and last names from the user's entry in the <code class="command">users</code> table.
+					</p><p>
+						Also provide a reverse mapping from the <code class="command">users</code> table attributes back to the <code class="command">officepeople</code> table's <code class="command">username</code> attribute and to the other user information in the <code class="command">users</code> table.
+					</p><pre class="screen">&lt;entry dn="<strong class="userinput"><code>uid=...,l=...,ou=Locations</code></strong>,dc=Example,dc=com"&gt;
+
+    &lt;oc&gt;person&lt;/oc&gt;
+    &lt;oc&gt;inetOrgPerson&lt;/oc&gt;
+    &lt;at name="uid" rdn="true"&gt;
+        &lt;variable&gt;officepeople.username&lt;/variable&gt;
+    &lt;/at&gt;
+    &lt;at name="cn"&gt;
+        &lt;expression&gt;
+if (users == void || users == null) return null;
+return users.firstName+" "+users.lastName;
+        &lt;/expression&gt;
+    &lt;/at&gt;
+    &lt;at name="sn"&gt;
+        &lt;variable&gt;users.lastName&lt;/variable&gt;
+    &lt;/at&gt;
+
+    &lt;source name="users"&gt;
+        &lt;source-name&gt;users&lt;/source-name&gt;
+        &lt;field name="username"&gt;
+            &lt;variable&gt;ug.username&lt;/variable&gt;
+        &lt;/field&gt;
+        &lt;field name="firstName"&gt;
+            &lt;expression&gt;
+if (cn == void || cn == null) return null;
+int i = cn.lastIndexOf(" ");
+return cn.substring(0, i);
+            &lt;/expression&gt;
+        &lt;/field&gt;
+        &lt;field name="lastName"&gt;
+            &lt;expression&gt;
+if (cn == void || cn == null) return null;
+int i = cn.lastIndexOf(" ");
+return cn.substring(i+1);
+            &lt;/expression&gt;
+        &lt;/field&gt;
+    &lt;/source&gt;
+
+&lt;/entry&gt;</pre></li><li><p>
+						Lastly, define a reverse mapping for the <code class="command">officepeople</code> table which links it back to the <em class="parameter"><code>l</code></em> attribute value drawn from the <code class="command">offices</code> table.
+					</p><pre class="screen">&lt;entry dn="<strong class="userinput"><code>uid=...,l=...,ou=Locations</code></strong>,dc=Example,dc=com"&gt;
+
+    &lt;source name="officepeople"&gt;
+        &lt;source-name&gt;officepeople&lt;/source-name&gt;
+        &lt;field name="l"&gt;
+            &lt;variable&gt;offices.l&lt;/variable&gt;
+        &lt;/field&gt;
+        &lt;field name="username"&gt;
+            &lt;variable&gt;uid&lt;/variable&gt;
+        &lt;/field&gt;
+    &lt;/source&gt;
+&lt;/entry&gt;</pre></li><li><p>
+						Restart Penrose Server. For example:
+					</p><pre class="screen">service vd-server restart</pre></li></ol></div><div class="important"><h2>IMPORTANT</h2><p>
+					Always restart Penrose Server after editing the configuration file.
+				</p></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-join-mapping">9.5. Joining Entities into a Single Virtual Entry</h2></div></div></div><a id="d0e8652" class="indexterm"/><a id="d0e8659" class="indexterm"/><a id="d0e8666" class="indexterm"/><a id="d0e8671" class="indexterm"/><p>
+			The same identity can have entries in multiple sources. Join mapping combines all of those separate entries into a single virtual entry. Basic mappings relate attributes to attributes; a join mapping combines entries. This joining is possible by using a <span class="emphasis"><em>primary key</em></span>; this is a shared attribute value which is matched among all of the sources. If a source entry has that key, then it is included in the joined virtual entry; if not, it is skipped.
+		</p><div class="note"><h2>TIP</h2><p>
+				Mappings for virtual directory attributes and reverse mappings for source attributes can be configured in the <code class="filename">directory.xml</code> file, but more complex mappings can be configured in the <code class="filename">mappings.xml</code>, which allows BeanShell scripts to be called before and after mapping attributes to perform futher transformations on the virtual entry data. For more information, see <a href="Mapping.html#id-mapping" title="9.6. Creating Advanced Mappings">Section 9.6, “Creating Advanced Mappings”</a>.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="sect-Admin_Guide-join-mapping-studio">9.5.1. Setting up Join Mapping in Penrose Studio</h3></div></div></div><a id="d0e8697" class="indexterm"/><p>
+				Joining entries in Penrose Studio is the same process as creating a basic mapping in <a href="Mapping.html#configuring-basic-mapping" title="9.3. Configuring Basic Mapping">Section 9.3, “Configuring Basic Mapping”</a>. The difference is from what sources the attributes are pulled. The different mappings, however, reflect different attributes from different sources, and all of the sources need a reverse mapping back to the entry. Another important distinction: the reverse mappings on some of the sources map back to the <span class="emphasis"><em>primary source</em></span>, not to the virtual entry, in order to map the primary keys.
+			</p><p>
+				For example, Example Company has two databases which contain group information. The <code class="command">groups</code> database contains the name of the group (<code class="command">groupname</code>) and the description (<code class="command">description</code>). The <code class="command">users</code> database contains all of the user information, including the username (<code class="command">username</code>) and a list of each group to which the user belongs (<code class="command">groupname</code>).
+			</p><p>
+				In this case, the <span class="emphasis"><em>primary key</em></span> is the <code class="command">groupname</code> attribute, which is present in both databases. The <span class="emphasis"><em>primary source</em></span> is whichever source is considered authoritative for the primary key. This is the source which all other sources reference in the reverse mapping back to the primary key. In this case, this is obviously the <code class="command">groups</code> database. In other situations, this can be arbitrary, meaning whichever source is best suited as being a source. So, if an employee has entries in a database, NIS server, LDAP server, and Active Directory domain, any of those sources can be selected as the primary source.
+			</p><p>
+				To create the join mapping for the group in Penrose Studio:
+			</p><div class="orderedlist"><ol><li><p>
+						Open the subtree entry editor. In this case, the subtree is a dynamic subtree for Example Company groups, <code class="command">cn=...,ou=Groups,dc=example,dc=com</code>.
+					</p></li><li><p>
+						For Example Company's group entry, there are four LDAP attributes which will be mapped:
+					</p><div class="itemizedlist"><ul><li><p>
+								<em class="parameter"><code>cn</code></em> attribute for the for the <code class="command">groupname</code> database attribute in the <code class="command">groups</code> database, to supply the entry DN
+							</p></li><li><p>
+								<em class="parameter"><code>description</code></em> attribute for the group description from the <code class="command">groups</code> database
+							</p></li><li><p>
+								<em class="parameter"><code>uniqueMember</code></em> attribute for the list of members contained in the <code class="command">groupname</code> attribute in the <code class="command">users</code> database
+							</p></li><li><p>
+								<em class="parameter"><code>uid</code></em> attribute for the <code class="command">username</code> database attribute in the <code class="command">users</code> database
+							</p></li></ul></div><div class="note"><h2>NOTE</h2><p>
+							The sources must all already be configured for the directory subtree. To configure sources, see <a href="chap-Admin_Guide-Configuring_sources.html" title="Chapter 7. Configuring Data Sources">Chapter 7, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring Data Sources</i></a>.
+						</p></div></li><li><p>
+						First, configure the basic mapping between the virtual directory attributes and the sources. In the <span><strong class="guilabel">Attributes</strong></span> tab, select the attributes and assign them to the appropriate database attribute.
+					</p><div class="informalfigure"><div class="mediaobject" align="center"><img src="images/joinmapping1.png" align="middle"/></div></div><div class="note"><h2>TIP</h2><p>
+							The format of Example Company's <em class="parameter"><code>uniqueName</code></em> values is <code class="command">uid=</code><span class="emphasis"><em>username</em></span>, <code class="command">ou=people,dc=example,dc=com</code>. To configure that, the <em class="parameter"><code>uniqueName</code></em> value is an expression which builds the DN from the database's <code class="command">username</code>:
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/join-exp.png"/></div></div></div></li><li><p>
+						Open the <span><strong class="guilabel">Sources</strong></span> tab for the subtree entry.
+					</p></li><li><p>
+						Configure the reverse mapping for the primary source. In this case, the primary source is the <code class="command">groups</code> database.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/joinmapping-src1.png"/></div></div><div class="itemizedlist"><ul><li><p>
+								The primary key is the <code class="command">groupname</code> attribute. Map the primary key back to the corresponding virtual directory attribute, which is <em class="parameter"><code>cn</code></em>.
+							</p></li><li><p>
+								Map the <code class="command">description</code> attribute back to the virtual directory attribute, <em class="parameter"><code>description</code></em>.
+							</p></li></ul></div><div class="note"><h2>NOTE</h2><p>
+							Variables have the format <span class="emphasis"><em>source_name.attribute</em></span>. If there is no source given, the attribute belongs to the virtual directory.
+						</p></div></li><li><p>
+						On the <code class="command">users</code> database source, map the existing <code class="command">groupname</code> database attribute to the primary key attribute on the <code class="command">groups</code> source.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/joinmapping-src2-2.png"/></div></div><div class="important"><h2>IMPORTANT</h2><p>
+							Map the primary key to the primary source for every source being joined.
+						</p></div></li><li><p>
+						On the <code class="command">users</code> database source, configure the basic mapping for the <code class="command">username</code> database attribute to the <em class="parameter"><code>uniqueMember</code></em> attribute.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/joinmapping-src2-1.png"/></div></div></li><li><p>
+						Close the editor window and save the changes when prompted.
+					</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="sect-Admin_Guide-join-mapping-cmd">9.5.2. Manually Joining Entries</h3></div></div></div><a id="d0e8932" class="indexterm"/><a id="d0e8939" class="indexterm"/><p>
+				Join mapping is configured in the <code class="filename">directory.xml</code> file. For each attribute, a <code class="command">&lt;at&gt;</code> expression is added to the subtree and then reverse mappings are added to every source which is involved in the joining. Additionally, reverse mappings are added to every source linking back to the <span class="emphasis"><em>primary key</em></span> in the <span class="emphasis"><em>primary source</em></span>. If an entry does not have an exact match to the primary key in the primary source, then that entry is not included in the joined entry.
+			</p><a id="d0e8958" class="indexterm"/><a id="d0e8965" class="indexterm"/><p>
+				Joining entries can consolidate scattered entries which refer to a single person or entity. Example Company, for instance, stores group names and descriptions in the <code class="command">groups</code> database, and group members are determined by the group attribute on user entries in the <code class="command">users</code> database. The common key in both of those databases is the <code class="command">groupname</code> attribute; in the <code class="command">groups</code> database, this identifies the group; in the <code class="command">users</code> database, it shows group membership. Example Company wants to create a single group entry in the virtual directory which contains the group definition and the members list.
+			</p><div class="itemizedlist"><ul><li><p>
+						Mapping the <code class="command">groupname</code> attribute in the <code class="command">groups</code> database to the <em class="parameter"><code>cn</code></em> attribute in the entry to generate the DN for the group
+					</p></li><li><p>
+						Mapping the <code class="command">description</code> attribute in the <code class="command">groups</code> database to the <em class="parameter"><code>description</code></em> attribute in the virtual entry
+					</p></li><li><p>
+						Mapping the <code class="command">username</code> attribute in the <code class="command">users</code> database to the <em class="parameter"><code>uniqueMember</code></em> attribute in the virtual entry to create the list of group members
+					</p></li><li><p>
+						Mapping the <code class="command">groupname</code> attribute for the <code class="command">users</code> database source to the <em class="parameter"><code>groupname</code></em> attribute in the <code class="command">groups</code> database source since this primary, shared key is how the entries are recognized, mapped, and merged into the virtual entry
+					</p></li></ul></div><p>
+				To join entries manually, edit the subtree entry in the <code class="filename">directory.xml</code> file. The different tag and parameter values are listed in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#tab.subtree-parameters" title="Table 8.1. Parameters for Subtree Entries">Table 8.1, “Parameters for Subtree Entries”</a>.
+			</p><div class="orderedlist"><ol><li><p>
+						Add the attributes to be mapped to the main entry. For Example Company's group mapping:
+					</p><pre class="screen">&lt;entry dn="cn="...",dc=ou=Groups,dc=example,dc=com"&gt;
+     &lt;at name="cn" rdn="true"&gt;
+          &lt;variable&gt;groups.groupname&lt;/variable&gt;
+     &lt;/at&gt;
+     &lt;at name="description"&gt;
+          &lt;variable&gt;groups.description&lt;/variable&gt;
+     &lt;/at&gt;
+     &lt;at name="uniqueMember"&gt;
+          &lt;expression foreach="users.username" var="username"&gt;
+                "uid="+username+",ou=Users,dc=Example,dc=com"
+           &lt;/expression&gt;
+     &lt;/at&gt;</pre></li><li><p>
+						In the source entry for the <code class="command">groups</code> database, add the reverse mapping for the <em class="parameter"><code>cn</code></em> and <em class="parameter"><code>description</code></em> attributes:
+					</p><pre class="screen">&lt;source&gt;
+     &lt;source-name&gt;groups&lt;/source-name&gt;
+...
+     &lt;field name="groupname"&gt;
+          &lt;variable&gt;cn&lt;/variable&gt;
+     &lt;/field&gt;
+
+     &lt;field name="description"&gt;
+          &lt;variable&gt;description&lt;/variable&gt;
+     &lt;/field&gt;
+...
+&lt;/source&gt;</pre><div class="note"><h2>NOTE</h2><p>
+							Variables have the format <span class="emphasis"><em>source_name.attribute</em></span>. If there is no source given, the attribute belongs to the virtual directory.
+						</p></div></li><li><p>
+						In the source entry for the <code class="command">users</code> database, add the reverse mapping for the <em class="parameter"><code>uniqueMember</code></em> attributes:
+					</p><pre class="screen">&lt;source&gt;
+     &lt;source-name&gt;users&lt;/source-name&gt;
+...
+     &lt;field name="username"&gt;
+          &lt;variable&gt;uniqueMember&lt;/variable&gt;
+     &lt;/field&gt;
+...
+&lt;/source&gt;</pre></li><li><p>
+						Add the mapping from the <code class="command">users</code> database to the primary key in the <code class="command">groups</code> database, the <code class="command">groupname</code> attributes. This is required for Penrose Virtual Directory to recognize which database entries are to be joined. Any user entry with a matching group entry will be mapped into the group members' list.
+					</p><pre class="screen">&lt;source&gt;
+     &lt;source-name&gt;users&lt;/source-name&gt;
+...
+     &lt;field name="groupname"&gt;
+          &lt;variable&gt;<strong class="userinput"><code>groups.groupname</code></strong>&lt;/variable&gt;
+     &lt;/field&gt;
+...
+&lt;/source&gt;</pre></li><li><p>
+						Restart the Penrose Server.
+					</p><pre class="screen">service vd-server restart</pre><div class="important"><h2>IMPORTANT</h2><p>
+							Always restart Penrose Server after editing the configuration file.
+						</p></div></li></ol></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="id-mapping">9.6. Creating Advanced Mappings</h2></div></div></div><a id="d0e9117" class="indexterm"/><a id="d0e9122" class="indexterm"/><p>
+			The format of advanced mappings is similar to the format of a source reverse mapping. The mapping is configured in <span class="emphasis"><em>fields</em></span> which identify the attribute and a matching rule of some kind. Advanced mappings can also set whether the attribute is required to be present in the entry, conditions which must be met to evaluate the attribute, and scripts which can be run before or after the attributes are processed.
+		</p><p>
+			Mapping plays a very important role in identity federation because mapping is the way that the directory structure of the federated directory is defined, functioning as the object class and attribute declarations in the <code class="filename">directory.xml</code> configuration.
+		</p><p>
+			For identity federation, mappings are processed when local identities are imported into the global repository.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="mapping-fields">9.6.1. Mapping Attribute Fields</h3></div></div></div><a id="d0e9142" class="indexterm"/><p>
+				To create a new mapping in Penrose Studio:
+			</p><div class="orderedlist"><ol><li><p>
+						Open the server entry in Penrose Studio, and expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+					</p></li><li><p>
+						Right-click the <span><strong class="guilabel">Mappings</strong></span> folder, and select <span><strong class="guimenuitem">New Mapping...</strong></span>.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/newmapping1.png"/></div></div></li><li><p>
+						Name the mapping, and, optionally, give a description for it.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/newmapping.png"/></div></div></li><li><p>
+						Create a mapping for each object class which will be available to the global entries.
+					</p><div class="orderedlist"><ol><li><p>
+								Click the <span><strong class="guibutton">Add</strong></span> button.
+							</p></li><li><p>
+								For an object class, enter the attribute name <em class="parameter"><code>objectclass</code></em>.
+							</p><div class="informalfigure"><div class="mediaobject"><img src="images/mappinga1.png"/></div></div></li><li><p>
+								For the object classes, select the <span><strong class="guilabel">text</strong></span> radio button to set an exact value, and enter the name of the object class.
+							</p><div class="informalfigure"><div class="mediaobject"><img src="images/mappinga2.png"/></div></div></li><li><p>
+								Select the <span><strong class="guilabel">Required</strong></span> checkbox so that object class is required for the global entry, and click finish.
+							</p><div class="informalfigure"><div class="mediaobject"><img src="images/mappinga3.png"/></div></div></li></ol></div></li><li><p>
+						Create a mapping for each attribute which will be available to the global entries.
+					</p><div class="orderedlist"><ol><li><p>
+								Click the <span><strong class="guibutton">Add</strong></span> button.
+							</p></li><li><p>
+								Enter the name of the attribute.
+							</p><div class="informalfigure"><div class="mediaobject"><img src="images/mappingb1.png"/></div></div></li><li><p>
+								For the attributes, select the <span><strong class="guilabel">variable</strong></span> radio button to use a value from one of the repositories, and enter the value in the form <span class="emphasis"><em>repo_name.attribute</em></span>.
+							</p><div class="informalfigure"><div class="mediaobject"><img src="images/mappingb2.png"/></div></div></li><li><p>
+								Un-check the <span><strong class="guilabel">Required</strong></span> box and enter the conditions where the attribute is to be processed. For example, to control the behavior of Penrose Virtual Directory if an attribute is empty, use a condition such as <code class="command">!ad.sn.equals("NULL")</code> to skip the <em class="parameter"><code>sn</code></em> attribute in the repository named <code class="command">ad</code> if there is no value set.
+							</p><div class="informalfigure"><div class="mediaobject"><img src="images/mappingb3.png"/></div></div></li></ol></div><div class="note"><h2>NOTE</h2><p>
+							There can be more than one mapping configured for any attribute. The order that the attributes are listed is the order which they are processed; if one attribute mapping is skipped, the value is taken from the next attribute listed.
+						</p><p>
+							This <span class="emphasis"><em>attribute preference</em></span> makes it possible to configure mapping even for single-valued attributes to every source. For example, the first instance can be taken from the global repository; if the attribute does not exist there, it can be taken from the Active Directory local repository, then from the Red Hat Directory Server repository, then from the NIS repository, until an attribute value is found.
+						</p></div></li><li><p>
+						Save the new mapping entry.
+					</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="mapping-scripts">9.6.2. Using Scripts</h3></div></div></div><a id="d0e9299" class="indexterm"/><a id="d0e9306" class="indexterm"/><p>
+				Identity federation mappings allow scripts to be run before and after attributes are processed. These scripts can be used to transform, manipulate, or evaluate data in the repositories before being accessed. The only scripting language allowed is BeanShell, which cleanly handles Java objects, including the MBeans that make up Penrose Virtual Directory objects.
+			</p><p>
+				To add a script to a mapping:
+			</p><div class="orderedlist"><ol><li><p>
+						Open the <span><strong class="guilabel">Mappings</strong></span> folder under the <span><strong class="guilabel">Partitions</strong></span> folder.
+					</p></li><li><p>
+						Double-click the mapping entry to open the entry editor.
+					</p></li><li><p>
+						Click the <span><strong class="guilabel">Scripts</strong></span> tag.
+					</p></li><li><p>
+						Paste in the BeanShell script in the <span><strong class="guilabel">Pre-Script</strong></span> or <span><strong class="guilabel">Post-Script</strong></span> text area.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/scripts.png"/></div></div></li><li><p>
+						Close the editor, and save the changes when prompted.
+					</p></li></ol></div><p>
+				For more information on using and writing scripts in BeanShell, see the BeanShell user documentation at <a href="http://www.beanshell.org/manual/bshmanual.html">http://www.beanshell.org/manual/bshmanual.html</a>.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="mapping-fields-cmd">9.6.3. Mapping Attribute Fields and Scripts Manually</h3></div></div></div><a id="d0e9361" class="indexterm"/><a id="d0e9368" class="indexterm"/><p>
+				To configure a similar mapping manually, add a mapping entry for each object class and a mapping entry for each attribute to the <code class="filename">mappings.xml</code> file. The mapping file, like a source entry for a virtual directory configuration, provides mappings between the global and local repositories by creating <code class="command">&lt;field&gt;</code> statements. The <code class="command">&lt;field&gt;</code>s are processed in order, from top to bottom. A mapping is illustrated in <a href="Mapping.html#tab.mapping-annotated" title="Example 9.2. Annotated Mapping Entry">Example 9.2, “Annotated Mapping Entry”</a>.
+			</p><div class="important"><h2>IMPORTANT</h2><p>
+					Always restart Penrose Server after editing the configuration file. For example:
+				</p><pre class="screen">service vd-server restart</pre></div><a id="d0e9395" class="indexterm"/><a id="d0e9402" class="indexterm"/><div class="example" id="tab.mapping-annotated"><div class="example-contents"><pre class="screen">&lt;mappings&gt;  <em class="lineannotation"><span class="lineannotation">the main tag for the entire file</span></em>   
+...
+  &lt;mapping name="..."&gt; <em class="lineannotation"><span class="lineannotation">the mapping entry</span></em> 
+      &lt;field name="..." required="..."&gt; <em class="lineannotation"><span class="lineannotation">an attribute entry with the LDAP name</span></em>  
+          &lt;<em class="replaceable"><code>mapping_type</code></em>&gt;...&lt;/<em class="replaceable"><code>mapping_type</code></em>&gt;  <em class="lineannotation"><span class="lineannotation">the mapping definition for the attribute</span></em>   
+           &lt;condition&gt;...&lt;/condition&gt; <em class="lineannotation"><span class="lineannotation">a BeanShell script that sets rules on processing attributes</span></em>  
+      &lt;/field&gt;
+      &lt;pre&gt;  <em class="lineannotation"><span class="lineannotation">an optional BeanShell script, run before attributes are processed</span></em>  
+           ....
+      &lt;/pre&gt;
+      &lt;post&gt; <em class="lineannotation"><span class="lineannotation">an optional BeanShell script, run after attributes are processed</span></em>    
+           ....
+      &lt;/post&gt;
+  &lt;/mapping&gt;
+...
+&lt;/mappings&gt;</pre></div><h6>Example 9.2. Annotated Mapping Entry</h6></div><br class="example-break"/><p>
+				For example, to create a mapping for the <em class="parameter"><code>inetorgperson</code></em> object class in the global repository and the <em class="parameter"><code>sn</code></em> attribute in an Active Directory local repository, two fields are added to the mapping. The <code class="command">&lt;pre&gt;</code> script extracts the <em class="parameter"><code>cn</code></em>, <em class="parameter"><code>givenName</code></em>, and <em class="parameter"><code>sn</code></em> attributes from the <em class="parameter"><code>gecos</code></em> attribute in the NIS server before processing the attribute fields.
+			</p><pre class="screen">&lt;mappings&gt;
+...
+     &lt;mapping name="example"&gt;
+           &lt;field name="objectclass" required="true"&gt;
+                   &lt;constant&gt;inetorgperson&lt;/constant&gt;
+           &lt;/field&gt;
+           &lt;field name="sn"&gt;
+                   &lt;variable&gt;ad.sn&lt;/variable&gt;
+                   &lt;condition&gt;!ad.sn.equals("NULL")&lt;/condition&gt;
+           &lt;/field&gt;
+           &lt;pre&gt;
+                    if(n == void || n == null) return;
+                    if(n.gecos == void || nis.gecos== null) return;
+ 
+                    int i = nis.gecos.indexOf("");
+                    if (i&lt;0)i = nis.gecos.length();
+                    String name = nis.gecos.substring(0,i);
+
+                    int j = name.indexOf("");
+                    if (j&lt;0) return;
+
+                    if(n.givenName == void || nis.givenName == null) nis.givenName = name.substring(0,j);
+                    if(n.sn == void || nis.sn == null) nis.sn = name.substring(j+1);
+                    if(n.cn == void || nis.cn == null) nis.cn = nis.givenName+""+n.sn;
+           &lt;/pre&gt;
+     &lt;/mapping&gt;
+...
+&lt;/mappings&gt;</pre><a id="d0e9466" class="indexterm"/><a id="d0e9473" class="indexterm"/><p>
+				The parameters and tags for the <code class="filename">mappings.xml</code> file are listed in <a href="Mapping.html#tab.mappings" title="Table 9.1. Parameters for Mapping Entries">Table 9.1, “Parameters for Mapping Entries”</a>.
+			</p><div class="table" id="tab.mappings"><div class="table-contents"><table summary="Parameters for Mapping Entries" border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+								Tag or Parameter
+							</th><th>
+								Description
+							</th><th>
+								Example
+							</th></tr></thead><tbody><tr><td>
+								&lt;mapping&gt;
+							</td><td>
+								Opens and closes the entire mapping entry.
+							</td><td>
+							</td></tr><tr><td>
+								&lt;field&gt;
+							</td><td>
+								Defines a reverse mapping from a source attribute to a virtual entry attribute. Like the <code class="command">&lt;at&gt;</code> mapping, this has a <code class="option">name&gt;</code> parameter to identify the virtual entry's LDAP attribute and a sub-tag which defines the mapping from the source attribute to the virtual attribute: constant, variable, or expression.
+							</td><td>
+<pre class="screen">&lt;field name="cn"&gt;
+&lt;variable&gt;global.cn&lt;/variable&gt;
+&lt;/field&gt;</pre>
+							</td></tr><tr><td>
+								name="<span class="emphasis"><em>attribute</em></span>"
+							</td><td>
+								<table class="simplelist" border="0" summary="Simple list"><tr><td>With the <code class="command">&lt;mapping&gt;</code> tag, this contains the name of the mapping entry.</td></tr><tr><td>With the <code class="command">&lt;field&gt;</code> tag, this contains the LDAP attribute which is being set for the mapping field.</td></tr></table>
+							</td><td>
+<pre class="screen">&lt;field <strong class="userinput"><code>name="cn"</code></strong>&gt;</pre>
+							</td></tr><tr><td>
+								&lt;<span class="emphasis"><em>mapping_type</em></span>&gt;
+							</td><td>
+								These are any of three sub-tags which are used with a <code class="command">&lt;field&gt;</code> tag to define the method of mapping attributes: 
+								<div class="itemizedlist"><ul><li><p>
+											&lt;constant&gt; (specific text value)
+										</p></li><li><p>
+											&lt;variable&gt; (link to the repository and attribute in the format <span class="emphasis"><em>repo_name</em></span>.<span class="emphasis"><em>attribute</em></span>)
+										</p></li><li><p>
+											&lt;expression&gt; (BeanShell script to generate or extract the value)
+										</p></li></ul></div>
+							</td><td>
+<pre class="screen">&lt;variable&gt;LDAP1.cn&lt;/variable&gt;</pre>
+							</td></tr><tr><td>
+								&lt;condition&gt;
+							</td><td>
+								Defines any conditions which must be met to process the mapping, such as how to handle null attributes.
+							</td><td>
+<pre class="screen">&lt;condition&gt;!ad.sn.equals("NULL")&lt;/condition&gt;</pre>
+							</td></tr><tr><td>
+								&lt;pre&gt;
+							</td><td>
+								Contains a BeanShell script to run before the attribute mappings are processed.
+							</td><td>
+<pre class="screen">&lt;pre&gt;
+if(n.givenName == void || nis.givenName == null) nis.givenName = name.substring(0,j);
+if(n.sn == void || nis.sn == null) nis.sn = name.substring(j+1);
+if(n.cn == void || nis.cn == null) nis.cn = nis.givenName+""+n.sn;
+&lt;/pre&gt;</pre>
+							</td></tr><tr><td>
+								&lt;post&gt;
+							</td><td>
+								Contains a BeanShell script to run after the attribute mappings are processed.
+							</td><td>
+							</td></tr><tr><td>
+								&lt;description&gt;
+							</td><td>
+								Contains a text description of the mapping.
+							</td><td>
+<pre class="screen">&lt;description&gt;for generating cn values&lt;/description&gt;</pre>
+							</td></tr><tr><td>
+								&lt;mapping-class&gt;
+							</td><td>
+								Gives a Java class to use for the mapping.
+							</td><td>
+							</td></tr></tbody></table></div><h6>Table 9.1. Parameters for Mapping Entries</h6></div><br class="table-break"/></div></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_Entry_Mapping.html"><strong>Prev</strong>Chapter 8. Configuring the Virtual Directory</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_Identity-Federation.html"><strong>Next</strong>Chapter 10. Configuring Identity Federation</a></li></ul></body></html>

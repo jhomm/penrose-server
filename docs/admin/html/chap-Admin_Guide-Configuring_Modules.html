@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 11. Configuring Modules</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Configuring_Identity-Federation.html" title="Chapter 10. Configuring Identity Federation"/><link rel="next" href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html" title="Chapter 12. Using Services with Penrose Virtual Directory"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 11. Configuring Modules</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_Identity-Federation.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="chap-Admin_Guide-Configuring_Modules">Chapter 11. Configuring Modules</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Modules.html#sect-Admin_Guide-Configuring_Modules-Configuring_Modules">11.1. Adding Modules</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Modules.html#sect-Admin_Guide-Configuring_Modules-Configuring_Modules-studio">11.1.1. Adding Modules in Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Modules.html#sect-Admin_Guide-Configuring_Modules-Configuring_Modules-cmd">11.1.2. Adding Modules Manually</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Modules.html#sect-Admin_Guide-modules-mapping">11.2. Mapping Modules to Data Entries</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Modules.html#sect-Admin_Guide-Configuring_Modules-enabling_Modules">11.3. Enabling and Disabling Modules</a></span></dt></dl></div><a id="d0e11455" class="indexterm"/><a id="d0e11460" class="indexterm"/><p>
+		Modules are Java classes which extend the Red Hat Penrose Server functionality. One module is included and configured by default, the Federation Module used for identity federation. Custom modules can be added and supported for Penrose Server.
+	</p><p>
+		This chapter explains how to add and enable modules in Penrose Virtual Directory and how to map modules to virtual directory subtrees and entries.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Configuring_Modules-Configuring_Modules">11.1. Adding Modules</h2></div></div></div><p>
+			Modules are available to a partition, so they are configured with other partition entries.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="sect-Admin_Guide-Configuring_Modules-Configuring_Modules-studio">11.1.1. Adding Modules in Penrose Studio</h3></div></div></div><a id="d0e11475" class="indexterm"/><div class="orderedlist"><ol><li><p>
+						For custom modules, copy the <code class="filename">.jar</code> into the <code class="filename">/opt/vd-server-2.0/lib</code> directory so that Penrose Server can access it.
+					</p></li><li><p>
+						In Penrose Server, open the server, and expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+					</p></li><li><p>
+						Open the partition to which to add the module.
+					</p></li><li><p>
+						Right-click the <span><strong class="guilabel">Modules</strong></span> folder, and select <span><strong class="guimenuitem">New Module...</strong></span>.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/newmodule.png"/></div></div></li><li><p>
+						Enter the name of the module entry and the name of the class to use for the module. This information is required.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/newmodule1.png"/></div></div></li><li><p>
+						Enter any parameters required for the Java class.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/newmodule2.png"/></div></div></li><li><p>
+						Optionally, map the module to any virtual directory subtree entries. The information for the module mapping is used only to identify the virtual entry and requires the parameters of an LDAP search query: the base DN to search, the object class or attribute search filter, and the scope of the search.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/newmodule3.png"/></div></div></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="sect-Admin_Guide-Configuring_Modules-Configuring_Modules-cmd">11.1.2. Adding Modules Manually</h3></div></div></div><a id="d0e11538" class="indexterm"/><a id="d0e11545" class="indexterm"/><p>
+				The main configuration file for modules is <code class="filename">modules.xml</code> in <code class="filename">/opt/vd-server-2.0/conf</code> or <code class="filename"><code class="filename">/opt/vd-server-2.0/partitions/</code><span class="emphasis"><em>partition_name</em></span><code class="filename">/DIR-INF</code></code>. The actual Java classes for the module must be in <code class="filename">/opt/vd-server-2.0/lib</code>.
+			</p><p>
+				A complete module configuration has two separate entries in the <code class="filename">modules.xml</code> file. The first defines the module, including the entry name, Java class, and any parameters. The second is an optional mapping entry which maps the module to a virtual directory root DSE, base DN, or subtree entry.
+			</p><p>
+				<a href="chap-Admin_Guide-Configuring_Modules.html#annotated.modules" title="Example 11.1. Annotated Module Entry">Example 11.1, “Annotated Module Entry”</a> shows a complete <code class="filename">modules.xml</code> file.
+			</p><a id="d0e11579" class="indexterm"/><a id="d0e11584" class="indexterm"/><div class="example" id="annotated.modules"><div class="example-contents"><pre class="screen">&lt;modules&gt; <em class="lineannotation"><span class="lineannotation">the main file tag</span></em>  
+
+  &lt;module name="..."&gt;  <em class="lineannotation"><span class="lineannotation">the module entry</span></em>  
+
+    &lt;module-class&gt;...&lt;/module-class&gt; <em class="lineannotation"><span class="lineannotation">the Java class name of the module</span></em>  
+
+    &lt;parameter&gt;   <em class="lineannotation"><span class="lineannotation">optional parameters or settings for the module</span></em>  
+        &lt;param-name&gt;...&lt;/param-name&gt;
+        &lt;param-value&gt;...&lt;/param-value&gt;
+    &lt;/parameter&gt;
+
+  &lt;/module&gt;
+
+  &lt;module-mapping&gt; <em class="lineannotation"><span class="lineannotation">a mapping entry</span></em>  
+
+    &lt;module-name&gt;...&lt;/module-name&gt; <em class="lineannotation"><span class="lineannotation">the name of the module to map</span></em>  
+    &lt;base-dn&gt;...&lt;/base-dn&gt;  <em class="lineannotation"><span class="lineannotation">the virtual directory DN to use for the module</span></em>  
+    &lt;filter&gt;...&lt;/filter&gt;  <em class="lineannotation"><span class="lineannotation">LDAP search filter to search for entries in the virtual directory</span></em>  
+    &lt;scope&gt;...&lt;/scope&gt;  <em class="lineannotation"><span class="lineannotation">scope for the LDAP search</span></em>  
+
+  &lt;/module-mapping&gt;
+
+&lt;/modules&gt;</pre></div><h6>Example 11.1. Annotated Module Entry</h6></div><br class="example-break"/><p>
+				The only required information to configure a module is the name for the entry and the name of the Java class. For example:
+			</p><pre class="screen">&lt;modules&gt;
+  &lt;module name="FederationModule"&gt;
+    &lt;module-class&gt;org.safehaus.penrose.federation.module.FederationModule&lt;/module-class&gt;
+  &lt;/module&gt;
+&lt;/modules&gt;</pre><div class="important"><h2>IMPORTANT</h2><p>
+					Always restart Penrose Server after editing the configuration file. For example:
+				</p><pre class="screen">service vd-server restart</pre></div><p>
+				The parameters for the <code class="filename">modules.xml</code> file are listed in <a href="chap-Admin_Guide-Configuring_Modules.html#tab.module-param" title="Table 11.1. Module Entry Parameters">Table 11.1, “Module Entry Parameters”</a>.
+			</p><a id="d0e11639" class="indexterm"/><a id="d0e11644" class="indexterm"/><div class="table" id="tab.module-param"><div class="table-contents"><table summary="Module Entry Parameters" border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+								Tag or Parameter
+							</th><th>
+								Description
+							</th><th>
+								Example
+							</th></tr></thead><tbody><tr><td>
+								&lt;module&gt;
+							</td><td>
+								The entry tag for a module entry.
+							</td><td>
+							</td></tr><tr><td>
+								name="..."
+							</td><td>
+								Gives the name of the module.
+							</td><td>
+<pre class="screen">&lt;module <strong class="userinput"><code>name="ExampleModule"</code></strong>&gt;</pre>
+							</td></tr><tr><td>
+								enables="true|false"
+							</td><td>
+								Sets whether the module is enabled. If this argument is not present, then the default value is <code class="command">true</code>.
+							</td><td>
+<pre class="screen">&lt;module name="ExampleModule" <strong class="userinput"><code>enabled="true"</code></strong>&gt;</pre>
+							</td></tr><tr><td>
+								&lt;module-class&gt;
+							</td><td>
+								Contains the Java class for the module; this library must be in <code class="filename">/opt/vd-server-2.0/lib</code>.
+							</td><td>
+<pre class="screen">&lt;module-class&gt;org.example.company.mapping.ExampleModule</pre>
+							</td></tr><tr><td>
+								&lt;parameter&gt;
+							</td><td>
+								A container entry for any initialization parameters required or used by the module.
+							</td><td>
+							</td></tr><tr><td>
+								&lt;param-name&gt;
+							</td><td>
+								The name of the initialization parameter.
+							</td><td>
+							</td></tr><tr><td>
+								&lt;param-value&gt;
+							</td><td>
+								The value or setting of the initialization parameter.
+							</td><td>
+							</td></tr></tbody></table></div><h6>Table 11.1. Module Entry Parameters</h6></div><br class="table-break"/></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-modules-mapping">11.2. Mapping Modules to Data Entries</h2></div></div></div><a id="d0e11735" class="indexterm"/><a id="d0e11740" class="indexterm"/><a id="d0e11745" class="indexterm"/><p>
+			The final step when configuring a module in Penrose Studio is creating optional mappings from the module to virtual directory subtrees. Many modules perform background tasks for other Penrose Virtual Directory services, such as modules for synchronization, which apply to an <span class="emphasis"><em>operation</em></span>. However, it can be useful in some sitiations to have a module which performs tasks within a certain <span class="emphasis"><em>area</em></span> of the directory. This module mapping configuration matches the module to specific parts of the tree only; this can be useful, for example, for applying a custom caching module to a part of the tree with frequent search operations.
+		</p><p>
+			Multiple subtrees can be mapped to a module. In Penrose Studio, this is done by editing the module and adding information for the LDAP search to match the subtree: the base DN, object class or attribute filter, and search scope. As many mapping entries can be added through the editor as required, and these are automatically applied to the module.
+		</p><p>
+			In the <code class="filename">modules.xml</code> file, this mapping is done by adding a new <code class="command">&lt;module-mapping&gt;</code> entry for every module mapping. The same information as in the Penrose Studio editor — the name of the module, base DN, object class or attribute filter, and search scope — are added as parameters to the entry. For example:
+		</p><a id="d0e11768" class="indexterm"/><pre class="screen">&lt;module-mapping&gt;
+  &lt;module-name&gt;ExampleModule&lt;/module-name&gt; 
+  &lt;base-dn&gt;ou=people,dc=example,dc=com&lt;/base-dn&gt;
+  &lt;filter&gt;(objectclass="inetorgperson")&lt;/filter&gt;
+  &lt;scope&gt;subtree&lt;/scope&gt;
+&lt;/module-mapping&gt;</pre><p>
+			The parameters for the module mapping entry are listed in <a href="chap-Admin_Guide-Configuring_Modules.html#tab.module-mapping-param" title="Table 11.2. Module Mapping Parameters">Table 11.2, “Module Mapping Parameters”</a>.
+		</p><div class="important"><h2>IMPORTANT</h2><p>
+				Always restart Penrose Server after editing the configuration file. For example:
+			</p><pre class="screen">service vd-server restart</pre></div><a id="d0e11788" class="indexterm"/><a id="d0e11795" class="indexterm"/><div class="table" id="tab.module-mapping-param"><div class="table-contents"><table summary="Module Mapping Parameters" border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+							Tag or Parameter
+						</th><th>
+							Description
+						</th><th>
+							Example
+						</th></tr></thead><tbody><tr><td>
+							&lt;module-mapping&gt;
+						</td><td>
+							Identifies a mapping entry.
+						</td><td>
+						</td></tr><tr><td>
+							&lt;module-name&gt;
+						</td><td>
+							Gives the name of the module which is being mapped.
+						</td><td>
+<pre class="screen">&lt;module-name&gt;ExampleModule&lt;/module-name&gt;</pre>
+						</td></tr><tr><td>
+							&lt;base-dn&gt;
+						</td><td>
+							Contains the distinguished name of the root entry or subtree entry in the virtual directory being mapped to the module.
+						</td><td>
+<pre class="screen">&lt;base-dn&gt;ou=people,dc=example,dc=com&lt;/base-dn&gt;</pre>
+						</td></tr><tr><td>
+							&lt;filter&gt;
+						</td><td>
+							Contains the LDAP filter to search for the object class or attribute in the mapped subtree entry.
+						</td><td>
+<pre class="screen">&lt;filter&gt;(objectclass=organizationalUnit)&lt;/filter&gt;</pre>
+						</td></tr><tr><td>
+							&lt;scope&gt;
+						</td><td>
+							Defines the scope of the search, meaning how many levels down from the base DN for Penrose Server to search. There are three options: subtree (all the way down), onelevel (only direct children of the entry), and base (only the base DN).
+						</td><td>
+<pre class="screen">&lt;scope&gt;onelevel&lt;/scope&gt;</pre>
+						</td></tr></tbody></table></div><h6>Table 11.2. Module Mapping Parameters</h6></div><br class="table-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Configuring_Modules-enabling_Modules">11.3. Enabling and Disabling Modules</h2></div></div></div><p>
+			Modules can be enabled and disabled quickly in Penrose Studio.
+		</p><a id="d0e11867" class="indexterm"/><div class="orderedlist"><ol><li><p>
+					Open the server entry, and expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+				</p></li><li><p>
+					Open the partition where the module belongs, and then open the <span><strong class="guilabel">Modules</strong></span> folder.
+				</p></li><li><p>
+					Double-click the module entry to open the entry editor.
+				</p></li><li><p>
+					Uncheck the <span><strong class="guilabel">Enable</strong></span> checkbox to disable the module or check the box to enable it.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/moduleenable.png"/></div></div></li></ol></div></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_Identity-Federation.html"><strong>Prev</strong>Chapter 10. Configuring Identity Federation</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html"><strong>Next</strong>Chapter 12. Using Services with Penrose Virtual D...</a></li></ul></body></html>

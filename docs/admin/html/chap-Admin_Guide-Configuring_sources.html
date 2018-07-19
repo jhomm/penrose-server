@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 7. Configuring Data Sources</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Configuring_connections.html" title="Chapter 6. Configuring Connections"/><link rel="next" href="chap-Admin_Guide-Configuring_Entry_Mapping.html" title="Chapter 8. Configuring the Virtual Directory"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 7. Configuring Data Sources</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_connections.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_Entry_Mapping.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="chap-Admin_Guide-Configuring_sources">Chapter 7. Configuring Data Sources</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_sources.html#sources-overview">7.1. About Data Sources</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_sources.html#source-studio">7.2. Configuring Sources in Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_sources.html#source-cmd">7.3. Creating and Editing Sources Manually</a></span></dt></dl></div><a id="d0e4105" class="indexterm"/><a id="d0e4108" class="indexterm"/><a id="d0e4113" class="indexterm"/><a id="d0e4118" class="indexterm"/><p>
+		Data sources are applications or servers which can be accessed by Penrose Server; the source entry defines the data set and the reverse mappings going from the source data to the virtual directory entry attribute. This chapter describes how to create and edit sources.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sources-overview">7.1. About Data Sources</h2></div></div></div><a id="d0e4126" class="indexterm"/><p>
+			Data sources are applications or servers which can be accessed by Penrose Server. A connection gives a connection to a server machine; a source is an application on that host machine. A single connection could theoretically have several databases, LDAP servers, and NIS servers. A source is a single instance of Directory Server or a single Active Directory server.
+		</p><p>
+			To define the source, the entry includes information to access the source, such as a search base and filter to access an LDAP server. It also lists relevant object classes and attributes for the entries contained in the source.
+		</p><a id="d0e4135" class="indexterm"/><a id="d0e4140" class="indexterm"/><a id="d0e4145" class="indexterm"/><a id="d0e4148" class="indexterm"/><p>
+			The source entry also contains <span class="emphasis"><em>fields</em></span>. These fields are <span class="emphasis"><em>reverse mappings</em></span>. Basically, Penrose Virtual Directory creates a directory by creating a pair of cross-references. The first mapping (described in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html" title="Chapter 8. Configuring the Virtual Directory">Chapter 8, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring the Virtual Directory</i></a>) links the virtual directory entry attribute to a source attribute. The field in the source entry is a reverse mapping, going from the source attribute to a virtual directory attribute.
+		</p><p>
+			The information referenced in a field depends on the type of data source:
+		</p><div class="itemizedlist"><ul><li><p>
+					In a JDBC data source, the source is a database table, and the fields are the table columns.
+				</p></li><li><p>
+					For an LDAP data source, the source is a directory subtree, and the fields are its attributes.
+				</p></li><li><p>
+					For an NIS data source, the source is an NIS map, and the fields are the columns in that map.
+				</p></li></ul></div><a id="d0e4173" class="indexterm"/><a id="d0e4178" class="indexterm"/><a id="d0e4183" class="indexterm"/><p>
+			The data within sources can be normalized on the source before being processed by Penrose Virtual Directory mappings. Penrose Virtual Directory can also normalize data, but this is done through Penrose Virtual Directory, which uses Java, rather than the native tools on the source itself, so normalizing on Penrose Virtual Directory can be much slower than normalizing data on the source. What kind of normalization can be performed depends on the source schema.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="source-studio">7.2. Configuring Sources in Penrose Studio</h2></div></div></div><a id="d0e4191" class="indexterm"/><div class="orderedlist"><ol><li><p>
+					Open the server entry in Penrose Studio, and expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+				</p></li><li><p>
+					Right-click the <span><strong class="guilabel">Sources</strong></span> folder, and select <span><strong class="guimenuitem">New ... Source...</strong></span> from the menu. There are three options — LDAP, JDBC, and NIS — for each supported source type.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newsource1.png"/></div></div></li><li><p>
+					Name the source and, if necessary, give a brief description.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newsource2.png"/></div></div><p>
+					The <span><strong class="guilabel">Class</strong></span> is available for applying a custom Java class to the entry, but, if it is not given, the default class is used. The default is fine for almost all applications.
+				</p></li><li><p>
+					Choose the connection to use for the source. You can also add a new connection to use a different host or to use a different adapter to connect to a host.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newsource3.png"/></div></div></li><li><p>
+					Fill in the data source information. For example, for an LDAP source, supply parameters for LDAP operations (base DN, search filter, and search scope). The parameters for LDAP, JDBC, and NIS sources are described in <a href="chap-Admin_Guide-Configuring_sources.html#tab.source-parameters" title="Table 7.2. Parameters for LDAP, JDBC, and NIS Sources">Table 7.2, “Parameters for LDAP, JDBC, and NIS Sources”</a>.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newsource4.png"/></div></div></li><li><p>
+					Select the attributes allowed with the object class which will be displayed when the data source is browsed.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newsource5.png"/></div></div></li><li><p>
+					Select the checkbox by the attributes which will be used for naming or identifying the entries.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newsource6.png"/></div></div></li><li><p>
+					Click <span><strong class="guibutton">Finish</strong></span> to save the new data source.
+				</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="source-cmd">7.3. Creating and Editing Sources Manually</h2></div></div></div><a id="d0e4269" class="indexterm"/><p>
+			Data sources are configured in the file <code class="filename">sources.xml</code>, and, as with other partition configuration files, the <code class="filename">sources.xml</code> file is in <code class="filename">/opt/vd-server-2.0/conf</code> for the default partition and in <code class="filename">/opt/vd-server-2.0/partitions/</code><span class="emphasis"><em>partition_name</em></span><code class="filename">/DIR-INF</code> directory for additional partitions. This file is illustrated in <a href="chap-Admin_Guide-Configuring_sources.html#ex.annotated-sources.xml" title="Example 7.1. Annotated sources.xml File">Example 7.1, “Annotated sources.xml File”</a>.
+		</p><a id="d0e4296" class="indexterm"/><a id="d0e4301" class="indexterm"/><div class="example" id="ex.annotated-sources.xml"><div class="example-contents"><pre class="screen"> &lt;sources&gt;  <em class="lineannotation"><span class="lineannotation">main file tag</span></em> 
+
+   &lt;source name="..."&gt; <em class="lineannotation"><span class="lineannotation">begins the connection entry</span></em>  
+
+     &lt;partition-name&gt;...&lt;/partition-name&gt; <em class="lineannotation"><span class="lineannotation">the partition to which the source belongs</span></em> 
+ 
+     &lt;connection-name&gt;...&lt;/connection-name&gt; <em class="lineannotation"><span class="lineannotation">the connection to use with the source</span></em> 
+ 
+     &lt;field name="..." primaryKey="..."/&gt; <em class="lineannotation"><span class="lineannotation">the names of attributes which will be viewed</span></em> 
+ 
+
+     &lt;parameter&gt; <em class="lineannotation"><span class="lineannotation">the configuration settings, in attribute-value pairs</span></em> 
+        &lt;param-name&gt;...&lt;/param-name&gt;
+        &lt;param-value&gt;...&lt;/param-value&gt;
+     &lt;/parameter&gt;
+ 
+   &lt;/source&gt;
+ 
+ &lt;/sources&gt;</pre></div><h6>Example 7.1. Annotated sources.xml File</h6></div><br class="example-break"/><p>
+			To create a new source, add a new source entry to the <code class="filename">sources.xml</code> file. To edit a source, add, remove, or edit parameters within the entry. <a href="chap-Admin_Guide-Configuring_sources.html#ex.sources.xml-example" title="Example 7.2. Example sources.xml File">Example 7.2, “Example sources.xml File”</a> shows three different source entries for LDAP, JDBC, and NIS sources.
+		</p><div class="important"><h2>IMPORTANT</h2><p>
+				Always restart Penrose Server after editing the configuration file. For example:
+			</p><pre class="screen">service vd-server restart</pre></div><a id="d0e4343" class="indexterm"/><a id="d0e4348" class="indexterm"/><div class="example" id="ex.sources.xml-example"><div class="example-contents"><pre class="screen">&lt;sources&gt;
+
+   &lt;source name="LDAP1"&gt;
+     &lt;partition-name&gt;ExamplePartition2&lt;/partition-name&gt;
+     &lt;connection-name&gt;example&lt;/connection-name&gt;
+     &lt;field name="uid" primaryKey="uid" /&gt;
+     &lt;field name="givenName" /&gt;
+     &lt;field name="surName" /&gt;
+     &lt;field name="cn" /&gt;
+     &lt;field name="mail" /&gt;
+     &lt;parameter&gt;
+               &lt;param-name&gt;baseDn&lt;/param-name&gt;
+               &lt;param-value&gt;dc=example,dc=com&lt;/param-value&gt;
+     &lt;/parameter&gt;
+     &lt;parameter&gt;
+               &lt;param-name&gt;scope&lt;/param-name&gt;
+               &lt;param-value&gt;SUBTREE&lt;/param-value&gt;
+     &lt;/parameter&gt;
+     &lt;parameter&gt;
+               &lt;param-name&gt;filter&lt;/param-name&gt;
+               &lt;param-value&gt;(objectClass=*)&lt;/param-value&gt;
+     &lt;/parameter&gt;
+     &lt;parameter&gt;
+               &lt;param-name&gt;objectClasses&lt;/param-name&gt;
+               &lt;param-value&gt;inetorgperson,person&lt;/param-value&gt;
+     &lt;/parameter&gt;
+   &lt;/source&gt;
+
+   &lt;source name="MySQL"&gt;
+     &lt;partition-name&gt;ExamplePartition2&lt;/partition-name&gt;
+     &lt;connection-name&gt;example&lt;/connection-name&gt;
+     &lt;field name="username" /&gt;
+     &lt;field name="firstname" /&gt;
+     &lt;field name="lastname" /&gt;
+     &lt;field name="fullname" /&gt;
+     &lt;field name="email" /&gt;
+     &lt;parameter&gt;
+               &lt;param-name&gt;catalog&lt;/param-name&gt;
+               &lt;param-value&gt;employees&lt;/param-value&gt;
+     &lt;/parameter&gt;
+     &lt;parameter&gt;
+               &lt;param-name&gt;schema&lt;/param-name&gt;
+               &lt;param-value&gt;system&lt;/param-value&gt;
+     &lt;/parameter&gt;
+     &lt;parameter&gt;
+               &lt;param-name&gt;table&lt;/param-name&gt;
+               &lt;param-value&gt;employees&lt;/param-value&gt;
+     &lt;/parameter&gt;
+     &lt;parameter&gt;
+               &lt;param-name&gt;filter&lt;/param-name&gt;
+               &lt;param-value&gt;u.lastname = ''&lt;/param-value&gt;
+     &lt;/parameter&gt;
+   &lt;/source&gt;
+
+   &lt;source name="NISUsers"&gt;
+     &lt;connection-name&gt;NIS&lt;/connection-name&gt;
+     &lt;field name="uid" primaryKey="true"/&gt;
+     &lt;field name="uidNumber"/&gt;
+     &lt;field name="gidNumber"/&gt;
+     &lt;field name="homeDirectory"/&gt;
+     &lt;field name="userPassword"/&gt;
+     &lt;field name="loginShell"/&gt;
+     &lt;field name="gecos"/&gt;
+     &lt;field name="description"/&gt;
+     &lt;parameter&gt;
+                &lt;param-name&gt;objectClasses&lt;/param-name&gt;
+                &lt;param-value&gt;posixAccount&lt;/param-value&gt;
+     &lt;/parameter&gt;
+     &lt;parameter&gt;
+                &lt;param-name&gt;base&lt;/param-name&gt;
+                &lt;param-value&gt;passwd&lt;/param-value&gt;
+     &lt;/parameter&gt;
+  &lt;/source&gt;</pre></div><h6>Example 7.2. Example sources.xml File</h6></div><br class="example-break"/><a id="d0e4358" class="indexterm"/><a id="d0e4363" class="indexterm"/><a id="d0e4368" class="indexterm"/><a id="d0e4373" class="indexterm"/><p>
+			Two important parameters are set in the <code class="filename">sources.xml</code> file: <span class="emphasis"><em>fields</em></span> and <span class="emphasis"><em>parameters</em></span>.
+		</p><div class="itemizedlist"><ul><li><p>
+					<span class="emphasis"><em>Fields</em></span> are reverse mappings, rules for matching source attributes with corresponding attributes in the virtual directory entries. Each field represents the attribute, accepted attribute value, and whether it is required or if there are any preconditions for processing the rule. The order of the fields is the order in which Penrose Server will process the attributes, so changing the order changes the attribute precedence.
+				</p><p>
+					Fields can have arguments which further control how Penrose Server processes the attribute; for example, the <code class="command">primaryKey</code> argument signals that a certain attribute is a naming attribute and should be loaded first. These arguments can also be used to normalize the attribute information before it is displayed in the virtual entry. The arguments are listed in <a href="chap-Admin_Guide-Configuring_sources.html#tab.sources-fields" title="Table 7.1. Field Arguments for LDAP and JDBC">Table 7.1, “Field Arguments for LDAP and JDBC”</a>. 
+					<a id="d0e4403" class="indexterm"/>
+					<a id="d0e4409" class="indexterm"/>
+					<a id="d0e4417" class="indexterm"/>
+				</p></li><li><p>
+					<span class="emphasis"><em>Parameters</em></span> vary for the three different types of sources (JDBC, LDAP, and NIS). In general, parameters define where Penrose Server can access the data source, such as containing parameters for LDAP operations. The parameters are listed in <a href="chap-Admin_Guide-Configuring_sources.html#tab.source-parameters" title="Table 7.2. Parameters for LDAP, JDBC, and NIS Sources">Table 7.2, “Parameters for LDAP, JDBC, and NIS Sources”</a>.
+				</p></li></ul></div><div class="table" id="tab.sources-fields"><div class="table-contents"><table summary="Field Arguments for LDAP and JDBC" border="1"><colgroup><col/><col/><col/><col/></colgroup><thead><tr><th>
+							Argument
+						</th><th>
+							Description
+						</th><th>
+							JDBC
+						</th><th>
+							LDAP
+						</th></tr></thead><tfoot><tr><th colspan="4">
+						NIS sources do not take any additional arguments with their fields.
+					</th></tr></tfoot><tbody><tr><td>
+							primaryKey
+						</td><td>
+							The naming attribute for the entry.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							originalName
+						</td><td>
+							The original DN or name of the entry in the source.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							type
+						</td><td>
+							The type of entry.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							originalType
+						</td><td>
+							The orignal type of entry in the source.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							castType
+						</td><td>
+							Method for changing the value type.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							length
+						</td><td>
+							The field length in the database table.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+						</td></tr><tr><td>
+							precision
+						</td><td>
+							A parameter to define the precision of number-related data.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+						</td></tr><tr><td>
+							caseSensitive
+						</td><td>
+							Whether the information is case-sensitive.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+						</td></tr><tr><td>
+							autoIncrement
+						</td><td>
+							Automatically increments values in table rows.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+						</td></tr></tbody></table></div><h6>Table 7.1. Field Arguments for LDAP and JDBC</h6></div><br class="table-break"/><a id="d0e4593" class="indexterm"/><a id="d0e4598" class="indexterm"/><div class="table" id="tab.source-parameters"><div class="table-contents"><table summary="Parameters for LDAP, JDBC, and NIS Sources" border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+							Source Parameters
+						</th><th>
+							Description
+						</th><th>
+							Example
+						</th></tr></thead><tbody><tr><td colspan="3">
+							<span><strong class="application">LDAP Sources</strong></span>
+						</td></tr><tr><td>
+							baseDn
+						</td><td>
+							As with an LDAP command like <code class="command">ldapsearch</code>, the entry name of the entry or subtree to use as a search base.
+						</td><td>
+							dc=example,dc=com
+						</td></tr><tr><td>
+							scope
+						</td><td>
+							The scope of the operation, how far below the search base to search for entries. The possible values are <code class="command">OBJECT</code> (only the base DN), <code class="command">ONELEVEL</code> (the base DN and all of its immediate children), and <code class="command">SUBTREE</code> (every entry below the base DN).
+						</td><td>
+							SUBTREE
+						</td></tr><tr><td>
+							filter
+						</td><td>
+							The LDAP filter to use to search for and identify matching entries.
+						</td><td>
+							(objectClass=*)
+						</td></tr><tr><td>
+							objectClasses
+						</td><td>
+							A comma-separated list of object classes which are assigned to the newly-added entries.
+						</td><td>
+							person,organizationalPerson,inetOrgPerson
+						</td></tr><tr><td colspan="3">
+							<span><strong class="application">JDBC Sources</strong></span>
+						</td></tr><tr><td>
+							catalog
+						</td><td>
+							The name of the database's catalog.
+						</td><td>
+							example
+						</td></tr><tr><td>
+							schema
+						</td><td>
+							The name of the schema used by the database.
+						</td><td>
+							system
+						</td></tr><tr><td>
+							table
+						</td><td>
+							The name of the specified database table.
+						</td><td>
+							users
+						</td></tr><tr><td>
+							filter
+						</td><td>
+							A search filter to use, based on the database field name. The source is identified by prefixing its alias to the filter.
+						</td><td>
+							u.lastName = 'Smith'
+						</td></tr><tr><td colspan="3">
+							<span><strong class="application">NIS Sources</strong></span>
+						</td></tr><tr><td>
+							objectClasses
+						</td><td>
+							A comma-separated list of object classes which are assigned to the newly-added entries.
+						</td><td>
+							posixAccount
+						</td></tr><tr><td>
+							base
+						</td><td>
+							A search base for NIS attributes.
+						</td><td>
+							passwd.adjunct.byname
+						</td></tr></tbody></table></div><h6>Table 7.2. Parameters for LDAP, JDBC, and NIS Sources</h6></div><br class="table-break"/></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_connections.html"><strong>Prev</strong>Chapter 6. Configuring Connections</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_Entry_Mapping.html"><strong>Next</strong>Chapter 8. Configuring the Virtual Directory</a></li></ul></body></html>

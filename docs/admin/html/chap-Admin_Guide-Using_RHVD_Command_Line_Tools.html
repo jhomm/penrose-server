@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Appendix A. Using Penrose Virtual Directory Command-Line Tools</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Configuring_Cache.html" title="Chapter 14. Configuring Cache"/><link rel="next" href="glos-Admin_Guide-Glossary.html" title="Glossary"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Appendix A. Using Penrose Virtual Directory Command-Line Tools</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_Cache.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="glos-Admin_Guide-Glossary.html"><strong>Next</strong></a></li></ul><div class="appendix" lang="en-US"><div class="titlepage"><div><div><h1 id="chap-Admin_Guide-Using_RHVD_Command_Line_Tools" class="title">Using Penrose Virtual Directory Command-Line Tools</h1></div></div></div><p>
+		Several scripts are included with Penrose Virtual Directory to configure and control Penrose Server operations. The various script provide a simple way to perform Penrose Server management operations (like configuring partitions) through the command line; each script has a corollary to a Penrose Studio action. These scripts' options and usage information are described in more detail in this chapter.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-tool-locations">A.1. Tool Locations</h2></div></div></div><a id="d0e13690" class="indexterm"/><p>
+			These tools are all contained in the <code class="filename">/opt/vd-server-2.0/bin</code> directory and must be run from that directory.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Using_RHVD_Command_Line_Tools-cache">A.2. cache.sh</h2></div></div></div><a id="d0e13703" class="indexterm"/><a id="d0e13706" class="indexterm"/><p>
+			This script can clear the in-memory cache.
+		</p><h5 class="formalpara" id="d0e13713">Options</h5><a id="d0e13716" class="indexterm"/>
+				cache.sh [<span class="emphasis"><em>options</em></span>] <span class="emphasis"><em>commands</em></span> [<span class="emphasis"><em>partition</em></span> [<span class="emphasis"><em>source</em></span>]]
+			<div class="table" id="cacheoptions"><div class="table-contents"><table summary="cache.sh Options" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Options
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							-?, - -help
+						</td><td>
+							Prints the help for the script.
+						</td></tr><tr><td>
+							-d
+						</td><td>
+							Runs the script in debug mode.
+						</td></tr><tr><td>
+							-v
+						</td><td>
+							Runs the script in verbose mode.
+						</td></tr></tbody></table></div><h6>Table A.1. cache.sh Options</h6></div><br class="table-break"/><div class="table" id="cachecommands"><div class="table-contents"><table summary="cache.sh Commands" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Commands
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							clean
+						</td><td>
+							Empties the tree nodes and tables for the cache.
+						</td></tr><tr><td>
+							drop
+						</td><td>
+							Deletes the tree notes and tables for the cache.
+						</td></tr><tr><td>
+							invoke <span class="emphasis"><em>application_command</em></span>
+						</td><td>
+							Manually runs the specified command for the cache. For example, this is another way of having the cache module automatically run the <code class="command">clear</code> method.
+						</td></tr><tr><td>
+							<span class="emphasis"><em>partition</em></span>
+						</td><td>
+							Optionally, specifies the name of the partition being modified.
+						</td></tr><tr><td>
+							<span class="emphasis"><em>source</em></span>
+						</td><td>
+							Optionally, specifies the data source for the partition. This can only be used when a <span class="emphasis"><em>partition</em></span> is specified.
+						</td></tr></tbody></table></div><h6>Table A.2. cache.sh Commands</h6></div><br class="table-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Using_RHVD_Command_Line_Tools-Connections">A.3. connection.sh</h2></div></div></div><a id="d0e13815" class="indexterm"/><a id="d0e13818" class="indexterm"/><p>
+			The <code class="command">connection.sh</code> script manages connections within the partition by importing or exporting, starting and stopping, and editing the connections.
+		</p><h5 class="formalpara" id="d0e13828">Options</h5><a id="d0e13831" class="indexterm"/>
+				connection.sh [<span class="emphasis"><em>options</em></span>] <span class="emphasis"><em>commands</em></span> connection <span class="emphasis"><em>partition</em></span>
+			<div class="table" id="connectionoptions"><div class="table-contents"><table summary="connection.sh Options" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Options
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							-?, - -help
+						</td><td>
+							Prints the help for the script.
+						</td></tr><tr><td>
+							-d
+						</td><td>
+							Runs the script in debug mode.
+						</td></tr><tr><td>
+							-D <span class="emphasis"><em>rootDN</em></span>
+						</td><td>
+							Gives the root user for Penrose Server; the default username is <code class="command">uid=admin</code>, <code class="command">ou=system</code>.
+						</td></tr><tr><td>
+							-h <span class="emphasis"><em>hostName</em></span>
+						</td><td>
+							Gives the hostname for the machine on which the service is running.
+						</td></tr><tr><td>
+							-p <span class="emphasis"><em>port</em></span>
+						</td><td>
+							Gives the port number for the service to which Penrose Server is connecting.
+						</td></tr><tr><td>
+							-P <span class="emphasis"><em>protocol</em></span>
+						</td><td>
+							Gives the protocol for Penrose Server to communicate with the MBeans object; the only supported JMX protocol is <code class="command">rmi</code>.
+						</td></tr><tr><td>
+							-w <span class="emphasis"><em>password</em></span>
+						</td><td>
+							Gives the password for the Penrose Server root user; the default is <code class="command">secret</code>.
+						</td></tr><tr><td>
+							-v
+						</td><td>
+							Runs the script in verbose mode.
+						</td></tr></tbody></table></div><h6>Table A.3. connection.sh Options</h6></div><br class="table-break"/><div class="table" id="connectioncommands"><div class="table-contents"><table summary="connection.sh Commands" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Commands
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							show
+						</td><td>
+							Lists the connections configured for the given partition.
+						</td></tr><tr><td>
+							start
+						</td><td>
+							Starts the connection for that partition.
+						</td></tr><tr><td>
+							stop
+						</td><td>
+							Stops the connection for that partition.
+						</td></tr><tr><td>
+							restart
+						</td><td>
+							Restarts the connection for that partition.
+						</td></tr><tr><td>
+							import connection <span class="emphasis"><em>path</em></span>
+						</td><td>
+							Imports the connection configuration from the specified directory into the given partition.
+						</td></tr><tr><td>
+							export connection <span class="emphasis"><em>path</em></span>
+						</td><td>
+							Exports the connection configuration for the named partition to the specified directory.
+						</td></tr><tr><td>
+							rename connection <span class="emphasis"><em>name1</em></span> <span class="emphasis"><em>name2</em></span>
+						</td><td>
+							Renames the connection from <span class="emphasis"><em>name1</em></span> to <span class="emphasis"><em>name2</em></span>.
+						</td></tr><tr><td>
+							remove connection <span class="emphasis"><em>name</em></span>
+						</td><td>
+							Deletes the specified connection.
+						</td></tr><tr><td>
+							<span class="emphasis"><em>partition</em></span>
+						</td><td>
+							Specifies the name of the partition being modified.
+						</td></tr><tr><td>
+							invoke <span class="emphasis"><em>application_command</em></span>
+						</td><td>
+							Manually runs the specified command for the connection server.
+						</td></tr></tbody></table></div><h6>Table A.4. connection.sh Commands</h6></div><br class="table-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Using_RHVD_Command_Line_Tools-Modules">A.4. module.sh</h2></div></div></div><a id="d0e14016" class="indexterm"/><a id="d0e14019" class="indexterm"/><p>
+			The <code class="command">module.sh</code> script manages modules used by the partition. The script can be used to import or export, start and stop, modify, and remove modules associated with any partition.
+		</p><h5 class="formalpara" id="d0e14029">Options</h5><a id="d0e14032" class="indexterm"/>
+				module.sh [<span class="emphasis"><em>options</em></span>] <span class="emphasis"><em>commands</em></span> module <span class="emphasis"><em>partition</em></span>
+			<div class="table" id="moduleoptions"><div class="table-contents"><table summary="module.sh Options" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Options
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							-?, - -help
+						</td><td>
+							Prints the help for the script.
+						</td></tr><tr><td>
+							-d
+						</td><td>
+							Runs the script in debug mode.
+						</td></tr><tr><td>
+							-D <span class="emphasis"><em>rootDN</em></span>
+						</td><td>
+							Gives the root user for Penrose Server; the default username is <code class="command">uid=admin</code>, <code class="command">ou=system</code>.
+						</td></tr><tr><td>
+							-h <span class="emphasis"><em>hostName</em></span>
+						</td><td>
+							Gives the hostname for the machine on which the service is running.
+						</td></tr><tr><td>
+							-p <span class="emphasis"><em>port</em></span>
+						</td><td>
+							Gives the port number for the service to which Penrose Server is connecting.
+						</td></tr><tr><td>
+							-P <span class="emphasis"><em>protocol</em></span>
+						</td><td>
+							Gives the protocol for Penrose Server to communicate with the MBeans object; the only supported JMX protocol is <code class="command">rmi</code>.
+						</td></tr><tr><td>
+							-w <span class="emphasis"><em>password</em></span>
+						</td><td>
+							Gives the password for the Penrose Server root user; the default is <code class="command">secret</code>.
+						</td></tr><tr><td>
+							-v
+						</td><td>
+							Runs the script in verbose mode.
+						</td></tr></tbody></table></div><h6>Table A.5. module.sh Options</h6></div><br class="table-break"/><div class="table" id="modulecommands"><div class="table-contents"><table summary="module.sh Commands" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Commands
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							show
+						</td><td>
+							Lists the modules configured for the given partition.
+						</td></tr><tr><td>
+							start
+						</td><td>
+							Starts the module for that partition.
+						</td></tr><tr><td>
+							stop
+						</td><td>
+							Stops the module for that partition.
+						</td></tr><tr><td>
+							restart
+						</td><td>
+							Restarts the module for that partition.
+						</td></tr><tr><td>
+							import module <span class="emphasis"><em>path</em></span>
+						</td><td>
+							Imports the module configuration from the specified directory into the given partition.
+						</td></tr><tr><td>
+							export module <span class="emphasis"><em>path</em></span>
+						</td><td>
+							Exports the module configuration for the named partition to the specified directory.
+						</td></tr><tr><td>
+							rename module <span class="emphasis"><em>name1</em></span> <span class="emphasis"><em>name2</em></span>
+						</td><td>
+							Renames the module from <span class="emphasis"><em>name1</em></span> to <span class="emphasis"><em>name2</em></span>.
+						</td></tr><tr><td>
+							remove module <span class="emphasis"><em>name</em></span>
+						</td><td>
+							Deletes the specified module.
+						</td></tr><tr><td>
+							<span class="emphasis"><em>partition</em></span>
+						</td><td>
+							Specifies the name of the partition being modified.
+						</td></tr><tr><td>
+							invoke <span class="emphasis"><em>application_command</em></span>
+						</td><td>
+							Manually runs the specified command for the cache. For example, this is another way of having the cache module automatically run the <code class="command">clear</code> method.
+						</td></tr></tbody></table></div><h6>Table A.6. module.sh Commands</h6></div><br class="table-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Using_RHVD_Command_Line_Tools-Monitor">A.5. monitor.sh</h2></div></div></div><a id="d0e14220" class="indexterm"/><a id="d0e14223" class="indexterm"/><p>
+			Penrose Server has an integrated monitoring feature which tracks the Penrose Server process and will send a notification, either an email or an SNMP trap, if the server stops.
+		</p><h5 class="formalpara" id="monitor.sh-options">Options</h5><a id="d0e14233" class="indexterm"/>
+				monitor.sh [<span class="emphasis"><em>options</em></span>] [start|stop]
+			<div class="note"><h2>NOTE</h2><p>
+				All of the options can only be run when the <code class="command">monitor.sh</code> script is run in the foreground.
+			</p></div><div class="table" id="monitoroptions"><div class="table-contents"><table summary="monitor.sh Options" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Options
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							-?, - -help
+						</td><td>
+							Prints the help for the script.
+						</td></tr><tr><td>
+							-d
+						</td><td>
+							Runs the script in debug mode.
+						</td></tr><tr><td>
+							-v
+						</td><td>
+							Runs the script in verbose mode.
+						</td></tr><tr><td>
+							--version
+						</td><td>
+							Returns the version number of the current Penrose Server.
+						</td></tr></tbody></table></div><h6>Table A.7. monitor.sh Options</h6></div><br class="table-break"/><div class="note"><h2>NOTE</h2><p>
+				Using either script command causes the <code class="command">monitor.sh</code> script to run in the background.
+			</p></div><div class="table" id="monitorcommands"><div class="table-contents"><table summary="monitor.sh Commands" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Commands
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							start
+						</td><td>
+							Starts the monitor service for Penrose Server.
+						</td></tr><tr><td>
+							stop
+						</td><td>
+							Stops the monitor service for Penrose Server.
+						</td></tr></tbody></table></div><h6>Table A.8. monitor.sh Commands</h6></div><br class="table-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="nis.sh">A.6. nis.sh</h2></div></div></div><a id="d0e14314" class="indexterm"/><a id="d0e14317" class="indexterm"/><p>
+			Used to synchronize a NIS server, meaning this script copies the entries in the NIS server and any changes over to the global repository.
+		</p><h5 class="formalpara" id="nis.sh-options">Options</h5><a id="d0e14327" class="indexterm"/>
+				nis.sh [<span class="emphasis"><em>options</em></span>] synchronize <em class="replaceable"><code>Federation domain</code></em> [<em class="replaceable"><code>NIS domain</code></em> [<em class="replaceable"><code>NIS maps...</code></em>]]
+			<div class="table" id="nis.shoptions"><div class="table-contents"><table summary="nis.sh Options" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Options
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							-?, - -help
+						</td><td>
+							Prints the help for the script.
+						</td></tr><tr><td>
+							-d
+						</td><td>
+							Runs the script in debug mode.
+						</td></tr><tr><td>
+							-D <span class="emphasis"><em>rootDN</em></span>
+						</td><td>
+							Gives the root user for Penrose Server; the default username is <code class="command">uid=admin</code>, <code class="command">ou=system</code>.
+						</td></tr><tr><td>
+							-h <span class="emphasis"><em>hostName</em></span>
+						</td><td>
+							Gives the hostname for the machine on which the service is running.
+						</td></tr><tr><td>
+							-p <span class="emphasis"><em>port</em></span>
+						</td><td>
+							Gives the port number for the service to which Penrose Server is connecting.
+						</td></tr><tr><td>
+							-P <span class="emphasis"><em>protocol</em></span>
+						</td><td>
+							Gives the protocol for Penrose Server to communicate with the MBeans object; the only supported JMX protocol is <code class="command">rmi</code>.
+						</td></tr><tr><td>
+							-w <span class="emphasis"><em>password</em></span>
+						</td><td>
+							Gives the password for the Penrose Server root user; the default is <code class="command">secret</code>.
+						</td></tr><tr><td>
+							-v
+						</td><td>
+							Runs the script in verbose mode.
+						</td></tr><tr><td>
+							--version
+						</td><td>
+							Returns the version number of the current Penrose Server.
+						</td></tr></tbody></table></div><h6>Table A.9. nis.sh Options</h6></div><br class="table-break"/><div class="table" id="nis.shcommands"><div class="table-contents"><table summary="nis.sh Commands" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Commands
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							synchronize
+						</td><td>
+							Sycnhronizes the NIS server with the global repository. Depending on the options used with it, this can synchronize a specific NIS domain or NIS maps with a specific federation domain.
+						</td></tr></tbody></table></div><h6>Table A.10. nis.sh Commands</h6></div><br class="table-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Using_RHVD_Command_Line_Tools-Partitions">A.7. partition.sh</h2></div></div></div><a id="d0e14448" class="indexterm"/><a id="d0e14451" class="indexterm"/><p>
+			Partitions are the primary entry in Penrose Server, which contain all of the data sources, connections, modules, and other virtual directory configuration. Partitions, as with the other configuration entries, can be managed through the command line,
+		</p><h5 class="formalpara" id="d0e14458">Options</h5><a id="d0e14461" class="indexterm"/>
+				partition.sh [<span class="emphasis"><em>options</em></span>] <span class="emphasis"><em>commands</em></span> <span class="emphasis"><em>partition</em></span>
+			<div class="table" id="partitionoptions"><div class="table-contents"><table summary="partition.sh Options" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Options
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							-?, - -help
+						</td><td>
+							Prints the help for the script.
+						</td></tr><tr><td>
+							-d
+						</td><td>
+							Runs the script in debug mode.
+						</td></tr><tr><td>
+							-D <span class="emphasis"><em>rootDN</em></span>
+						</td><td>
+							Gives the root user for Penrose Server; the default username is <code class="command">uid=admin</code>, <code class="command">ou=system</code>.
+						</td></tr><tr><td>
+							-h <span class="emphasis"><em>hostName</em></span>
+						</td><td>
+							Gives the hostname for the machine on which the service is running.
+						</td></tr><tr><td>
+							-p <span class="emphasis"><em>port</em></span>
+						</td><td>
+							Gives the port number for the service to which Penrose Server is connecting.
+						</td></tr><tr><td>
+							-P <span class="emphasis"><em>protocol</em></span>
+						</td><td>
+							Gives the protocol for Penrose Server to communicate with the MBeans object; the only supported JMX protocol is <code class="command">rmi</code>.
+						</td></tr><tr><td>
+							-w <span class="emphasis"><em>password</em></span>
+						</td><td>
+							Gives the password for the Penrose Server root user; the default is <code class="command">secret</code>.
+						</td></tr><tr><td>
+							-v
+						</td><td>
+							Runs the script in verbose mode.
+						</td></tr></tbody></table></div><h6>Table A.11. partition.sh Options</h6></div><br class="table-break"/><div class="table" id="partitioncommands"><div class="table-contents"><table summary="partition.sh Commands" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Commands
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							show
+						</td><td>
+							Lists the partitions configured for the Penrose Server.
+						</td></tr><tr><td>
+							start
+						</td><td>
+							Starts the partition.
+						</td></tr><tr><td>
+							stop
+						</td><td>
+							Stops the partition.
+						</td></tr><tr><td>
+							restart
+						</td><td>
+							Restarts the partition.
+						</td></tr><tr><td>
+							invoke <span class="emphasis"><em>application_command</em></span>
+						</td><td>
+							Manually runs the specified command for the partition (the virtual directory). For example, <code class="command">invoke</code> can be used to run LDAP commands such as <code class="command">ldapmodify</code> and <code class="command">ldapsearch</code> against the partition's virtual directory.
+						</td></tr><tr><td>
+							import <span class="emphasis"><em>path</em></span>
+						</td><td>
+							Imports the partition configuration from the specified directory.
+						</td></tr><tr><td>
+							export <span class="emphasis"><em>path</em></span>
+						</td><td>
+							Exports the partition configuration to the specified directory.
+						</td></tr><tr><td>
+							rename <span class="emphasis"><em>name1</em></span> <span class="emphasis"><em>name2</em></span>
+						</td><td>
+							Renames the partition from <span class="emphasis"><em>name1</em></span> to <span class="emphasis"><em>name2</em></span>.
+						</td></tr><tr><td>
+							remove <span class="emphasis"><em>name</em></span>
+						</td><td>
+							Deletes the specified partition.
+						</td></tr><tr><td>
+							<span class="emphasis"><em>partition</em></span>
+						</td><td>
+							Specifies the name of the partition being modified.
+						</td></tr></tbody></table></div><h6>Table A.12. partition.sh Commands</h6></div><br class="table-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Using_RHVD_Command_Line_Tools-schema.sh">A.8. schema.sh</h2></div></div></div><a id="d0e14655" class="indexterm"/><a id="d0e14658" class="indexterm"/><p>
+			There are two <code class="command">schema.sh</code> scripts with Penrose Virtual Directory, both to use for the integrated LDAP services to communicate with clients. One is for compiling schema to work with ApacheDS. The other is for converting OpenLDAP formatted schema files into OpenDS formatted schema files.
+		</p><p>
+			These <code class="command">schema.sh</code> scripts are in two different locations:
+		</p><div class="itemizedlist"><ul><li><p>
+					The ApacheDS tool is in <code class="filename">/opt/vd-server-2.0/services/ApacheDS/bin/</code>.
+				</p></li><li><p>
+					The ApacheDS tool is in <code class="filename">/opt/vd-server-2.0/services/OpenDS/bin/</code>.
+				</p></li></ul></div><h5 class="formalpara" id="d0e14686">Options</h5><a id="d0e14689" class="indexterm"/>
+				schema.sh [<span class="emphasis"><em>options</em></span>] <span class="emphasis"><em>commands</em></span> <span class="emphasis"><em>partition</em></span>
+			<div class="table" id="schema.sh-options"><div class="table-contents"><table summary="schema.sh Options" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Options
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							<span class="emphasis"><em>/path/to/file</em></span>
+						</td><td>
+							The absolute path to the schema file which is being compiled or formatted. For schema files to be loaded by Penrose Server, they should be located in the <code class="filename">/opt/vd-server-2.0/schema</code> directory and have the extension <code class="filename">.schema</code>.
+						</td></tr></tbody></table></div><h6>Table A.13. schema.sh Options</h6></div><br class="table-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Using_RHVD_Command_Line_Tools-Sources">A.9. source.sh</h2></div></div></div><a id="d0e14733" class="indexterm"/><a id="d0e14736" class="indexterm"/><p>
+			The <code class="command">source.sh</code> script manages data sources used by the partition. The script can be used to import or export, start and stop, modify, and remove sources associated with any partition.
+		</p><h5 class="formalpara" id="d0e14746">Options</h5><a id="d0e14749" class="indexterm"/>
+				source.sh [<span class="emphasis"><em>options</em></span>] <span class="emphasis"><em>commands</em></span> source <span class="emphasis"><em>partition</em></span>
+			<div class="table" id="sourceoptions"><div class="table-contents"><table summary="source.sh Options" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Options
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							-?, - -help
+						</td><td>
+							Prints the help for the script.
+						</td></tr><tr><td>
+							-d
+						</td><td>
+							Runs the script in debug mode.
+						</td></tr><tr><td>
+							-D <span class="emphasis"><em>rootDN</em></span>
+						</td><td>
+							Gives the root user for Penrose Server; the default username is <code class="command">uid=admin</code>, <code class="command">ou=system</code>.
+						</td></tr><tr><td>
+							-h <span class="emphasis"><em>hostName</em></span>
+						</td><td>
+							Gives the hostname for the machine on which the service is running.
+						</td></tr><tr><td>
+							-p <span class="emphasis"><em>port</em></span>
+						</td><td>
+							Gives the port number for the service to which Penrose Server is connecting.
+						</td></tr><tr><td>
+							-P <span class="emphasis"><em>protocol</em></span>
+						</td><td>
+							Gives the protocol for Penrose Server to communicate with the MBeans object; the only supported JMX protocol is <code class="command">rmi</code>.
+						</td></tr><tr><td>
+							-w <span class="emphasis"><em>password</em></span>
+						</td><td>
+							Gives the password for the Penrose Server root user; the default is <code class="command">secret</code>.
+						</td></tr><tr><td>
+							-v
+						</td><td>
+							Runs the script in verbose mode.
+						</td></tr></tbody></table></div><h6>Table A.14. source.sh Options</h6></div><br class="table-break"/><div class="table" id="sourcecommands"><div class="table-contents"><table summary="source.sh Commands" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Commands
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							show
+						</td><td>
+							Lists the sources configured for the given partition.
+						</td></tr><tr><td>
+							start
+						</td><td>
+							Starts the source for that partition.
+						</td></tr><tr><td>
+							stop
+						</td><td>
+							Stops the source for that partition.
+						</td></tr><tr><td>
+							restart
+						</td><td>
+							Restarts the source for that partition.
+						</td></tr><tr><td>
+							invoke <span class="emphasis"><em>application_command</em></span>
+						</td><td>
+							Manually runs the specified command for the source. For example, <code class="command">invoke</code> can be used to run LDAP commands such as <code class="command">ldapmodify</code> and <code class="command">ldapsearch</code> against the source LDAP directory.
+						</td></tr><tr><td>
+							import source <span class="emphasis"><em>path</em></span>
+						</td><td>
+							Imports the source configuration from the specified directory into the given partition.
+						</td></tr><tr><td>
+							export source <span class="emphasis"><em>path</em></span>
+						</td><td>
+							Exports the source configuration for the named partition to the specified directory.
+						</td></tr><tr><td>
+							rename source <span class="emphasis"><em>name1</em></span> <span class="emphasis"><em>name2</em></span>
+						</td><td>
+							Renames the source from <span class="emphasis"><em>name1</em></span> to <span class="emphasis"><em>name2</em></span>.
+						</td></tr><tr><td>
+							remove source <span class="emphasis"><em>name</em></span>
+						</td><td>
+							Deletes the specified source.
+						</td></tr><tr><td>
+							<span class="emphasis"><em>partition</em></span>
+						</td><td>
+							Specifies the name of the partition being modified.
+						</td></tr></tbody></table></div><h6>Table A.15. source.sh Commands</h6></div><br class="table-break"/></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_Cache.html"><strong>Prev</strong>Chapter 14. Configuring Cache</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="glos-Admin_Guide-Glossary.html"><strong>Next</strong>Glossary</a></li></ul></body></html>

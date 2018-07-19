@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 5. Managing Partitions</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Using_VDST.html" title="Chapter 4. Using Penrose Studio"/><link rel="next" href="chap-Admin_Guide-Configuring_connections.html" title="Chapter 6. Configuring Connections"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 5. Managing Partitions</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Using_VDST.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_connections.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="chap-Admin_Guide-Configuring_Partitions">Chapter 5. Managing Partitions</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Partitions.html#partitions-overview">5.1. About Partitions</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Partitions.html#sect-Admin_Guide-Configuring_Partitions-About_Partitions">5.2. Adding Partitions</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Partitions.html#partitions-exporting-importing">5.3. Exporting and Importing Partitions</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Partitions.html#partitions-exporting">5.3.1. Exporting Partitions in Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Partitions.html#partitions-importing">5.3.2. Importing Partitions in Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Partitions.html#partitions-exporting-cmd">5.3.3. Exporting and Importing Partitions in the Command Line</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Partitions.html#partitions-starting">5.4. Starting and Stopping Partitions</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Partitions.html#custom-classes">5.5. Using Custom Java Classes</a></span></dt></dl></div><a id="d0e3058" class="indexterm"/><a id="d0e3063" class="indexterm"/><p>
+		In Penrose Virtual Directory, a virtual directory is defined through the relationships of different server entities: servers (connections), applications (sources), individual entries (identities), and links between entities (mappings). All of these relationships are contained in the partition entry.
+	</p><p>
+		This chapter describes how to create and manage partition entries.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="partitions-overview">5.1. About Partitions</h2></div></div></div><a id="d0e3073" class="indexterm"/><p>
+			The complete virtual directory set up is defined in a container entry called a <span class="emphasis"><em>partition</em></span>. The partition is a Java object which controls the operations and lives of all of the other components of the virtual directory configuration, including sources, connections, and mappings. The partition contains all of the Java classes and common files used by these virtual directory components. In this way, a partition is functionally similar to an application server like Tomcat.
+		</p><p>
+			A default partition is created with every Penrose Server instance, and this is usually sufficent to define the complete Penrose Virtual Directory deployment. It is also possible, depending on the deployment requirements, to have multiple partitions within a single Penrose Server instance.
+		</p><p>
+			It can also be necessary to have multiple Penrose Server instances with the same virtual directory configuration. Penrose Virtual Directory partitions can be easily exported from one Penrose Server instance and imported on another, making it easy to have a consistent virtual directory on different servers.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Configuring_Partitions-About_Partitions">5.2. Adding Partitions</h2></div></div></div><a id="d0e3090" class="indexterm"/><p>
+			By default, every new server already has a partition named <code class="command">DEFAULT</code>. Server entries can have an unlimited number of partitions. To create a new partition:
+		</p><div class="orderedlist"><ol><li><p>
+					In Penrose Server, open the server entry.
+				</p></li><li><p>
+					In the top menu, click the <span><strong class="guimenu">Partitions</strong></span> menu item, and select the <span><strong class="guimenuitem">New Partition...</strong></span> option.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newpartition1.png"/></div></div><p>
+					Alternatively, right-click the <span><strong class="guilabel">Partitions</strong></span> folder, and select the <span><strong class="guimenuitem">New Partition...</strong></span> option.
+				</p></li><li><p>
+					Fill in a name for the new partition, and click <span><strong class="guibutton">Finish</strong></span>.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newpartition2.png"/></div></div></li></ol></div><p>
+			The new partition, with all of its subfolders, is listed in the <span><strong class="guilabel">Partitions</strong></span> section.
+		</p><div class="informalfigure"><div class="mediaobject"><img src="images/newpartition3.png"/></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="partitions-exporting-importing">5.3. Exporting and Importing Partitions</h2></div></div></div><p>
+			The partition configuration can be exported from one Penrose Server and imported into another Penrose Server. This makes it much easier to have the same virtual directory mirrored on multiple servers.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="partitions-exporting">5.3.1. Exporting Partitions in Penrose Studio</h3></div></div></div><a id="d0e3152" class="indexterm"/><div class="orderedlist"><ol><li><p>
+						Open the server entry in Penrose Studio, and expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+					</p></li><li><p>
+						Right-click the partition to export under the <span><strong class="guilabel">Partitions</strong></span> folder.
+					</p></li><li><p>
+						Select <span><strong class="guimenuitem">Export...</strong></span> from the drop-down menu.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/export1.png"/></div></div></li><li><p>
+						Fill in the path to the directory to which to save the partition configuration file, and click the <span><strong class="guibutton">Finish</strong></span> button.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/export2.png"/></div></div></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="partitions-importing">5.3.2. Importing Partitions in Penrose Studio</h3></div></div></div><a id="d0e3193" class="indexterm"/><div class="note"><h2>NOTE</h2><p>
+					The import partitions directory must be local to the machine where Penrose Studio is being run.
+				</p></div><div class="orderedlist"><ol><li><p>
+						Open the server entry in Penrose Studio, and expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+					</p></li><li><p>
+						Right-click the <span><strong class="guilabel">Partitions</strong></span> folder.
+					</p></li><li><p>
+						Select <span><strong class="guimenuitem">Import Partition...</strong></span> from the drop-down menu.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/import1.png"/></div></div></li><li><p>
+						Fill in the name for the new partition. The name can be different than the original name. Click <span><strong class="guibutton">Next</strong></span>.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/import2.png"/></div></div></li><li><p>
+						Fill in the path to the directory to the partition directory, and click <span><strong class="guibutton">Finish</strong></span>.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/import3.png"/></div></div></li></ol></div><p>
+				The imported partition is listed beneath the <span><strong class="guilabel">Partitions</strong></span> folder.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="partitions-exporting-cmd">5.3.3. Exporting and Importing Partitions in the Command Line</h3></div></div></div><a id="d0e3254" class="indexterm"/><a id="d0e3259" class="indexterm"/><p>
+				Penrose Server has a tool, <code class="command">partition.sh</code>, which can manage partitions, and this tool is used to import and export partitions.
+			</p><div class="orderedlist"><ol><li><p>
+						On the first server, export the partition. For example:
+					</p><pre class="screen">/opt/vd-server-2.0/bin/partition.sh export partition <em class="replaceable"><code>partition_name</code></em> <em class="replaceable"><code>/path/to/exported/partition</code></em></pre></li><li><p>
+						The partition must be imported from a directory which is local to the Penrose Server instance, so the exported partition must be available on a fileserver or the local machine. For example, copy the exported partition to the target Penrose Server machine:
+					</p><pre class="screen">scp -r ExamplePartition2/ root@server2.example.com:/opt/vd-server-2.0/partitions/ExamplePartition2/</pre></li><li><p>
+						Import the partition into the target Penrose Server.
+					</p><pre class="screen">/opt/vd-server-2.0/bin/partition.sh import partition <em class="replaceable"><code>partition_name</code></em> <em class="replaceable"><code>/local/path/to/exported/partition</code></em></pre></li></ol></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="partitions-starting">5.4. Starting and Stopping Partitions</h2></div></div></div><p>
+			The partition is a Java MBean object which starts and runs automatically with Penrose Server. Each source, connection, directory, and mapping is also an MBean object, controlled by the partition object. The partition can be started and stopped, which also starts or stops all of the sources, connections, directories, and mappings configured under it.
+		</p><a id="d0e3300" class="indexterm"/><p>
+			To start or stop a partition from Penrose Studio:
+		</p><div class="orderedlist"><ol><li><p>
+					Open the server entry in Penrose Studio, and expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+				</p></li><li><p>
+					Right-click the partition to start or stop under the <span><strong class="guilabel">Partitions</strong></span> folder.
+				</p></li><li><p>
+					Select <span><strong class="guimenuitem">Start</strong></span> or <span><strong class="guimenuitem">Stop</strong></span> from the drop-down menu.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/stoppartition.png"/></div></div></li></ol></div><a id="d0e3335" class="indexterm"/><a id="d0e3342" class="indexterm"/><p>
+			To start or stop a partition from the command line, run the <code class="command">partition.sh</code> command. For example:
+		</p><pre class="screen">/opt/vd-server-2.0/bin/partition.sh stop partition DEFAULT</pre><p>
+			The <code class="command">partition.sh</code> command is explained in <a href="chap-Admin_Guide-Using_RHVD_Command_Line_Tools.html#sect-Admin_Guide-Using_RHVD_Command_Line_Tools-Partitions" title="A.7. partition.sh">Section A.7, “partition.sh”</a>.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="custom-classes">5.5. Using Custom Java Classes</h2></div></div></div><a id="d0e3364" class="indexterm"/><a id="d0e3369" class="indexterm"/><a id="d0e3374" class="indexterm"/><a id="d0e3379" class="indexterm"/><p>
+			Penrose Virtual Directory comes with many different Java libraries which define different entry types, such as <code class="command">org.safehaus.penrose.partition.Partition</code> for a partition and <code class="command">org.safehaus.penrose.directory.Entry</code> for virtual directory entries. It is possible to add custom classes to support special entries or to define specific subtree elements quickly.
+		</p><p>
+			To use a class for a specific partition only, create a <code class="filename">lib/</code> directory in the partition directory, <code class="filename"><code class="filename">/opt/vd-server-2.0/partitions/</code><span class="emphasis"><em>partition_name</em></span><code class="filename">/DIR-INF</code></code>.
+		</p><p>
+			To make a custom class available for any partition, put the JAR file in the <code class="filename">/opt/vd-server-2.0/lib/ext</code> directory.
+		</p><div class="note"><h2>NOTE</h2><p>
+				Do not put any custom libraries in <code class="filename">/opt/vd-server-2.0/lib/</code>. This directory is reserved for built-in libraries, and any custom files may be deleted or overwritten during upgrades.
+			</p></div></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Using_VDST.html"><strong>Prev</strong>Chapter 4. Using Penrose Studio</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_connections.html"><strong>Next</strong>Chapter 6. Configuring Connections</a></li></ul></body></html>

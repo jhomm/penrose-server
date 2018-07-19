@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 3. Basic Usage</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Installing_RHVD.html" title="Chapter 2. Installing Penrose Virtual Directory"/><link rel="next" href="chap-Admin_Guide-Using_VDST.html" title="Chapter 4. Using Penrose Studio"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 3. Basic Usage</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Installing_RHVD.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Using_VDST.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="chap-Admin_Guide-Basic_Usage">Chapter 3. Basic Usage</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#sect-Admin_Guide-Basic_Usage-Starting_the_Service">3.1. Starting the Service</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#init-scripts">3.2. Configuring Penrose Server to Run as a Service</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#sect-Admin_Guide-Configuration_Files-The_server.xml_File">3.3. Configuring Penrose Server Host System Properties</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#hostsystem-prop-studio">3.3.1. Configuring the Host System Properties in Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#hostsystem-prop-file">3.3.2. Configuring the Host System Properties in the Configuration File</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#sect-Admin_Guide-Basic_Usage-Setting_up_the_Admin_User">3.4. Setting up the Admin User</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#admin-user-studio">3.4.1. Editing the Admin User in Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#admin-user-file">3.4.2. Editing the Admin User in the Configuration File</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#sect-Admin_Guide-Basic_Usage-Logging">3.5. Configuring and Viewing Logs</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#configuring-log-param">3.5.1. Configuring Log Settings</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#access-logs">3.5.2. Access Logs</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#error-logs">3.5.3. Error Logs</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#debug-logs">3.5.4. Debug Logs</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#sect-Admin_Guide-Basic_Usage-Configuring_Secure_Connections">3.6. Configuring Penrose Virtual Directory for SSL</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#backend-ssl">3.6.1. Configuring SSL for Backend Sources</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#frontend-ssl">3.6.2. Configuring SSL for Frontend Services</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Basic_Usage.html#sect-Admin_Guide-Basic_Usage-Running_VDS_Outside_a_Firewall">3.7. Running Penrose Server Outside a Firewall</a></span></dt></dl></div><p>
+		This chapter contains common information about the configuration files and directories used in Penrose Studio and information on basic server configuration options, such as starting and stopping the server, establishing secure connections, and changing the root user and host information.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Basic_Usage-Starting_the_Service">3.1. Starting the Service</h2></div></div></div><p>
+			Penrose Server is started by running a shell script, <code class="command">vd-server.sh</code>, in the <code class="filename">/opt/vd-server-2.0/bin</code> directory. For example:
+		</p><pre class="screen">cd /opt/vd-server-2.0/bin
+
+./vd-server.sh
+PenroseServer        [ 126] Penrose Server is ready.</pre><p>
+			To stop the server, simply close the script.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="init-scripts">3.2. Configuring Penrose Server to Run as a Service</h2></div></div></div><a id="d0e1696" class="indexterm"/><a id="d0e1701" class="indexterm"/><a id="d0e1706" class="indexterm"/><a id="d0e1711" class="indexterm"/><p>
+			Penrose Server can also stopped, started, and restarted using system tools on Red Hat Enterprise Linux. Init scripts are included with the configuration files with Penrose Server. and then copy them over to the <code class="filename">/usr/sbin</code> directory.
+		</p><div class="orderedlist"><ol><li><p>
+					Log into the Penrose Server host machine as the <code class="command">root</code> user.
+				</p></li><li><p>
+					Open the Penrose Virtual Directory init script directory.
+				</p><pre class="screen">cd /opt/vd-server-2.0/etc/init.d</pre></li><li><p>
+					Edit the <code class="command">vd-server</code> script so that the Penrose Server home and script locations are correct. For example:
+				</p><pre class="screen">VD_SERVER_HOME=/opt/vd-server-2.0
+VD_SERVER_SCRIPT=$VD_SERVER_HOME/bin/vd-server.sh</pre></li><li><p>
+					Copy the init file to the <code class="filename">/etc/init.d</code> directory.
+				</p><pre class="screen">cp /opt/vd-server-2.0/etc/init.d/vd-server /etc/init.d</pre></li><li><p>
+					Make the init script executable.
+				</p><pre class="screen">chmod +x /etc/init.d/vd-server</pre></li><li><p>
+					Test the new Penrose Virtual Directory service.
+				</p><pre class="screen">service vd-server start</pre></li></ol></div><p>
+			After setting Penrose Server up as a service, it can be managed using the <code class="command">service</code> on Red Hat Enterprise Linux:
+		</p><pre class="screen">service vd-server {start|stop|restart}</pre></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Configuration_Files-The_server.xml_File">3.3. Configuring Penrose Server Host System Properties</h2></div></div></div><a id="d0e1767" class="indexterm"/><a id="d0e1770" class="indexterm"/><a id="d0e1775" class="indexterm"/><p>
+			The system properties for Penrose Virtual Directory define the connection information to access the Penrose Server. This is used by clients such as Penrose Studio and LDAP browsers.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="hostsystem-prop-studio">3.3.1. Configuring the Host System Properties in Penrose Studio</h3></div></div></div><p>
+				To set the host system information in Penrose Studio:
+			</p><div class="orderedlist"><ol><li><p>
+						Click the <span><strong class="guilabel">System Properties</strong></span> link at the bottom of the server navigation window.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/sysproperties1.png"/></div></div></li><li><p>
+						Click the <span><strong class="guibutton">Add</strong></span> button to add new system properties, or select and existing property and click <span><strong class="guibutton">Edit</strong></span> to change it.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/sysproperties2.png"/></div></div></li><li><p>
+						Fill in the properties and values.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/sysproperties3.png"/></div></div><p>
+						The hostname (<code class="command">java.rmi.server.hostname</code>) is required. There are four optional parameters, which are set in pairs:
+					</p><div class="itemizedlist"><ul><li><p>
+								<code class="command">javax.net.ssl.trustStore</code> and <code class="command">javax.net.ssl.trustStorePwd</code>, which give the path to the server's certificate database and the password to access the database.
+							</p></li><li><p>
+								<code class="command">http.proxyHost</code> and <code class="command">http.proxyPort</code>, which give the hostname and port of a proxy web server to use to access the server.
+							</p></li></ul></div></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="hostsystem-prop-file">3.3.2. Configuring the Host System Properties in the Configuration File</h3></div></div></div><p>
+				The main file for configuring the Penrose service is <code class="filename">server.xml</code> in the <code class="filename">/opt/vd-server-2.0/conf</code> directory. This file defines important parameters such as the Java system properties, adapters, and the server's root user.
+			</p><div class="note"><h2>NOTE</h2><p>
+					The <code class="filename">server.xml</code> file is only loaded when the Penrose Server starts, so the server must be restarted after any changes to this file.
+				</p></div><p>
+				The Java properties define the host connection information, and the information set in the <code class="filename">server.xml</code> file are automatically loaded when Penrose Server starts. These properties include the host's connection information.
+			</p><p>
+				For example:
+			</p><pre class="screen">&lt;server&gt;
+
+  &lt;system-property&gt;
+    &lt;property-name&gt;java.rmi.server.hostname&lt;/property-name&gt;
+    &lt;property-value&gt;server.example.com&lt;/property-value&gt;
+  &lt;/system-property&gt;
+
+&lt;/server&gt;</pre><p>
+				The <em class="parameter"><code>java.rmi.server.hostname</code></em> system property allows Penrose Studio to connect to Penrose Server.
+			</p><a id="d0e1875" class="indexterm"/><a id="d0e1880" class="indexterm"/><a id="d0e1885" class="indexterm"/><div class="table" id="tabl-Admin_Guide-System_Properties-VDS_Java_System_Properties"><div class="table-contents"><table summary="Penrose Server Java System Properties" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+								Property
+							</th><th>
+								Description
+							</th></tr></thead><tbody><tr><td>
+								java.rmi.server.hostname
+							</td><td>
+								Used by JMX clients to connect to Penrose Server; the default value is <code class="command">localhost</code> and must be changed to the full hostname of the server.
+							</td></tr><tr><td>
+								javax.net.ssl.trustStore
+							</td><td>
+								Contains the path to the certificate database for Penrose Server.
+							</td></tr><tr><td>
+								javax.net.ssl.trustStorePwd
+							</td><td>
+								Contains the password to access the certificate database.
+							</td></tr><tr><td>
+								http.proxyHost
+							</td><td>
+								Contains the hostname of an HTTP proxy server.
+							</td></tr><tr><td>
+								http.proxyPort
+							</td><td>
+								Contains the port number of an HTTP proxy server.
+							</td></tr></tbody></table></div><h6>Table 3.1. Penrose Server Java System Properties</h6></div><br class="table-break"/></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Basic_Usage-Setting_up_the_Admin_User">3.4. Setting up the Admin User</h2></div></div></div><a id="d0e1932" class="indexterm"/><p>
+			The root user for Penrose Server has full access to the Penrose Server application. LDAP clients which bind to Penrose Server as the configured root user bypass all access control settings for the virtual directory; therefore, any management clients, including Penrose Studio, must bind to the Penrose Server as the (Penrose Server) root user.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="admin-user-studio">3.4.1. Editing the Admin User in Penrose Studio</h3></div></div></div><a id="d0e1940" class="indexterm"/><div class="orderedlist"><ol><li><p>
+						Click the <span><strong class="guilabel">Administrator</strong></span> link at the bottom of the server navigation window.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/adminuser1.png"/></div></div></li><li><p>
+						Change the admin user's name or password in the appropriate fields.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/adminuser2.png"/></div></div><p>
+						The root DN can be any valid distinguished name (DN), and this DN does not have to be present in the virtual directory tree. The default root DN is <code class="command">uid=admin,ou=system</code>, and the default password is <code class="command">secret</code>.
+					</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="admin-user-file">3.4.2. Editing the Admin User in the Configuration File</h3></div></div></div><a id="d0e1974" class="indexterm"/><p>
+				Like the host system properties, the root user is configured in the <code class="filename">/opt/vd-server-2.0/conf/server.xml</code> file.
+			</p><p>
+				The root DN can be any valid distinguished name (DN), and this DN does not have to be present in the virtual directory tree. The default root DN is <code class="command">uid=admin,ou=system</code>, and the default password is <code class="command">secret</code>.
+			</p><p>
+				For example:
+			</p><pre class="screen">&lt;server&gt;
+
+  &lt;root&gt;
+    &lt;root-dn&gt;uid=admin,ou=system&lt;/root-dn&gt;
+    &lt;root-password&gt;secret&lt;/root-password&gt;
+  &lt;/root&gt;
+
+&lt;/server&gt;</pre></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Basic_Usage-Logging">3.5. Configuring and Viewing Logs</h2></div></div></div><a id="d0e1999" class="indexterm"/><a id="d0e2004" class="indexterm"/><a id="d0e2007" class="indexterm"/><a id="d0e2010" class="indexterm"/><a id="d0e2013" class="indexterm"/><a id="d0e2016" class="indexterm"/><p>
+			There are three logs kept by Penrose Server:
+		</p><div class="itemizedlist"><ul><li><p>
+					Access logs
+				</p></li><li><p>
+					Error logs
+				</p></li><li><p>
+					Debug logs
+				</p></li></ul></div><p>
+			These logs are stored in the <code class="filename">/opt/vd-server-2.0/logs</code> directory. Since these files apply to access to Penrose Server and Penrose Studio, one set of log files is kept, regardless of the number of partitions.
+		</p><p>
+			The log configuration file is located in the configuration directory, <code class="filename">/opt/vd-server-2.0/conf</code>.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="configuring-log-param">3.5.1. Configuring Log Settings</h3></div></div></div><a id="d0e2044" class="indexterm"/><a id="d0e2049" class="indexterm"/><a id="d0e2054" class="indexterm"/><p>
+				The logging parameters for all logs are configured in the <code class="filename">log4j.xml</code> file in the <code class="filename">/opt/vd-server-2.0/conf</code> directory. Several parameters can be set for the logs individually, including the file location, maximum file size, and the number of backup files to keep. The parameters are listed in <a href="chap-Admin_Guide-Basic_Usage.html#tabl-Admin_Guide-Logging-log4j_Parameters" title="Table 3.2. log4j Parameters">Table 3.2, “log4j Parameters”</a>.
+			</p><div class="note"><h2>NOTE</h2><p>
+					All three log files — access, error, and debug logs — have the same configuration parameters available to them.
+				</p></div><a id="d0e2074" class="indexterm"/><div class="table" id="tabl-Admin_Guide-Logging-log4j_Parameters"><div class="table-contents"><table summary="log4j Parameters" border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+								Parameter
+							</th><th>
+								Description
+							</th><th>
+								Example
+							</th></tr></thead><tbody><tr><td>
+								File
+							</td><td>
+								Gives the path, relative to the <code class="filename">/opt/vd-server-2.0</code>, of the log file.
+							</td><td>
+								param name="File" value="logs/access.log"
+							</td></tr><tr><td>
+								MaxFileSize
+							</td><td>
+								Sets the threshold for the log file before beginning a new log file.
+							</td><td>
+								param name="MaxFileSize" value="10MB"
+							</td></tr><tr><td>
+								MaxBackupIndex
+							</td><td>
+								Sets the number of old log files to keep as archives.
+							</td><td>
+								param name="MaxBackupIndex" value="100"
+							</td></tr><tr><td>
+								ConversionPattern
+							</td><td>
+								Sets the pattern to use in the log entries, both for the timestamp and the log message. This parameter is set within <code class="command">&lt;layout&gt;</code> tags.
+							</td><td>
+								param name="ConversionPattern" value="[%d{MM/dd/yyyy HH:mm:ss}] %m%n"
+							</td></tr></tbody></table></div><h6>Table 3.2. log4j Parameters</h6></div><br class="table-break"/><p>
+				For example:
+			</p><pre class="screen">  &lt;appender name="access" class="org.apache.log4j.RollingFileAppender"&gt;
+    &lt;param name="File" value="logs/access.log"/&gt;
+    &lt;param name="MaxFileSize" value="10MB"/&gt;
+    &lt;param name="MaxBackupIndex" value="100"/&gt;
+    &lt;layout class="org.apache.log4j.PatternLayout"&gt;
+      &lt;param name="ConversionPattern" value="[%d{MM/dd/yyyy HH:mm:ss}] %m%n"/&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;</pre></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="access-logs">3.5.2. Access Logs</h3></div></div></div><a id="d0e2133" class="indexterm"/><a id="d0e2138" class="indexterm"/><a id="d0e2141" class="indexterm"/><a id="d0e2146" class="indexterm"/><p>
+				The access logs record every transation that is performed through Penrose Server on the virtual directory or its sources. The access log entry has the following general format:
+			</p><pre class="screen">[date timestamp] session_ID type_of_operation operation_details</pre><p>
+				The <span class="emphasis"><em>session_ID</em></span> gives the number for the connection thread.
+			</p><p>
+				There are several different types of transaction logged in the access log:
+			</p><div class="itemizedlist"><ul><li><p>
+						<code class="command">CONNECT</code> shows the initial connection. The operation details include the IP address of the client, the IP address of the Penrose Server host, and the protocol used to connect to the server (either LDAP or JMX).
+					</p></li><li><p>
+						<code class="command">BIND</code> shows that a user has authenticated to the server when the session was opened. This contains the DN of the user.
+					</p><p>
+						After the initial log entry for the <code class="command">BIND</code> operation, the result is shown in the <code class="command">result=</code> tag and then the DN which connected (<code class="command">authDN</code>).
+					</p></li><li><p>
+						<code class="command">SEARCH</code> shows the search details for a search of the virtual directory. This contains the base DN, scope, and filter for the search, as well as the entry attributes returned.
+					</p><p>
+						After the initial log entry for the <code class="command">SEARCH</code> operation, the result is shown in the <code class="command">result=</code> tag and, for a successful operation, the number of entries returned.
+					</p></li><li><p>
+						<code class="command">DISCONNECT</code> shows when the connection is closed.
+					</p></li></ul></div><p>
+				For example:
+			</p><div class="example" id="ex.accesslogs"><div class="example-contents"><pre class="screen">[10/29/2008 12:47:31] session="5" - CONNECT from="192.168.123.122" to="192.168.123.121" protocol="LDAP"
+[10/29/2008 12:47:31] session="5" - BIND dn="uid=admin,ou=system"
+[10/29/2008 12:47:31] session="5" - BIND result="Success" authDn="uid=admin,ou=system"
+[10/29/2008 12:47:33] session="5" - SEARCH base="dc=example,dc=com" scope="one level" filter="(objectClass=*)" attrs="*,+"
+[10/29/2008 12:47:45] session="5" - SEARCH result="Success" entries="2"
+[10/29/2008 14:58:59] session="5" - DISCONNECT</pre></div><h6>Example 3.1. Access Logs</h6></div><br class="example-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="error-logs">3.5.3. Error Logs</h3></div></div></div><a id="d0e2214" class="indexterm"/><a id="d0e2219" class="indexterm"/><a id="d0e2222" class="indexterm"/><a id="d0e2227" class="indexterm"/><p>
+				The error logs have a more simple format than the access logs, showing the time of the error and the error message.
+			</p><pre class="screen">[date timestamp] error_message</pre><p>
+				Many error messages contain Java exceptions, which can indicate which areas of the Penrose Virtual Directory service have a problem. For example:
+			</p><div class="example" id="ex.errorlogs"><div class="example-contents"><pre class="screen">[10/08/2008 19:19:40] An error occurred while attempting to calculate a SHA-1 digest of file /usr/local/penrose-server-2.0RC2/services/OpenDS/config/config.ldif:  SHA-1 MessageDigest not available (GetInstance.java:158 Security.java:691 MessageDigest.java:145 ConfigFileHandler.java:773 ConfigFileHandler.java:274 DirectoryServer.java:1190 DirectoryServer.java:1139 OpenDSLDAPService.java:66 Service.java:54 ServiceManager.java:113 PenroseServer.java:119 PenroseServer.java:307)
+org.opends.server.types.InitializationException: An error occurred while attempting to calculate a SHA-1 digest of file /usr/local/penrose-server-2.0RC2/services/OpenDS/config/config.ldif:  SHA-1 MessageDigest not available (GetInstance.java:158 Security.java:691 MessageDigest.java:145 ConfigFileHandler.java:773 ConfigFileHandler.java:274 DirectoryServer.java:1190 DirectoryServer.java:1139 OpenDSLDAPService.java:66 Service.java:54 ServiceManager.java:113 PenroseServer.java:119 PenroseServer.java:307)
+        at org.<strong class="userinput"><code>opends.server.extensions.ConfigFileHandler.initializeConfigHandler</code></strong>(ConfigFileHandler.java:278)
+        at org.opends.server.core.DirectoryServer.initializeConfiguration(DirectoryServer.java:1190)
+        at org.opends.server.core.DirectoryServer.initializeConfiguration(DirectoryServer.java:1139)
+        at org.safehaus.penrose.<strong class="userinput"><code>opends.OpenDSLDAPService.init</code></strong>(OpenDSLDAPService.java:66)
+        at org.safehaus.penrose.service.Service.init(Service.java:54)
+        at org.safehaus.penrose.service.ServiceManager.startService(ServiceManager.java:113)
+        at org.safehaus.penrose.server.PenroseServer.start(PenroseServer.java:119)
+        at org.safehaus.penrose.server.PenroseServer.main(PenroseServer.java:307)</pre></div><h6>Example 3.2. Error Logs</h6></div><br class="example-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="debug-logs">3.5.4. Debug Logs</h3></div></div></div><a id="d0e2250" class="indexterm"/><a id="d0e2255" class="indexterm"/><a id="d0e2258" class="indexterm"/><a id="d0e2263" class="indexterm"/><p>
+				The debug log contains all of the information recorded in the access and error logs, including all of the error message output and bind attempts, and additional information, such as notices on when the server starts and stops.
+			</p><p>
+				The format of the debug log is slightly different than the access or error logs. The log entry references only the Java file and line number which is accessed, then a message. The message can be relatively short or very long, depending on the response from the server.
+			</p><pre class="screen">Java_class [source_line_number] message.</pre><p>
+				For example:
+			</p><div class="example" id="ex.debuglogs"><div class="example-contents"><pre class="screen">PenroseServer        [ 147] Penrose Server has been shutdown.
+PenroseServer        [ 126] Penrose Server is ready.</pre></div><h6>Example 3.3. Debug Logs</h6></div><br class="example-break"/></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Basic_Usage-Configuring_Secure_Connections">3.6. Configuring Penrose Virtual Directory for SSL</h2></div></div></div><a id="d0e2282" class="indexterm"/><a id="d0e2287" class="indexterm"/><p>
+			SSL can be configured two ways for Penrose Server. Front-end SSL means that Penrose Server uses SSL-secured connections to communicate with its OpenDS client services. Back-end SSL means that Penrose Server uses SSL-secured connections to communicate with LDAP and JDBC data sources.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="backend-ssl">3.6.1. Configuring SSL for Backend Sources</h3></div></div></div><div class="note"><h2>NOTE</h2><p>
+					The source must be configured to run over SSL as well for Penrose Virtual Directory to connect to it using SSL.
+				</p></div><div class="orderedlist"><ol><li><p>
+						Configure the source to run in SSL.
+					</p></li><li><p>
+						Configure the connection for the source, as described in <a href="chap-Admin_Guide-Configuring_connections.html" title="Chapter 6. Configuring Connections">Chapter 6, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring Connections</i></a>, with the protocol and ports set for SSL.
+					</p></li><li><p>
+						When the source is configured for SSL, an SSL client certificate is issued to the source. This certificate has to be imported into Penrose Server's certificate database for Penrose Server to connect to the source over SSL.
+					</p><div class="orderedlist"><ol><li><p>
+								Export the source's SSL client certificate to a PEM or PKCS #12 file.
+							</p></li><li><p>
+								Open the Penrose Server configuration directory.
+							</p><pre class="screen">cd /opt/vd-server-2.0/conf</pre></li><li><p>
+								Import the certificate into the certificate database. This can be done using tools like <code class="command">certutil</code> or <code class="command">keytool</code>, depending on how the database was created. For example:
+							</p><pre class="screen">keytool -import -trustcacerts -alias mydb -file certificate.pem -keystore conf/cacerts
+Enter keystore password:  secret
+Owner: CN=source1.example.com, OU=Engineering, L=Raleigh, ST=North Carolina, C=US
+Issuer: CN=mydb, OU=Engineering, L=Raleigh, ST=North Carolina, C=US
+Serial number: 499ee484
+Valid from: Fri Feb 20 11:12:36 CST 2009 until: Thu May 21 12:12:36 CDT 2009
+Certificate fingerprints:
+         MD5:  37:45:60:73:A8:DD:BB:1D:C0:7A:F3:82:49:99:B9:04
+         SHA1: CE:2C:21:D4:91:D1:7E:94:92:29:24:33:EE:59:06:DD:F0:B5:B8:EA
+Trust this certificate? [no]:  yes
+Certificate was added to keystore</pre></li><li><p>
+								Edit the <code class="filename">server.xml</code> file. Add two parameters, <code class="command">javax.net.ssl.trustStore</code> and <code class="command">javax.net.ssl.trustStorePassword</code>, to give the location and password to access the certificate database.
+							</p><pre class="screen">&lt;system-property&gt;
+  &lt;property-name&gt;javax.net.ssl.trustStore&lt;/property-name&gt;
+  &lt;property-value&gt;conf/cacerts&lt;/property-value&gt;
+&lt;/system-property&gt;
+
+&lt;system-property&gt;
+  &lt;property-name&gt;javax.net.ssl.trustStorePassword&lt;/property-name&gt;
+  &lt;property-value&gt;secret&lt;/property-value&gt;
+&lt;/system-property&gt;</pre></li></ol></div></li></ol></div><p>
+				To verify that SSL is properly configured for the backend, open Penrose Studio and open the source. If the source opens and can be browsed, then SSL is working.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="frontend-ssl">3.6.2. Configuring SSL for Frontend Services</h3></div></div></div><div class="orderedlist"><ol><li><p>
+						Request or generate a certificate for Penrose Server to use.
+					</p><p>
+						Penrose Server supports a JKS or PKCS #12 certificate. Certificates can be request from a third-party authority or can be self-generated using a tool such as <code class="command">keytool</code> or <code class="command">certutil</code> and <code class="command">pk12util</code>.
+					</p><p>
+						However the certificate is generated, make sure to use the hostname of the Penrose Server host machine as the common name (<code class="command">CN</code>) part of the certificate.
+					</p><p>
+						For example, this generates a JKS certificate:
+					</p><pre class="screen">keytool -genkey -keyalg RSA -alias server-cert -keystore conf/keystore
+Enter keystore password:
+Re-enter new password:
+What is your first and last name?
+  [Unknown]:  server.example.com
+What is the name of your organizational unit?
+  [Unknown]:  Engineering
+What is the name of your organization?
+  [Unknown]:  Example Corp.
+What is the name of your City or Locality?
+  [Unknown]:  Raleigh
+What is the name of your State or Province?
+  [Unknown]:  North Carolina
+What is the two-letter country code for this unit?
+  [Unknown]:  US
+Is CN=server.example.com, OU=Engineering, O=Example Corp., L=Raleigh, ST=North Carolina, C=US correct?
+  [no]:  yes
+
+Enter key password for &lt;server-cert&gt;
+        (RETURN if same as keystore password):</pre><p>
+						For more information on <code class="command">keytool</code>, see <a href="http://java.sun.com/j2se/1.3/docs/tooldocs/win32/keytool.html">http://java.sun.com/j2se/1.3/docs/tooldocs/win32/keytool.html</a>.
+					</p></li><li><p>
+						Edit the front-end service to support SSL. The only service which currently supports SSL for Penrose Server is the OpenDS service.
+					</p><div class="orderedlist"><ol><li><p>
+								Open the OpenDS directory.
+							</p><pre class="screen">/opt/vd-server-2.0/services/OpenDS/config/</pre></li><li><p>
+								Copy the keystore from the Penrose Server <code class="filename">conf</code> directory to the OpenDS service configuration directory.
+							</p><pre class="screen">cp /opt/vd-server-2.0/conf/keystore .</pre></li><li><p>
+								In the OpenDS service configuration directory, there is a file called <code class="filename">keystore.pin</code>. Add the password for the keystore database to this file. For example:
+							</p><pre class="screen">echo secret &gt; keystore.pin</pre></li><li><p>
+								The OpenDS <code class="filename">config.ldif</code> file. This contains entries which enable and configure SSL for the service.
+							</p><pre class="screen"> vim config.ldif</pre></li><li><p>
+								The OpenDS <code class="filename">config.ldif</code> file has an entry for a JKS key manager and a PKCS #12 key manager. Edit the appropriate entry so that it is enabled, depending on the type of certificate created. For example:
+							</p><pre class="screen"> dn: cn=JKS,cn=Key Manager Providers,cn=config
+ objectClass: ds-cfg-file-based-key-manager-provider
+ objectClass: ds-cfg-key-manager-provider
+ objectClass: top
+ ds-cfg-key-store-type: JKS
+ cn: JKS
+ ds-cfg-key-store-file: config/keystore
+ ds-cfg-key-store-pin-file: config/keystore.pin
+ <strong class="userinput"><code>ds-cfg-enabled: true</code></strong></pre><p>
+								If necessary, edit the other parameters in the entry to make sure it matches the certificate information. Make sure the directories given for the keystore and PIN files are relative to the <span class="emphasis"><em>OpenDS</em></span> service directory, not the Penrose Server home directory.
+							</p></li><li><p>
+								To accept client certificates, make sure the blind trust entry is enabled.
+							</p><pre class="screen"> dn: cn=Blind Trust,cn=Trust Manager Providers,cn=config
+ objectClass: ds-cfg-blind-trust-manager-provider
+ objectClass: top
+ objectClass: ds-cfg-trust-manager-provider
+ cn: Blind Trust
+ <strong class="userinput"><code>ds-cfg-enabled: true</code></strong></pre></li><li><p>
+								Make sure that LDAPS connections are allowed. The entry should be enabled, SSL should be allowed, and Start TLS should be denied. Additionally, the certificate nickname in the entry should match the nickname of the certificate generated for Penrose Server.
+							</p><pre class="screen"> dn: cn=LDAPS Connection Handler,cn=Connection Handlers,cn=config
+ .. <em class="replaceable"><code>snip</code></em>...
+ <strong class="userinput"><code>ds-cfg-allow-start-tls: false</code></strong>   
+ ds-cfg-listen-address: 0.0.0.0
+ ds-cfg-use-tcp-keep-alive: true
+ ds-cfg-ssl-cert-nickname: server-cert
+ .. <em class="replaceable"><code>snip</code></em>...
+ <strong class="userinput"><code>ds-cfg-enabled: true</code></strong>    
+ .. <em class="replaceable"><code>snip</code></em>...
+ cn: LDAPS Connection Handler
+ .. <em class="replaceable"><code>snip</code></em>...
+ ds-cfg-listen-port: 636
+ .. <em class="replaceable"><code>snip</code></em>...
+ <strong class="userinput"><code>ds-cfg-use-ssl: true</code></strong></pre></li></ol></div></li><li><p>
+						Restart Penrose Server.
+					</p><pre class="screen">service vd-server restart</pre></li><li><p>
+						The Penrose Server certificate has to be available in the certificate database of any LDAP tools used to manage Penrose Server. For example, for OpenLDAP tools:
+					</p><div class="orderedlist"><ol><li><p>
+								For a self-signed certificate, export a PEM file.
+							</p><pre class="screen">keytool -export -alias server-cert -keystore conf/keystore -file penrose.pem -rfc</pre></li><li><p>
+								Import the certificate into the certificate database, such as the default <code class="filename">cacerts</code>.
+							</p><pre class="screen">cp penrose.pem /etc/openldap/cacerts
+
+c_rehash /etc/openldap/cacerts</pre></li></ol></div></li><li><p>
+						To use OpenLDAP's LDAP client tools with Penrose Server, edit the OpenLDAP configuration file, <code class="filename">ldap.conf</code>, to recognize Penrose Server's certificate.
+					</p><pre class="screen">vim /etc/openldap/ldap.conf
+
+TLS_CACERTDIR /etc/openldap/cacerts</pre></li></ol></div><p>
+				To test the frontend SSL configuration for Penrose Server, run an <code class="command">ldapsearch</code> using the secure port, 636, and the secure protocol, <code class="command">ldaps</code>.
+			</p><pre class="screen">ldapsearch -H ldaps://localhost:636 -x -b "" -s base</pre><p>
+				If SSL is properly configured the search returns the root DSE for Penrose Server.
+			</p></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Basic_Usage-Running_VDS_Outside_a_Firewall">3.7. Running Penrose Server Outside a Firewall</h2></div></div></div><a id="d0e2510" class="indexterm"/><p>
+			Penrose Server can run outside a firewall for additional network security, but, in that case, the firewall must be configured to allow access for the different client ports required for Penrose Server.
+		</p><a id="d0e2517" class="indexterm"/><a id="d0e2522" class="indexterm"/><div class="informaltable"><table border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Port Number
+						</th><th>
+							Client Description
+						</th></tr></thead><tbody><tr><td>
+							1099
+						</td><td>
+							An RMI port used by Penrose Studio.
+						</td></tr><tr><td>
+							40888
+						</td><td>
+							An RMI transport port used by Penrose Studio.
+						</td></tr><tr><td>
+							8122
+						</td><td>
+							A web port used by web browsers.
+						</td></tr><tr><td>
+							10389
+						</td><td>
+							The LDAP standard port used by directory services.
+						</td></tr><tr><td>
+							10636
+						</td><td>
+							The LDAP secure (SSL) port used by directory services.
+						</td></tr></tbody></table></div><div class="note"><h2>NOTE</h2><p>
+				The ports used by these services can be changed; see <a href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html" title="Chapter 12. Using Services with Penrose Virtual Directory">Chapter 12, <i xmlns:xlink="http://www.w3.org/1999/xlink">Using Services with Penrose Virtual Directory</i></a>. Before changing the services ports or firewall settings, make sure that the client itself is configured to use a different port number.
+			</p></div></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Installing_RHVD.html"><strong>Prev</strong>Chapter 2. Installing Penrose Virtual Directory</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Using_VDST.html"><strong>Next</strong>Chapter 4. Using Penrose Studio</a></li></ul></body></html>

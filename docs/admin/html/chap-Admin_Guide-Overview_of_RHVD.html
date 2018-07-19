@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 1. Overview of Penrose Virtual Directory</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="pref-Admin_Guide-About_This_Guide.html" title="About This Guide"/><link rel="next" href="chap-Admin_Guide-Installing_RHVD.html" title="Chapter 2. Installing Penrose Virtual Directory"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 1. Overview of Penrose Virtual Directory</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="pref-Admin_Guide-About_This_Guide.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Installing_RHVD.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="chap-Admin_Guide-Overview_of_RHVD">Chapter 1. Overview of Penrose Virtual Directory</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="chap-Admin_Guide-Overview_of_RHVD.html#sect-Admin_Guide-Overview_of_RHVD-DS_and_Database_Concepts">1.1. Explaining Virtual Directories</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Overview_of_RHVD.html#sect-Admin_Guide-Overview_of_RHVD-Mapping_Relationships_Between_Data_Sources">1.2. Looking at Penrose Virtual Directory</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Overview_of_RHVD.html#sect-Admin_Guide-planning">1.3. Planning Penrose Virtual Directory</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Overview_of_RHVD.html#sect-Admin_Guide-site-survey">1.3.1. Identifying Current Data Sources</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Overview_of_RHVD.html#overview-consolidating-info">1.3.2. Configuring a Virtual Directory through Partitions</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Overview_of_RHVD.html#overviewidentity-linking">1.3.3. Joining LDAP, NIS, and Active Directory Servers through Identity Federation</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Overview_of_RHVD.html#sect-Admin_Guide-planning-bridging-ldap">1.3.4. Synchronizing Active Directory and Other LDAP Services</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Overview_of_RHVD.html#nis-migr">1.3.5. Migrating from NIS Servers to LDAP Servers</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Overview_of_RHVD.html#ipa-migr">1.3.6. Migrating to Red Hat IPA</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Overview_of_RHVD.html#stacking-auth">1.3.7. Planning Authentication</a></span></dt></dl></dd></dl></div><p>
+		A virtual directory creates a consolidated, high-level directory view from different sources of information. Penrose Virtual Directory is a simple and flexible way to make accessing information across a network environment easier, whether this involves a new view of LDAP and database sources, bridging between Active Directory and other LDAP servers, or performing an easier NIS migration.
+	</p><p>
+		This chapter provides an overview of the purpose and opportunities of using a virtual directory, the components in Penrose Virtual Directory, and considerations when planning Penrose Virtual Directory deployment.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Overview_of_RHVD-DS_and_Database_Concepts">1.1. Explaining Virtual Directories</h2></div></div></div><a id="d0e318" class="indexterm"/><p>
+			Most organizations have a "hetergenous" network environment — meaning there is a messy combination of databases, NIS servers, Window and Unix LDAP servers which all contain important information. In heterogenous environments, these servers and applications usually cannot communicate directly with one another, or cannot communicate effectively, so the information get partitioned off into its respective server, even usernames and passwords.
+		</p><a id="d0e325" class="indexterm"/><p>
+			<span class="emphasis"><em>Virtual directories</em></span> consolidate that information without having to perform migrations, find complex software options, or try to reconfigure thousands of different entries. Virtual directories create a view or picture of a single, consolidated LDAP server and function as a type of lightweight middleware between the different servers and users. LDAP clients from email programs to servers communicate with the virtual directory. The virtual directory, in turn, talks to each server or database in its native protocol.
+		</p><div class="figure" id="fig.overview-virtdir"><div class="figure-contents"><div class="mediaobject"><img src="images/virt-dir.png" alt="Overview of Penrose Virtual Directory"/></div></div><h6>Figure 1.1. Overview of Penrose Virtual Directory</h6></div><br class="figure-break"/><p>
+			A virtual directory performs two essential functions: it provides a single source for accessing information and it creates a flattened, standardized namespace. Those two features of a virtual directory make it ideal for consolidating data in different formats from different applications.
+		</p><p>
+			A virtual directory is a single source because that is the only directory users need to access to get complete access to information. The virtual directory is configured to connect to each data source (without having to reconfigure the data source itself). The user or client sees the virtual directory as an LDAP directory service.
+		</p><a id="d0e345" class="indexterm"/><p>
+			Since the virtual directory simulates an LDAP server, it has a hierarchy of subtrees and entries which correspond to actual entries in the data sources. The virtual subtrees can be named whatever the administrator wants. Even the names of the entries and the names of their attributes can be translated according to the new virtual hierarchy. Standardizing distinguished entry names is called <span class="emphasis"><em>namespace flattening</em></span>.
+		</p><a id="d0e355" class="indexterm"/><p>
+			There is an important distinction between a virtual directory and <span class="emphasis"><em>metadirectory</em></span>. A virtual directory loosely couples identity data and applications; this is a real-time, dynamically-generated view, not a separate directory. A metadirectory, while also giving a consolidated view of data, adds a layer of infrastructure above native repositories. A metadirectory actually draws data out from the source and copies it into a new consolidated directory. A virtual directory is much more agile to used and configure and easier to synchronize data.
+		</p><a id="d0e365" class="indexterm"/><p>
+			By functioning similarly to an LDAP directory, Penrose Virtual Directory has several advantages that make deploying the solution ideal:
+		</p><div class="itemizedlist"><ul><li><p>
+					Centralized configuration
+				</p></li><li><p>
+					Robust authentication
+				</p></li><li><p>
+					Solid integration with other applications, such as mail servers and email clients
+				</p></li><li><p>
+					Easily configured replication
+				</p></li><li><p>
+					Widely-utilized standard protocol
+				</p></li></ul></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Overview_of_RHVD-Mapping_Relationships_Between_Data_Sources">1.2. Looking at Penrose Virtual Directory</h2></div></div></div><a id="d0e391" class="indexterm"/><p>
+			Penrose Virtual Directory is comprised of several components:
+		</p><div class="itemizedlist"><ul><li><p>
+					Penrose Virtual Directory Common, the set of classes by used all other components, including base classes, configuration classes, XML readers and writers, DTD definitions, utilities
+				</p></li><li><p>
+					Penrose Virtual Directory Core, the primary virtual directory component which handles partitions, source configuration, directory entries, and modules
+				</p><div class="note"><h2>NOTE</h2><p>
+						Penrose Virtual Directory Core can be embedded in another application without running an LDAP service.
+					</p></div></li><li><p>
+					Penrose Server, a lightweight application server which combines several different LDAP services to communicate with clients through OpenDS or ApacheDS and a JMX service to communication with Java clients
+				</p></li><li><p>
+					Penrose Studio, an intuitive GUI to manage Penrose Server configuration
+				</p></li><li><p>
+					Command-line tools and classes to manage Penrose Server remotely
+				</p></li></ul></div><a id="d0e419" class="indexterm"/><p>
+			Penrose Server uses Java MBeans to instantiate and manage all aspects of the virtual directory configuration, so Penrose Server can run on any platform which supports Java. Penrose Server is the primary component that users will use to create the virtual directory:
+		</p><div class="itemizedlist"><ul><li><p>
+					Mapping attributes and values from multiple sources into virtual entries, and converting and manipulating attribute values
+				</p></li><li><p>
+					Flattening the namespace and intelligently routing queries
+				</p></li><li><p>
+					Configurable caching
+				</p></li><li><p>
+					Access control information
+				</p></li><li><p>
+					Load-balancing and failover
+				</p></li><li><p>
+					Bidirectional synchronization between different LDAP servers
+				</p></li></ul></div><p>
+			The Penrose Studio is a powerful yet simple tool to make managing Penrose Server easier. This provides wizards to configure partition and identitty federation entries, set up access control, and configure mapping. The Penrose Studio also includes an integrated LDAP browser to view the virtual directory and browsers to see the hierarchy of the real data sources.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-planning">1.3. Planning Penrose Virtual Directory</h2></div></div></div><a id="d0e450" class="indexterm"/><a id="d0e455" class="indexterm"/><p>
+			A virtual directory at a high level combines entries (identities), a process called <span class="emphasis"><em>identity joining</em></span>, and also maps the attributes in the source to the virtual entry. Penrose Virtual Directory has several different ways that identity joining and mapping can be configured.
+		</p><p>
+			The following sections cover issues that should be considered while planning a virtual directory so that information and entries are effectively joined and the virtual hierarchy and configuration meet your needs.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="sect-Admin_Guide-site-survey">1.3.1. Identifying Current Data Sources</h3></div></div></div><a id="d0e470" class="indexterm"/><a id="d0e477" class="indexterm"/><p>
+				Identify what sources in the infrastructure need to be consolidated.
+			</p><div class="itemizedlist"><ul><li><p>
+						<span class="emphasis"><em>What servers need to be joined?</em></span>
+					</p><p>
+						Perform a survey of your complete infrastructure, across geographical locations and departments. Identify any applications or areas where the same person or identity has multiple entries; these can be joined in the virtual directory.
+					</p></li><li><p>
+						<span class="emphasis"><em>What tables or subtrees will supply information for the virtual directory?</em></span>
+					</p><p>
+						Identify what parts of the infrastructure need to be included, such as the subtrees of an LDAP directory. This can also be part of auditing the information which will go into the virtual directory to help plan the virtual directory tree.
+					</p><a id="d0e503" class="indexterm"/><a id="d0e508" class="indexterm"/><div class="note"><h2>NOTE</h2><p>
+							Penrose Virtual Directory does not distinguish between virtual views in an LDAP directory or database and real subtrees and tables. Therefore, virtual views can be treated as parts of the data sources.
+						</p></div></li><li><p>
+						<span class="emphasis"><em>What protocols are used?</em></span>
+					</p><p>
+						Penrose Virtual Directory, by default, communicates with JDBC and LDAPv3 protocols, so the server can communicate with any database or LDAPv3 compliant server, such as Red Hat Directory Server, OpenLDAP, and Active Directory. Penrose Virtual Directory can be configured to communicate to NIS servers, as well.
+					</p><p>
+						The protocols used for the servers can also influence the identity joining method (described in <a href="chap-Admin_Guide-Overview_of_RHVD.html#overview-consolidating-info" title="1.3.2. Configuring a Virtual Directory through Partitions">Section 1.3.2, “Configuring a Virtual Directory through Partitions”</a> and <a href="chap-Admin_Guide-Overview_of_RHVD.html#overviewidentity-linking" title="1.3.3. Joining LDAP, NIS, and Active Directory Servers through Identity Federation">Section 1.3.3, “Joining LDAP, NIS, and Active Directory Servers through Identity Federation”</a>). For example, for an environment with several database applications and LDAP services, a partition virtual directory. For a NIS migration, use identity federation.
+					</p></li><li><p>
+						<span class="emphasis"><em>What attributes should be mapped?</em></span>
+					</p><p>
+						Joining is configured per attribute as well as per identity, so identify what information should be included in the consolidated entry. Look for each attribute to include and what data source will supply the value.
+					</p></li><li><p>
+						<span class="emphasis"><em>What schema elements will be used?</em></span>
+					</p><p>
+						Since the virtual directory is strucutred as an LDAP directory, it requires defined object classes and attributes for each kind of entry. Identify what kind of LDAP schema or custom schema elements to include.
+					</p></li></ul></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="overview-consolidating-info">1.3.2. Configuring a Virtual Directory through Partitions</h3></div></div></div><a id="d0e551" class="indexterm"/><a id="d0e558" class="indexterm"/><a id="d0e565" class="indexterm"/><p>
+				The most common method of creating a virtual directory in Penrose Virtual Directory is through creating <span class="emphasis"><em>partitions</em></span>. A partition defines virtual directory for LDAP servers and databases. Individual entries are created for each host server, application, subtree and entry, and mapped attribute. Each piece of information is defined separately:
+			</p><div class="itemizedlist"><ul><li><p>
+						The directory, database, or other application which contains the information (the <span class="emphasis"><em>source</em></span>)
+					</p></li><li><p>
+						The connection information to the server machine which hosts the data source (the <span class="emphasis"><em>connection</em></span>)
+					</p></li><li><p>
+						The hierarchy of the new, virtual directory being created (the <span class="emphasis"><em>directory</em></span>)
+					</p></li><li><p>
+						The relationships between the entries and attributes in the different data sources (the <span class="emphasis"><em>mapping</em></span>)
+					</p><div class="note"><h2>NOTE</h2><p>
+							The entry mapping — the way the disparate entries and attributes are combined into the virtual entries — is also configured within the partition, but this is more complex and has many different options. Entry mapping is covered in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html" title="Chapter 8. Configuring the Virtual Directory">Chapter 8, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring the Virtual Directory</i></a>.
+						</p></div></li><li><p>
+						Additional code which affects the partition behavior, such as additional mapping functionality (the <span class="emphasis"><em>module</em></span>, described in <a href="chap-Admin_Guide-Configuring_Modules.html" title="Chapter 11. Configuring Modules">Chapter 11, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring Modules</i></a>)
+					</p></li></ul></div><p>
+				These configurations, collectively, comprise the server <span class="emphasis"><em>partition</em></span> entry in Penrose Server. There can be an unlimited number of partitions configured for a single Penrose Server server instance; though the default is to use a single partition. Likewise, there can be an unlimited number of sources, connections, and mappings for a single partition.
+			</p><p>
+				A virtual directory partition is illustrated in <a href="chap-Admin_Guide-Overview_of_RHVD.html#fig.partition-diagram" title="Figure 1.2. A Virtual Directory Partition">Figure 1.2, “A Virtual Directory Partition”</a>.
+			</p><a id="d0e624" class="indexterm"/><div class="figure" id="fig.partition-diagram"><div class="figure-contents"><div class="mediaobject"><img src="images/partition.png" alt="A Virtual Directory Partition"/></div></div><h6>Figure 1.2. A Virtual Directory Partition</h6></div><br class="figure-break"/><a id="d0e635" class="indexterm"/><p>
+				In <a href="chap-Admin_Guide-Overview_of_RHVD.html#fig.partition-diagram" title="Figure 1.2. A Virtual Directory Partition">Figure 1.2, “A Virtual Directory Partition”</a>, each component in the partition has two areas specified, such as the connection having both <code class="filename">connections.xml</code> and <span><strong class="guilabel">Connection</strong></span>. All of the Penrose Server partition components are defined in XML files, which can be edited directly. These components can also be configured through Penrose Studio, as shown in <a href="chap-Admin_Guide-Overview_of_RHVD.html#fig.partition-screenshot" title="Figure 1.3. Partition Configuration in Penrose Studio">Figure 1.3, “Partition Configuration in Penrose Studio”</a>. For a connection, then, <code class="filename">connections.xml</code> is the configuration file and <span><strong class="guilabel">Connection</strong></span> is the folder in the Penrose Studio hierarchy for changes.
+			</p><div class="figure" id="fig.partition-screenshot"><div class="figure-contents"><div class="mediaobject"><img src="images/partition-ui.png" alt="Partition Configuration in Penrose Studio"/></div></div><h6>Figure 1.3. Partition Configuration in Penrose Studio</h6></div><br class="figure-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="overviewidentity-linking">1.3.3. Joining LDAP, NIS, and Active Directory Servers through Identity Federation</h3></div></div></div><a id="d0e667" class="indexterm"/><a id="d0e674" class="indexterm"/><p>
+				<span class="emphasis"><em>Identity federation</em></span> or <span class="emphasis"><em>identity linking</em></span> is a method to unite entries from Active Directory, LDAPv3, or NIS servers. This method can be used to synchronize these types of servers or to simplify a NIS migration.
+			</p><p>
+				Identity federation, like partition directories, takes source entries to create a virtual directory entry, but is for different source environments.
+			</p><p>
+				Identity linking (or federation) creates a hybrid virtual directory and meta directory by using a global repository to combine and synchronize entries from the different sources. Local repositories (analogous to sources in the virtual directory configuration) are linked to the global repository. Using a mapping tool, the local identities are then matched to entries in the global repository.
+			</p><a id="d0e691" class="indexterm"/><p>
+				With identity federation, there is a <span class="emphasis"><em>global repository</em></span>, a separate and authoritative source for entries. In this figure, a NIS source is used to create the initial global entry. After that global repository is defined, entries from other sources (<span class="emphasis"><em>local repositories</em></span>) are linked to the global entry either manually or through matching rules.
+			</p><div class="figure" id="fig.identity-linking1"><div class="figure-contents"><div class="mediaobject"><img src="images/identitymapping.png" alt="Merging Entries through Identity Linking"/></div></div><h6>Figure 1.4. Merging Entries through Identity Linking</h6></div><br class="figure-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="sect-Admin_Guide-planning-bridging-ldap">1.3.4. Synchronizing Active Directory and Other LDAP Services</h3></div></div></div><a id="d0e713" class="indexterm"/><a id="d0e720" class="indexterm"/><a id="d0e725" class="indexterm"/><a id="d0e730" class="indexterm"/><p>
+				Active Directory and other LDAPv3 compliant directory services cannot communicate or synchronize data easily. Some directory services have tools which try to bridge the differences in schema, entry naming, and directory hiearchy, such as Windows Sync in Red Hat Directory Server. However, these tools are usually limited to a small subset of entry attributes (without any support for custom or non-standard attributes) and have restrictions on the kinds of entries and locations in the subtrees where sycnhronization can occur.
+			</p><p>
+				Penrose Virtual Directory aids synchronization between Active Directory and LDAPv3 compliant directory services, including support for all Active Directory schema and custom schema.
+			</p><p>
+				Active Directory and LDAP synchronization can be configured through a partition or through identity federation; the method does not really matter. The key is in mapping the attributes between the Active Directory and LDAP servers.
+			</p><a id="d0e741" class="indexterm"/><p>
+				The synchronization with Penrose Virtual Directory will check activity on one server and then write those changes over to the other server. There are two ways that Penrose Virtual Directory keeps track of changes:
+			</p><div class="itemizedlist"><ul><li><p>
+						A <span class="emphasis"><em>full synchronization</em></span>, which periodically takes snapshots of one server, compares it to the data on the target server, and writes over any changes.
+					</p></li><li><p>
+						An <span class="emphasis"><em>incremental update</em></span>, which uses a change log to track and copy over changes to the target server.
+					</p></li></ul></div><p>
+				This method can also be used to synchronize other LDAPv3 servers which normally cannot be synchronized, such as OpenLDAP and Red Hat Directory Server, using identity federation.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="nis-migr">1.3.5. Migrating from NIS Servers to LDAP Servers</h3></div></div></div><a id="d0e766" class="indexterm"/><a id="d0e773" class="indexterm"/><a id="d0e778" class="indexterm"/><a id="d0e783" class="indexterm"/><a id="d0e786" class="indexterm"/><p>
+				Penrose Virtual Directory simplifies NIS server migrations to LDAP, without interrupting the NIS service and remaining transparent to users.
+			</p><p>
+				Penrose Virtual Directory uses a <span class="emphasis"><em>lazy migration</em></span> process, there there are two views of the data, one in the old location and one in the new location. In Penrose Virtual Directory, the old NIS location is a <span class="emphasis"><em>local repository</em></span>. All of the NIS entries are migrated over to a new LDAP server, called a <span class="emphasis"><em>global repository</em></span>. This migration can take several weeks, with a mix of entries in the old and new data formats. Al entries will be available in the new data source.
+			</p><p>
+				At any point in the migration process, data can be accessed on either the old or new repositories.
+			</p><div class="figure" id="fig.nis2ldap"><div class="figure-contents"><div class="mediaobject"><img src="images/nis2ldap.png" alt="Example of a NIS to LDAP Migration"/></div></div><h6>Figure 1.5. Example of a NIS to LDAP Migration</h6></div><br class="figure-break"/><p>
+				A lazy migration is much simpler than trying to force a reconfiguration of all applications at the same time. Applications and clients can be switched over incrementally. This also eliminates almost all of the downtime of the migration, since the switchover takes just a few seconds. There is no need to cram a migration into a rigid outage window.
+			</p><p>
+				Penrose Virtual Directory supplies several tools which make is easy to match entries between NIS and LDAP repositories and to resolve UID and GID conflicts, including reassigning file ownerships. The NIS migration process using Penrose Virtual Directory is as follows:
+			</p><a id="d0e816" class="indexterm"/><a id="d0e821" class="indexterm"/><div class="orderedlist"><ol><li><p>
+						Copy the information in the NIS servers to a central directory server, a <span class="emphasis"><em>global repository</em></span>.
+					</p></li><li><p>
+						Configure the global repository subtrees to contain three branches:
+					</p><div class="itemizedlist"><ul><li><p>
+								Create a subtree for the current NIS servers, such as <code class="command">ou=nis</code>. This will be mapped to the current, old NIS server entries.
+							</p></li><li><p>
+								Create a subtree for the new global repository, such as <code class="command">ou=global</code>. This is mapped to the new global LDAP repository; any new entries are written to the global repository, and any changes write the NIS entries over to the global repository.
+							</p></li><li><p>
+								Create a subtree for users to access, such as <code class="command">ou=nss</code>. Before the migration begins, <code class="command">ou=nss</code> has a referral to the NIS subtree, <code class="command">ou=nis</code>. After the NIS migration begins, this has a referral to the global repository subtree, <code class="command">ou=global</code>.
+							</p></li></ul></div></li><li><p>
+						Link the identities in the NIS server to entries in the global repository.
+					</p></li><li><p>
+						If there are multiple NIS servers, then the same unique ID number many have been assigned to more than one user. These UID, as well as group ID, conflicts can be resolved using Penrose Virtual Directory's UID/GID Conflict Resolution tool.
+					</p></li><li><p>
+						After any UID/GID conflicts are resolved, new UIDs will be reassigned. After reassigning UIDs, then the file ownership for any files associated with that UID or GID must also be reassigned. This is done using the <span class="emphasis"><em>Ownership Alignment Tool</em></span>.
+					</p></li><li><p>
+						The migration of entries begins. Any changes to the NIS entries are written over to the global repository.
+					</p></li><li><p>
+						As the migration for a server is completed, change the PAM modules on the NIS server hosts to point to the global repository rather than the NIS server.
+					</p></li><li><p>
+						Switch from performing operations against the NIS server (<code class="command">ou=nis</code>) to running against the global LDAP repository (<code class="command">ou=global</code>). Users have always performed operations against <code class="command">ou=nss</code>, so change the referral for that subtree from <code class="command">ou=nis</code> to <code class="command">ou=global</code>.
+					</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="ipa-migr">1.3.6. Migrating to Red Hat IPA</h3></div></div></div><a id="d0e905" class="indexterm"/><a id="d0e912" class="indexterm"/><a id="d0e917" class="indexterm"/><a id="d0e922" class="indexterm"/><p>
+				Many applications do not have a native migration path to more advanced servers; Penrose Virtual Directory can fill in the gap for migration and allow NIS servers and LDAP servers to migrate to Red Hat IPA. This migration is even possible for LDAP servers in a Kerberos/SASL environment, which would otherwise be trickier to manage.
+			</p><p>
+				As with a NIS to LDAP migration, Penrose Virtual Directory can use a lazy migration to allow migration to happen incrementally by supply two different resources, the original source and the new IPA source, and working as a pass-through application. Penrose Virtual Directory also resolves entry, UID number, group ID number, and file ownership conflicts through its toolset.
+			</p><p>
+				The process for migrating to Red Hat IPA is very similar to migrating to NIS to LDAP, and as in that migration, this uses identity federation to unify and resolve entries, as shown in <a href="chap-Admin_Guide-Overview_of_RHVD.html#fig.identity-linking1" title="Figure 1.4. Merging Entries through Identity Linking">Figure 1.4, “Merging Entries through Identity Linking”</a>:
+			</p><a id="d0e935" class="indexterm"/><a id="d0e940" class="indexterm"/><div class="orderedlist"><ol><li><p>
+						Copy the initial entry information into Red Hat IPA, and set up Red Hat IPA as the <span class="emphasis"><em>global repository</em></span>.
+					</p></li><li><p>
+						Configure the global repository subtrees to contain three branches: one for the current server (for example, <code class="command">ou=ldap</code>), one for the IPA server (for example, <code class="command">ou=ipa</code>), and one to which to point clients (for example, <code class="command">ou=federation</code>). Having a third subtree makes the process easier on clients; they simply access that subtree at any point in the migration. The <code class="command">ou=federation</code> subtree contains a referral to the appropriate source. Before migration, this referral directs to the original source, <code class="command">ou=ldap</code>, and after migration, it points to the IPA subtree, <code class="command">ou=ipa</code>. The referral can be changed without affecting users.
+					</p></li><li><p>
+						Link the identities in the old NIS or LDAP server to entries in the IPA global repository.
+					</p></li><li><p>
+						Resolve any conflicts. If there are multiple servers being migrated, more than one entry may have the same user or group ID. Two tools helps resolve the UID/GID conflicts and then align the file ownership with the new UID numbers.
+					</p></li><li><p>
+						Begin migrating entries, clients, and applications.
+					</p></li><li><p>
+						When migration is complete, switch from performing operations against the old server subtree (<code class="command">ou=ldap</code>) to running against the global IPA repository (<code class="command">ou=ipa</code>). Users have always performed operations against <code class="command">ou=global</code>, so change the referral for that subtree from <code class="command">ou=ldap</code> to <code class="command">ou=ipa</code>.
+					</p></li></ol></div><a id="d0e1002" class="indexterm"/><p>
+				Using Penrose Virtual Directory to assist with the incremental migration to IPA has several benefits:
+			</p><div class="itemizedlist"><ul><li><p>
+						Synchronized data between old servers and new IPA servers.
+					</p></li><li><p>
+						Integrated tools to reconcile UID conflicts and to simplify federating entries.
+					</p></li><li><p>
+						No lost time or outage windows to coordinate simultaneous migrations.
+					</p></li><li><p>
+						Transparent to users.
+					</p></li><li><p>
+						Extensible support for legacy schema which may be required or hardcoded in legacy applications; by using Penrose Virtual Directory as a proxy, these legacy applications can communicate with IPA.
+					</p></li><li><p>
+						Synchronization between IPA and other applications, such as Active Directory.
+					</p></li></ul></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="stacking-auth">1.3.7. Planning Authentication</h3></div></div></div><a id="d0e1033" class="indexterm"/><a id="d0e1040" class="indexterm"/><a id="d0e1043" class="indexterm"/><a id="d0e1046" class="indexterm"/><p>
+				The most common reason administrators want a virtual directory is to provide LDAP-style uathentication to databases or to provide a single sign on service when a user has multiple logins.
+			</p><p>
+				Penrose Virtual Directory can perform simple authentication through both partition-style hierarchies and identity federation. Identity federation, with the different relationship established between repositiories, also can be configured for <span class="emphasis"><em>stacking authentication</em></span>. Stacking authentication can verify a user's credentials against several repositories in a single operation. A user's credentials are first presented to the global repository, then cascades down all of the configured local repositories.
+			</p><p>
+				For example, a user attempts to bind to a Red Hat Directory Server instance through Penrose Virtual Directory with the following command:
+			</p><pre class="screen">ldapsearch -h rhvd.example.com -p 10389 -D uid=jsmith,ou=users,ou=nisdomain,ou=nss,dc=example,dc=com -w secret -x -b "" -s subtree</pre><p>
+				The authentication operation proceeds as follows:
+			</p><a id="d0e1064" class="indexterm"/><a id="d0e1069" class="indexterm"/><div class="orderedlist"><ol><li><p>
+						Penrose Virtual Directory searches the local repository for a user with the <em class="parameter"><code>uid</code></em> <code class="command">jsmith</code>.
+					</p></li><li><p>
+						If the local entry is found in the local repository, then Penrose Virtual Directory searches the global repository for an entry which contains a link to the local entry, meaning an entry with a <em class="parameter"><code>seeAlso</code></em> attribute which contains the local entry DN.
+					</p></li><li><p>
+						If there is a global entry, Penrose Virtual Directory checks the other entries contained in the <em class="parameter"><code>seeAlso</code></em> attribute for any account disable, account lockout, or account expiration attributes.
+					</p></li><li><p>
+						If the account is still active, then Penrose Server checks the global identity for a <em class="parameter"><code>userPassword</code></em> attribute.
+					</p></li><li><p>
+						Penrose Server uses the local identity's <em class="parameter"><code>uid</code></em> and global identtity's <em class="parameter"><code>userPassword</code></em> to bind to the specified Red Hat Directory Server.
+					</p></li></ol></div><div class="note"><h2>TIP</h2><p>
+					Stacking authentication is ideal for NIS migration because it allows users to authenticate against a virtual NSS subtree, and that authentication is then performed against all of the federated NIS identities.
+				</p></div></div></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="pref-Admin_Guide-About_This_Guide.html"><strong>Prev</strong>About This Guide</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Installing_RHVD.html"><strong>Next</strong>Chapter 2. Installing Penrose Virtual Directory</a></li></ul></body></html>

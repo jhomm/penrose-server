@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="427.41211"
+   height="172.78511"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="dit1.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="C:\Documents and Settings\Owner\Desktop\dit1.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <metadata
+     id="metadata57">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     inkscape:window-height="667"
+     inkscape:window-width="640"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     showgrid="false"
+     inkscape:zoom="1.3242489"
+     inkscape:cx="213.70605"
+     inkscape:cy="86.392555"
+     inkscape:window-x="355"
+     inkscape:window-y="58"
+     inkscape:current-layer="svg2" />
+  <defs
+     id="defs5">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 86.392555 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="427.41211 : 86.392555 : 1"
+       inkscape:persp3d-origin="213.70605 : 57.595037 : 1"
+       id="perspective59" />
+    <pattern
+       patternTransform="matrix(0.3750005,0,0,0.3749997,0.6978685,27.058357)"
+       id="pattern3914"
+       xlink:href="#pattern5247" />
+    <pattern
+       xlink:href="#pattern2407"
+       id="pattern5247"
+       patternTransform="matrix(0.5615197,0,0,0.668459,1.044977,48.233113)" />
+    <linearGradient
+       id="linearGradient3395">
+      <stop
+         id="stop3397"
+         style="stop-color:#a70000;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop3399"
+         style="stop-color:#cc0000;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3389">
+      <stop
+         id="stop3391"
+         style="stop-color:#2e3436;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop3393"
+         style="stop-color:#555753;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <pattern
+       xlink:href="#pattern4062"
+       id="pattern2407"
+       patternTransform="matrix(0.3750005,0,0,0.4978446,0.6978656,-355.50943)" />
+    <linearGradient
+       id="linearGradient3987">
+      <stop
+         id="stop3989"
+         style="stop-color:#e3dcc0;stop-opacity:0"
+         offset="0" />
+      <stop
+         id="stop3991"
+         style="stop-color:#e3dcc0;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <pattern
+       patternTransform="matrix(0.375,0,0,0.375,379,437.7952)"
+       id="pattern4015"
+       xlink:href="#white-spots" />
+    <pattern
+       patternTransform="matrix(0.3105473,0,0,0.5478899,0.5779199,641.89556)"
+       id="pattern4062"
+       xlink:href="#pattern4015" />
+    <pattern
+       height="32"
+       id="white-spots"
+       patternUnits="userSpaceOnUse"
+       patternTransform="matrix(0.375,0,0,0.375,71.51384,20.36167)"
+       width="32">
+      <g
+         inkscape:label="#g3035"
+         transform="translate(-484.3997,-513.505)"
+         id="white-spot">
+        <path
+           style="opacity:0.25;fill:white"
+           d="M 509.39967,529.50504 C 509.39967,534.47304 505.36767,538.50504 500.39967,538.50504 C 495.43167,538.50504 491.39967,534.47304 491.39967,529.50504 C 491.39967,524.53704 495.43167,520.50504 500.39967,520.50504 C 505.36767,520.50504 509.39967,524.53704 509.39967,529.50504 z "
+           sodipodi:nodetypes="czzzz"
+           id="path3033" />
+      </g>
+    </pattern>
+    <linearGradient
+       x1="580"
+       y1="118.99965"
+       x2="580"
+       y2="71.903984"
+       id="linearGradient3904"
+       xlink:href="#linearGradient3395"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.583212,0,0,0.6666667,-683.9752,-21.964155)" />
+    <linearGradient
+       x1="96"
+       y1="118.99965"
+       x2="96"
+       y2="71.404991"
+       id="linearGradient3908"
+       xlink:href="#linearGradient3389"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(15.89444,39.035945)" />
+    <radialGradient
+       cx="265"
+       cy="789.56696"
+       r="265"
+       fx="265"
+       fy="789.56696"
+       id="radialGradient3911"
+       xlink:href="#linearGradient3987"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.5216573,0,0,0.6151434,-189.53308,-399.30438)" />
+  </defs>
+  <g
+     id="g3917">
+    <rect
+       width="427.41211"
+       height="172.78511"
+       rx="29.999996"
+       ry="30"
+       x="0"
+       y="4.7683716e-07"
+       id="rect1933"
+       style="fill:#e3dcc0" />
+    <rect
+       width="427.41211"
+       height="172.78511"
+       rx="29.999996"
+       ry="30"
+       x="0"
+       y="4.7683716e-07"
+       id="rect3092"
+       style="fill:url(#pattern3914);fill-opacity:1" />
+    <rect
+       width="427.41211"
+       height="172.78511"
+       rx="29.999996"
+       ry="30"
+       x="0"
+       y="4.7683716e-07"
+       id="rect3985"
+       style="fill:url(#radialGradient3911);fill-opacity:1" />
+  </g>
+  <rect
+     width="115"
+     height="32.000008"
+     rx="15"
+     ry="15"
+     x="26.89444"
+     y="111.03558"
+     id="rect5259"
+     style="fill:url(#linearGradient3908);fill-opacity:1" />
+  <path
+     d="M 213.70605,57.035595 L 213.70605,111.69494"
+     id="path3191"
+     style="fill:none;stroke:#2e3436;stroke-width:2;marker-start:none;marker-end:none" />
+  <path
+     d="M 83.706048,111.43778 C 83.706048,96.856515 90.854875,89.064935 102.95605,89.064935 L 322.70605,89.035595 C 338.65587,89.035595 343.70605,97.165655 343.70605,111.69494"
+     id="path3291"
+     style="fill:none;stroke:#2e3436;stroke-width:1.99999976;marker-start:none;marker-end:none" />
+  <rect
+     width="177.31975"
+     height="32"
+     rx="15"
+     ry="15"
+     x="125.04618"
+     y="26.03561"
+     id="use3062"
+     style="fill:url(#linearGradient3904);fill-opacity:1" />
+  <flowRoot
+     transform="translate(62.80957,-80.728386)"
+     id="flowRoot3105"
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-weight:bold;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Liberation Sans"><flowRegion
+       id="flowRegion3107"><rect
+         width="152.88722"
+         height="33.650043"
+         x="74.588669"
+         y="116.04351"
+         id="rect3109"
+         style="font-weight:bold;text-align:center;text-anchor:middle;fill-opacity:0" /></flowRegion><flowPara
+       id="flowPara3111">dc=<flowSpan
+   id="flowSpan2344"
+   style="fill:#e3dcc0">example</flowSpan>, dc=com</flowPara></flowRoot>  <use
+     transform="translate(260.43506,7.5655879e-6)"
+     id="use5280"
+     x="0"
+     y="0"
+     width="640"
+     height="231.99965"
+     xlink:href="#rect5259" />
+  <flowRoot
+     transform="translate(216.67813,3.2647569)"
+     id="flowRoot5261"
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-weight:bold;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Liberation Sans"><flowRegion
+       id="flowRegion5263"><rect
+         width="106.7861"
+         height="39.119667"
+         x="74.588669"
+         y="116.04351"
+         id="rect5265"
+         style="font-weight:bold;text-align:center;text-anchor:middle;fill-opacity:0" /></flowRegion><flowPara
+       id="flowPara5267">ou=<flowSpan
+   id="flowSpan2276"
+   style="fill:#e3dcc0">Servers</flowSpan></flowPara></flowRoot>  <use
+     transform="translate(130.21753,7.5655879e-6)"
+     id="use5282"
+     x="0"
+     y="0"
+     width="1"
+     height="1"
+     xlink:href="#rect5259" />
+  <flowRoot
+     transform="translate(86.460603,3.2647913)"
+     id="flowRoot5298"
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-weight:bold;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Liberation Sans"><flowRegion
+       id="flowRegion5300"><rect
+         width="106.7861"
+         height="39.119667"
+         x="74.588669"
+         y="116.04351"
+         id="rect5302"
+         style="font-weight:bold;text-align:center;text-anchor:middle;fill-opacity:0" /></flowRegion><flowPara
+       id="flowPara5304">ou=<flowSpan
+   id="flowSpan2298"
+   style="fill:#e3dcc0">Customers</flowSpan></flowPara></flowRoot>  <flowRoot
+     transform="translate(-43.420013,4.2715859)"
+     id="flowRoot5290"
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-weight:bold;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Liberation Sans"><flowRegion
+       id="flowRegion5292"><rect
+         width="106.7861"
+         height="39.119667"
+         x="74.588669"
+         y="116.04351"
+         id="rect5294"
+         style="font-weight:bold;text-align:center;text-anchor:middle;fill-opacity:0" /></flowRegion><flowPara
+       id="flowPara5296">ou=<flowSpan
+   id="flowSpan2296"
+   style="fill:#e3dcc0">Employees</flowSpan></flowPara></flowRoot>  <rect
+     width="0"
+     height="6"
+     rx="15"
+     ry="6"
+     x="129.89444"
+     y="173.03558"
+     id="rect5314"
+     style="opacity:0.42290751;fill:#bfdce8;fill-opacity:0;stroke:#ffffff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.5;stroke-opacity:1" />
+</svg>

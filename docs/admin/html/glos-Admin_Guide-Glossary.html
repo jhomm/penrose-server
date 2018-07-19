@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Glossary</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Using_RHVD_Command_Line_Tools.html" title="Appendix A. Using Penrose Virtual Directory Command-Line Tools"/><link rel="next" href="ix01.html" title="Index"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Glossary</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Using_RHVD_Command_Line_Tools.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="ix01.html"><strong>Next</strong></a></li></ul><div class="glossary"><div class="titlepage"><div><div><h2 class="title" id="glos-Admin_Guide-Glossary">Glossary</h2></div></div></div><div class="glossdiv"><h3 class="title">A</h3><dl><dt id="glos-Admin_Guide-A-Access_Control">Access control</dt><dd><p>
+					Restrictions and rules which control the areas of the virtual directory which people can view and the operations which they can perform. In Penrose Virtual Directory, the access control set on the virtual directory is enforced apart from any access control set on the data source.
+				</p></dd><dt id="glos-Admin_Guide-A-Adapters">Adapters</dt><dd><p>
+					An abstraction layer which interacts between Penrose Server and the data source; works on the server frontend. There are three adapters in Penrose Virtual Directory for LDAP, JDBC, and NIS sources.
+				</p></dd><dt id="glos-attribute">Attribute</dt><dd><p>
+					A single descriptive element for an entry, defined in the schema for a server.
+				</p></dd><dt id="glos-Admin_Guide-A-Authentication">Authentication</dt><dd><p>
+					The process of binding, or logging in, to a server and providing a set of credentials which must be verified to allow the login.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">B</h3><dl><dt id="glos-base-dn">Base DN</dt><dd><p>
+					The distinguished name against which an LDAP operation is carried out. A search, for example, begins searching for entries at the base DN and then goes down the directory tree through all of its children subtrees and entries.
+				</p></dd><dt id="glos-basic-mapping">Basic mapping</dt><dd><p>
+					A simple, direct association where one attribute is specifically matched to corresponding attributes in the virtual directory, such as mapping the <code class="command">firstname</code> row in a database table to the <em class="parameter"><code>givenName</code></em> LDAP attribute in the virtual directory.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">C</h3><dl><dt id="glos-Admin_Guide-A-Cache">Cache</dt><dd><p>
+					Temporary storage used by Penrose Virtual Directory to contain virtual directory entries. Penrose Virtual Directory supports two kinds of cache, persistent and in-memory.
+				</p></dd><dt id="glos-Admin_Guide-A-Connections">Connections</dt><dd><p>
+					The server or host information which is used to connect to data sources.
+				</p></dd><dt id="glos-constant">Constant</dt><dd><p>
+					Specific text used to define a static mapping rule, field, or Penrose Virtual Directory other entry element. In the configuration files, this is indicated by <code class="command">&lt;constant&gt;</code> tags; in Penrose Studio, this is sometimes labeled <span class="emphasis"><em>text</em></span>.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">D</h3><dl><dt id="glos-data-source">Data source</dt><dd><p>
+					Any server or application which contains information that is used by Penrose Virtual Directory to create a virtual entry.
+				</p></dd><dt id="glos-directory-hierarchy">Directory hierarchy</dt><dd><p>See <a href="glos-Admin_Guide-Glossary.html#glos-directory-tree">Directory tree (DIT)</a>.</p></dd><dt id="glos-Admin_Guide-A-Directory_Migration">Directory migration</dt><dd><p>
+					The process of copying information from one data source configured in Penrose Virtual Directory to another data source. This is usually configured using identity federation.
+				</p><p>See Also <a href="glos-Admin_Guide-Glossary.html#lazy-migration">Lazy migration</a>.</p></dd><dt id="glos-directory-tree">Directory tree (DIT)</dt><dd><p>
+					The organization of the entries and subentries contained in a directory; the visual layout of the directory is similar to a filesystem hierarchy. This is also called a directory information tree (DIT) or directory hierarchy.
+				</p></dd><dt id="glos-distinguished-name">Distinguished name (DN)</dt><dd><p>
+					The full representation of an entry's name in an LDAP directory. This includes a naming attribute (the leftmost element in the name) and the position in the directory tree by including its parent entries.
+				</p></dd><dt id="glos-dynamic-subtree">Dynamic subtree</dt><dd><p>
+					A type of virtual subtree in Penrose Virtual Directory where the entries within the subtree are generated according to a filter rather than being explicitly defined.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">E</h3><dl><dt id="glos-Admin_Guide-A-Entries">Entries</dt><dd><p>
+					The identity in the virtual directory or in one of its sources. This can also refer to a configuration record in the Penrose Virtual Directory configuration.
+				</p></dd><dt id="glos-Admin_Guide-A-Entry_Attributes">Entry attributes</dt><dd><p>
+					An attribute for a virtual directory entry. This is defined with the corresponding LDAP attribute name and an expression to supply the value, either dynamically through a Java expression or variable pointing to a source value or explicitly through a constant. Optionally, there is also a key to indicate whether the attribute is used to name an entry.
+				</p></dd><dt id="glos-Admin_Guide-A-Expressions">Expressions</dt><dd><p>
+					BeanShell expressions used to map attributes in the virtual directory to attributes in the sources. BeanShell expressions are described in more detail at the BeanShell site, <a href="http://www.beanshell.org">http://www.beanshell.org</a>.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">F</h3><dl><dt id="glos-Admin_Guide-Fields">Fields</dt><dd><p>
+					An attribute within a source entry which can be referenced for mapping into the virtual directory.
+				</p></dd><dt id="glos-flattened-namespace">Flattened namespace</dt><dd><p>
+					A unified naming organization for entries in the virtual directory. When entries are stored in multiple sources, particularly different kinds of sources, the way that entries are named and the organization of the directory structure can be very different. Virtual directories "flatten" or unify those different namespaces into a single namespace with a consistent rule for naming entries.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">G</h3><dl><dt id="glos-global-repo">Global repository</dt><dd><p>
+					The centralized directory used to combine entries for identity federation; this is usually an LDAP server, such as Red Hat Directory Server or Active Directory.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">I</h3><dl><dt id="glos-identity">Identities</dt><dd><p>
+					The person, server, or other entity which is described by an entry. Frequently, there can be more than one entry referring to the same person.
+				</p></dd><dt id="glos-Admin_Guide-A-Identity_Correlation">Identity federation</dt><dd><p>
+					The configuration concept which combines entries from different applications or sources which all describe the same person into a single entry in a centralized global repository. This is most commonly used for LDAP and NIS environments or to facilitate a migration between NIS and LDAP, LDAP to Red Hat IPA, or different kinds of LDAP servers.
+				</p></dd><dt id="glos-Admin_Guide-A-Identity_Joining">Identity linking</dt><dd><p>
+					The process of matching entries in a local repository or source to the corresponding entry in the centralized global repository for identity federation.
+				</p></dd><dt id="glos-Admin_Guide-A-Interpreter">Interpreter</dt><dd><p>
+					The parts of the Penrose Virtual Directory code which translates the mappings configured in the virtual directory to generate the virtual entries.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">J</h3><dl><dt id="glos-join-mapping">Join mapping</dt><dd><p>
+					A method of mapping which takes attributes from multiple source entries, which all represent a single identity, and use them to build a virtual entry. For join mapping, the different source entries must have at least one value in common in order to identify and combine properly the entries.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">L</h3><dl><dt id="lazy-migration">Lazy migration</dt><dd><p>
+					The process of copying information from one data source configured in Penrose Virtual Directory to another data source. This is usually configured using identity federation.
+				</p></dd><dt id="glos-local-repo">Local repository</dt><dd><p>
+					A source used to supply information for identity federation. This is the original source for information; the data are migrated over to the global repository.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">M</h3><dl><dt id="glos-Admin_Guide-A-Mapping">Mapping</dt><dd><p>
+					Any association which is defined to supply an attribute and value in the virtual directory, either by pulling the attribute value from a source entry or by explicitly defining it.
+				</p></dd><dt id="glos-Admin_Guide-A-Mapping_Rules">Mapping rules</dt><dd><p>
+					A single definition for an attribute mapping. A mapping rule is set for the virtual directory, not the source.
+				</p></dd><dt id="glos-mbeans">MBeans</dt><dd><p>
+					A managed bean in a Java environment. All of the partition-related operations for the virtual directory, including sources and connections, are MBeans.
+				</p></dd><dt id="glos-metadirectory">Metadirectory</dt><dd><p>
+					A kind of centralized directory which interacts with multiple kinds of directory and database services. A meta directory holds an independent copy of information; it collects information from its sources and can synchronize that information back to other sources, to help unify the entire environment. This is a similar function to a virtual directory, except virtual directories do not store information.
+				</p></dd><dt id="glos-Admin_Guide-A-Modules">Modules</dt><dd><p>
+					Specialized Java classes which extend or change the behavior of Penrose Virtual Directory components; works on the server backend.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">N</h3><dl><dt id="glos-namespace">Namespace</dt><dd><p>
+					The organization, based on the name of the highest entry in the directory, which defines the relationship and names of entries.
+				</p></dd><dt id="glos-naming-attribute">Naming attribute</dt><dd><p>
+					The attribute which supplies the relative distinguished name, the first element in an entry's name. For example, <em class="parameter"><code>uid</code></em> is the naming attribute in <code class="command">uid=jsmith,ou=people,dc=example,dc=com</code>.
+				</p></dd><dt id="glos-nestedmapping">Nested mapping</dt><dd><p>
+					A method of associating entry values where one attribute value is dynamically generated and those results are used to generate the next part of the mapped value.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">O</h3><dl><dt id="glos-object-class">Object class</dt><dd><p>
+					An entry element which defines the type of entry and has defined rules on what attributes are required and allowed to describe the entry; for a directory, this is an LDAP schema element.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">P</h3><dl><dt id="glos-partition">Partitions</dt><dd><p>
+					A designated object within Penrose Virtual Directory which has a common set of Java classes and libraries to run the virtual directory and specific configuration defining the sources, connections, modules, mappings, and other virtual directory configurations.
+				</p></dd><dt id="glos-Admin_Guide-A-Pass_Through_Authentication">Pass-through authentication</dt><dd><p>
+					A form of binding to a directory service where the bind information, such as the username and password, are sent to one service (Penrose Virtual Directory) and are then sent to a source, unchanged, to allow the user to bind to the source. Penrose Virtual Directory supports pass-through authentication to services such as Active Directory and Red Hat Directory Server.
+				</p></dd><dt id="glos-Admin_Guide-A-Primary_Key">Primary key</dt><dd><p>
+					An argument set for an attribute defined in the mapping which indicates whether the attribute is a naming attribute, meaning that is supplies the element on the far left of the entry's distinguished name. For example, if the <em class="parameter"><code>uid</code></em> parameter is the primary key, then that attribute value is used in the entry name, such as <code class="command">uid=jsmith,ou=people,dc=example,dc=com</code>.
+				</p></dd><dt id="glos-Admin_Guide-A-Directory_Proxy">Proxy</dt><dd><p>
+					A service, such as Penrose Virtual Directory, which is contacted in place of another service. Penrose Virtual Directory can function as an LDAP proxy for Red Hat Directory Server and Active Directory, for example, and route requests and operations to the appropriate LDAP server.
+				</p><p>See Also <a href="glos-Admin_Guide-Glossary.html#glos-Admin_Guide-A-Pass_Through_Authentication">Pass-through authentication</a>.</p></dd></dl></div><div class="glossdiv"><h3 class="title">R</h3><dl><dt id="glos-Rules">Rules</dt><dd><p>
+					A defined mapping association for a single attribute in the virtual directory.
+				</p></dd><dt id="glos-RDN">Relative distinguished name</dt><dd><p>
+					The first element of the distinguished name; for example, <code class="command">uid=jsmith</code> in <code class="command">uid=jsmith,ou=people,dc=example,dc=com</code>.
+				</p></dd><dt id="glos-repository">Repository</dt><dd><p>
+					A source to store information in identity federation.
+				</p><p>See Also <a href="glos-Admin_Guide-Glossary.html#glos-local-repo">Local repository</a>, <a href="glos-Admin_Guide-Glossary.html#glos-global-repo">Global repository</a>.</p></dd><dt id="glos-root-dse">Root DSE</dt><dd><p>
+					The entry in the directory tree configuration which defines the configuration of the directory service, such as its LDAP protocol, supported LDAP mechanisms and controls, and its server URLs. The root DSE for the virtual directory is configured in the partition and defines what the virtual directory supports.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">S</h3><dl><dt id="glos-Admin_Guide-A-Schema">Schema</dt><dd><p>
+					A list of different elements which are used to describe entries in directory services. Attribute elements define what descriptive elements are available; object class elements identify the kind of entry being describe and the required or allowed attributes to describe it. The list of attributes and object classes, together, is the schema.
+				</p></dd><dt id="glos-scripts">Scripts</dt><dd><p>
+					In Penrose Virtual Directory, any code which is configured to run before or after mapping rule to manipulate the data as used in the virtual directory entry.
+				</p></dd><dt id="glos-Admin_Guide-A-Security_Provider">Security provider</dt><dd><p>
+					Additional libraries which extend SSL/TLS support for Penrose Virtual Directory and additional algorithms, ciphers, and encryption-related information.
+				</p></dd><dt id="glos-services">Services</dt><dd><p>
+					In Penrose Virtual Directory, interfaces which are used by Penrose Virtual Directory to connect to LDAP or database sources. An additional JMX service connects to Penrose Studio and other Java-based clients.
+				</p></dd><dt id="glos-sie">SIE</dt><dd><p>
+					The server instance entry, usually the name assigned to a directory server instance.
+				</p></dd><dt id="glos-Admin_Guide-A-Single_Sign_On">Single sign-on</dt><dd><p>
+					A concept where users need only log into a single service and can have authenticated access to any service on the network. Penrose Virtual Directory, by creating a centralized location for nearly all directory and database services, is part of a single sign-on solution because users can authenticate to Penrose Virtual Directory and be authenticated, through the Penrose Virtual Directory configuration, to all of the sources in the virtual directory.
+				</p></dd><dt id="glos-snapshot">Snapshot</dt><dd><p>
+					A copy of the entire LDAP subtree or directory, with all entries, as it exists at that moment. Because this mirrors an existing directory on Penrose Virtual Directory, this is similar to an LDAP proxy.
+				</p><p>See Also <a href="glos-Admin_Guide-Glossary.html#glos-Admin_Guide-A-Directory_Proxy">Proxy</a>.</p></dd><dt id="glos-Admin_Guide-A-Sources">Sources</dt><dd><p>
+					Any server or application which contains information that is used by Penrose Virtual Directory to create a virtual entry. Source entries are configured within a partition.
+				</p><p>
+					For synchronization or migration, the source is the repository which contains the original copy of the data being synchronized.
+				</p></dd><dt id="glos-static-subtree">Static subtree</dt><dd><p>
+					A type of virtual subtree in Penrose Virtual Directory where the entries within the subtree are explicitly defined. This is common for configuration subtrees which are directory or hierarchy container entries.
+				</p></dd><dt id="glos-Admin_Guide-A-Penrose_Studio">Studio</dt><dd><p>
+					A Java-based user interface which manages, views, creates, and edits virtual directory entries for Penrose Virtual Directory.
+				</p></dd><dt id="glos-Admin_Guide-A-Subtree_Search">Subtree</dt><dd><p>
+					A branch point within the directory hierarchy. For example, organizational units (<em class="parameter"><code>ou</code></em> entries) are branch points because they indicate a subset of the overall directory entries.
+				</p></dd><dt id="glos-synchronization">Synchronization</dt><dd><p>
+					The operation of copying data between two sources or repositories so that the same information is mirrored in two locations. Penrose Virtual Directory supports synchronization between NIS, LDAP, Active Directory, Red Hat IPA, and other sources.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">T</h3><dl><dt id="glos-target">Target</dt><dd><p>
+					In migration or synchronization, the target server is the one <span class="emphasis"><em>to</em></span> which information is copied. For example, in a migration from NIS to LDAP, the NIS server is the source repository and the LDAP server is the target.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">U</h3><dl><dt id="glos-uid-guid-conflict">UID/GID conflict</dt><dd><p>
+					In identity federation, the potential conflict in assigned user ID or group ID numbers. Because there can be multiple sources combined in identity federation, the same ID numbers may be duplicated. These conflicts can be resolved by assigning new ID numbers as part of the identity federation process and any file ownerships reassigned.
+				</p></dd></dl></div><div class="glossdiv"><h3 class="title">V</h3><dl><dt id="glos-Variable">Variable</dt><dd><p>
+					In Penrose Virtual Directory, a source attribute which is used to supply an attribute value in a virtual directory mapping entry. These have the form <span class="emphasis"><em>source_name.attribute_name</em></span>.
+				</p></dd><dt id="glos-Virtual-Directory">Virtual directory</dt><dd><p>
+					A lightweight, centralized directory which interacts with multiple kinds of directory and database services. A virtual directory uses configuration files to identify data sources and rules for how to recognize and apply attributes to entries, as well as definitions for the centralized directory configuration. The actual data remain in the data sources; views of the directory and the information contained in the entries is located and displayed on the fly, rather than physically copying the information into a different directory, as in a meta directory.
+				</p></dd><dt id="glos-Virtual-Directory-server">Virtual Directory Server</dt><dd><p>
+					The lightweight directory engine which creates the virtual directory, interacts with LDAP and database sources, and contains all configuration information.
+				</p></dd></dl></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Using_RHVD_Command_Line_Tools.html"><strong>Prev</strong>Appendix A. Using Penrose Virtual Directory Comma...</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="ix01.html"><strong>Next</strong>Index</a></li></ul></body></html>

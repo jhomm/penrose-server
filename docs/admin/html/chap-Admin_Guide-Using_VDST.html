@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 4. Using Penrose Studio</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Basic_Usage.html" title="Chapter 3. Basic Usage"/><link rel="next" href="chap-Admin_Guide-Configuring_Partitions.html" title="Chapter 5. Managing Partitions"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 4. Using Penrose Studio</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Basic_Usage.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_Partitions.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="chap-Admin_Guide-Using_VDST">Chapter 4. Using Penrose Studio</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#sect-Admin_Guide-Using_VDST-install">4.1. Installing Penrose Studio</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#studio-platforms">4.1.1. Supported Platforms</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#install-studio-rhel">4.1.2. Installing Penrose Studio on Red Hat Enterprise Linux</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#install-studio-win">4.1.3. Installing Penrose Studio on Windows</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#sect-Admin_Guide-Using_VDST-starting">4.2. Starting Penrose Studio</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#starting-studio-rhel">4.2.1. Starting Penrose Studio on Red Hat Enterprise Linux</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#starting-studio-win">4.2.2. Starting Penrose Studio on Windows</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#sect-Admin_Guide-Using_VDST-components">4.3. Looking at Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#cutting-pasting">4.4. Editing, Copying, and Deleting Entries</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#opening-entries">4.4.1. Viewing and Editing Entries</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#deleting">4.4.2. Deleting Entries</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#copy-paste">4.4.3. Copying Entries to Another Penrose Server Instance</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Using_VDST.html#browsing">4.5. Browsing the LDAP Directory</a></span></dt></dl></div><a id="d0e2569" class="indexterm"/><a id="d0e2574" class="indexterm"/><p>
+		Penrose Studio is the graphical interface to access, modify, and manage Penrose Server and its entries. This is a simple, elegant interface, making it much easier to configure complex mappings, virtual directory hierarchies, and identity federation, synchronize NIS and LDAP environments, resolve UID conflicts, and migrate data between servers.
+	</p><p>
+		This chapter describes how to install and start Penrose Studio and gives an overview of its menus and different areas.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Using_VDST-install">4.1. Installing Penrose Studio</h2></div></div></div><div class="important"><h2>IMPORTANT</h2><p>
+				Penrose Studio requires JDK 1.5.0 or higher be installed. See <a href="chap-Admin_Guide-Installing_RHVD.html#sect-Admin_Guide-Installing_RHVD-Required_Software" title="2.2. Required Software">Section 2.2, “Required Software”</a> for instructions.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="studio-platforms">4.1.1. Supported Platforms</h3></div></div></div><a id="d0e2594" class="indexterm"/><a id="d0e2599" class="indexterm"/><p>
+				Penrose Studio is supported on three platforms:
+			</p><div class="itemizedlist"><ul><li><p>
+						Red Hat Enterprise Linux 4.7, 32-bit and 64-bit
+					</p></li><li><p>
+						Red Hat Enterprise Linux 5.2, 32-bit and 64-bit, including virtual guests
+					</p></li><li><p>
+						Microsoft Windows XP and Server 2003
+					</p></li></ul></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="install-studio-rhel">4.1.2. Installing Penrose Studio on Red Hat Enterprise Linux</h3></div></div></div><a id="d0e2619" class="indexterm"/><div class="orderedlist"><ol><li><p>
+						Download the RPM from Red Hat Network.
+					</p></li><li><p>
+						Install the packages.
+					</p><pre class="screen">rpm -ivh vd-studio-2.0-<em class="replaceable"><code>build#</code></em>.el5.i386.rpm</pre></li><li><p>
+						Select the installation directory to use; by default, this is <code class="filename">/opt/vd-studio-2.0</code>.
+					</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="install-studio-win">4.1.3. Installing Penrose Studio on Windows</h3></div></div></div><a id="d0e2647" class="indexterm"/><div class="orderedlist"><ol><li><p>
+						Download the Windows <code class="filename">.msi</code> package from Red Hat Network.
+					</p></li><li><p>
+						Double-click the <code class="filename">.msi</code> file to launch the installer.
+					</p></li><li><p>
+						Select the installation directory to use; by default, this is <code class="filename">C:\Program Files\Identyx Corporation\VD Studio 2.0</code>.
+					</p></li></ol></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Using_VDST-starting">4.2. Starting Penrose Studio</h2></div></div></div><a id="d0e2676" class="indexterm"/><div class="important"><h2>IMPORTANT</h2><p>
+				If you have problems connecting to Penrose Server from Penrose Studio, check the Penrose Server configuration and make sure that the <em class="parameter"><code>java.rmi.server.hostname</code></em> in the <code class="filename">/opt/vd-server-2.0/conf/server.xml</code> files has been changed to the specific hostname or IP address of the Penrose Server host machine, rather than using the default value of <code class="command">localhost</code>.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="starting-studio-rhel">4.2.1. Starting Penrose Studio on Red Hat Enterprise Linux</h3></div></div></div><a id="d0e2698" class="indexterm"/><p>
+				To start Penrose Studio on Red Hat Enterprise Linux:
+			</p><div class="orderedlist"><ol><li><p>
+						Open the Penrose Studio home directory.
+					</p><pre class="screen">cd /opt/vd-studio-2.0</pre></li><li><p>
+						Run the <code class="command">studio</code> command. For example:
+					</p><pre class="screen">./vd-studio</pre></li><li><p>
+						Expand the server listed in the left to connect to a Penrose Server instance.
+					</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="starting-studio-win">4.2.2. Starting Penrose Studio on Windows</h3></div></div></div><a id="d0e2727" class="indexterm"/><p>
+				To launch Penrose Studio on Windows:
+			</p><div class="orderedlist"><ol><li><p>
+						Open the <span><strong class="guilabel">Start</strong></span> menu.
+					</p></li><li><p>
+						Select <span><strong class="guimenu">Identyx</strong></span>, then the <span><strong class="guimenuitem">Studio</strong></span> menu item.
+					</p><div class="note"><h2>NOTE</h2><p>
+							The executable file for Penrose Studio is named <code class="filename">studio.exe</code> in the <code class="filename">C:\Program Files\Identyx Corporation\VD Studio 2.0</code> directory.
+						</p></div></li><li><p>
+						Expand the server listed in the left to connect to a Penrose Server instance.
+					</p></li></ol></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Using_VDST-components">4.3. Looking at Penrose Studio</h2></div></div></div><a id="d0e2769" class="indexterm"/><p>
+			Penrose Studio is very simple to navigate. There are two main sections. The navigation tree on the left organizes all of the partitions, directories, mappings, and other configurations for a Penrose Studio instanc. The main window displays and edits entries and contains the integrated LDAP directory browser.
+		</p><p>
+			<a href="chap-Admin_Guide-Using_VDST.html#mainwindow" title="Figure 4.1. Penrose Studio Window">Figure 4.1, “Penrose Studio Window”</a> shows the major sections of the Penrose Studio interface.
+		</p><div class="figure" id="mainwindow"><div class="figure-contents"><div class="mediaobject"><img src="images/mainstudio.png" alt="Penrose Studio Window"/></div></div><h6>Figure 4.1. Penrose Studio Window</h6></div><br class="figure-break"/><a id="d0e2786" class="indexterm"/><p>
+			The <span><strong class="guimenu">File</strong></span> manages servers. All if the actions in the file menu are mirrored in the icons below it, managing the Penrose Server instance by stopping and starting it, synchronizing the Penrose Studio changes, and adding and deleting server entries.
+		</p><div class="figure" id="d0e2796"><div class="figure-contents"><div class="mediaobject"><img src="images/menu.png" alt="Top Menu"/></div></div><h6>Figure 4.2. Top Menu</h6></div><br class="figure-break"/><p>
+			Three other menus in the top menu, the <span><strong class="guimenu">Partition</strong></span>, <span><strong class="guimenu">Schema</strong></span>, and <span><strong class="guimenu">Service</strong></span> menus, have the same operations that are available by right-clicking on the corresponding folders in the server navigation areas, such as exprting a partition, importing a schema, or configuring a new service.
+		</p><p>
+			Both the <span><strong class="guimenu">Tools</strong></span> menu and the last icon below the top menu open Penrose Virtual Directory's LDAP browser.
+		</p><p>
+			The last menu, <span><strong class="guimenu">Window</strong></span>, controls which of the three sections in the lower window are visible, meaning the server navigation area, main entry window, and validation window.
+		</p><a id="d0e2823" class="indexterm"/><p>
+			The server window, shown in <a href="chap-Admin_Guide-Using_VDST.html#fig.serverwindow" title="Figure 4.3. Server and Entry Navigation">Figure 4.3, “Server and Entry Navigation”</a>, is a hierarchical organization of the server, its partitions, mappings, sources, connections, and repositories along with its backend configuration settings, schema, logging, plug-ins, and services.
+		</p><div class="figure" id="fig.serverwindow"><div class="figure-contents"><div class="mediaobject"><img src="images/server.png" alt="Server and Entry Navigation"/></div></div><h6>Figure 4.3. Server and Entry Navigation</h6></div><br class="figure-break"/><p>
+			Double-clicking or opening any entry in the server window opens the editor for that entry in the main window, as in <a href="chap-Admin_Guide-Using_VDST.html#fig.mainwindow" title="Figure 4.4. Main Window for Editing Entries">Figure 4.4, “Main Window for Editing Entries”</a>.
+		</p><div class="figure" id="fig.mainwindow"><div class="figure-contents"><div class="mediaobject"><img src="images/editor.png" alt="Main Window for Editing Entries"/></div></div><h6>Figure 4.4. Main Window for Editing Entries</h6></div><br class="figure-break"/><a id="d0e2848" class="indexterm"/><a id="d0e2853" class="indexterm"/><p>
+			The configuration of the entry can be changed in several areas:
+		</p><div class="itemizedlist"><ul><li><p>
+					Changing the descriptions in fields and adding or removing Java classes which define functionality
+				</p></li><li><p>
+					Adding or removing attributes
+				</p></li><li><p>
+					Changing the parameters set for attributes; entries in table rows can be double-clicked to allow additional configuration options
+				</p></li></ul></div><p>
+			Depending on the complexity or type of entry, there may be tabs at the bottom of the main window which open additional editing windows for the entry or browsers to display the virtual directory or entry hierarchy.
+		</p><p>
+			All of the windows and the entries within the windows are tabbed, to keep the overall navigation clean and easy to view.
+		</p><p>
+			Every window, meaning the server, entry editor, and validation windows, is controlled independently. To minimize or maximize the window in the Penrose Studio space, click the small line and box icons in the right corner of the entry. To close the window, click the X icon by the window name.
+		</p><div class="figure" id="d0e2874"><div class="figure-contents"><div class="mediaobject"><img src="images/windowcontrols.png" alt="Window Controls"/></div></div><h6>Figure 4.5. Window Controls</h6></div><br class="figure-break"/><div class="note"><h2>NOTE</h2><p>
+				Changes to an entry are saved when the window is closed.
+			</p></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="cutting-pasting">4.4. Editing, Copying, and Deleting Entries</h2></div></div></div><a id="d0e2888" class="indexterm"/><a id="d0e2893" class="indexterm"/><p>
+			Almost every entry for the virtual directory configuration — such as mappings, subtrees, repoositories, sources, and connections — has several options available to open, edit, delete, copy, or paste the entry. This is illustrated for a mapping in <a href="chap-Admin_Guide-Using_VDST.html#entryoptions" title="Figure 4.6. Entry Menu Options">Figure 4.6, “Entry Menu Options”</a>. Some kinds of entries, including partitions and schema, can be imported and exported.
+		</p><div class="figure" id="entryoptions"><div class="figure-contents"><div class="mediaobject"><img src="images/menuoptions.png" alt="Entry Menu Options"/></div></div><h6>Figure 4.6. Entry Menu Options</h6></div><br class="figure-break"/><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="opening-entries">4.4.1. Viewing and Editing Entries</h3></div></div></div><a id="d0e2911" class="indexterm"/><a id="d0e2916" class="indexterm"/><a id="d0e2921" class="indexterm"/><a id="d0e2926" class="indexterm"/><p>
+				The editor for any entry is also the way to view the entry. To open, view, or edit an entry:
+			</p><div class="orderedlist"><ol><li><p>
+						Navigate to the entry in the server window.
+					</p></li><li><p>
+						Right-click the entry to view or edit.
+					</p></li><li><p>
+						Select <span><strong class="guimenuitem">Open</strong></span> from the menu.
+					</p></li><li><p>
+						The <span><strong class="guilabel">Entry Editor</strong></span> opens in the main window.
+					</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="deleting">4.4.2. Deleting Entries</h3></div></div></div><a id="d0e2955" class="indexterm"/><a id="d0e2960" class="indexterm"/><p>
+				To delete any entry (and any sub-entries):
+			</p><div class="orderedlist"><ol><li><p>
+						Navigate to the entry in the server window.
+					</p></li><li><p>
+						Right-click the entry to delete.
+					</p></li><li><p>
+						Select <span><strong class="guimenuitem">Delete</strong></span> from the menu.
+					</p></li><li><p>
+						Confirm the deletion when prompted.
+					</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="copy-paste">4.4.3. Copying Entries to Another Penrose Server Instance</h3></div></div></div><a id="d0e2986" class="indexterm"/><a id="d0e2991" class="indexterm"/><p>
+				The copy and import options in Penrose Studio make it very simple to duplicate the exact configuration of one Penrose Server instance to another Penrose Server without having to edit multiple files.
+			</p><div class="orderedlist"><ol><li><p>
+						Navigate to the entry in the server window.
+					</p></li><li><p>
+						Right-click the entry to copy.
+					</p></li><li><p>
+						Select <span><strong class="guimenuitem">Copy</strong></span> from the menu.
+					</p></li><li><p>
+						Open the second Penrose Server entry and navigate to the area to paste the duplicate entry.
+					</p></li><li><p>
+						Right-click the folder or entry to paste the copied entry.
+					</p></li><li><p>
+						Select <span><strong class="guimenuitem">Paste</strong></span> from the menu.
+					</p></li><li><p>
+						The pasted entry is listed with the second Penrose Server entries.
+					</p></li></ol></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="browsing">4.5. Browsing the LDAP Directory</h2></div></div></div><p>
+			Penrose Studio also provides a built-in LDAP directory browser, which can be used to view the virtual directory or any of the sources or connections for the virtual directory.
+		</p><div class="informalfigure"><div class="mediaobject"><img src="images/browser-tree.png"/></div></div><p>
+			Almost every virtual directory configuration entry has a browser tab at the bottom of its entry window, to view the entries within the source or connection.
+		</p><div class="informalfigure"><div class="mediaobject"><img src="images/browser1.png"/></div></div><p>
+			The browser can also be opened in the top menu or by clicking the browser icon in the top menu.
+		</p><div class="informalfigure"><div class="mediaobject"><img src="images/ldapbrowser1.png"/></div></div><p>
+			When the ldap browser is opened through the menu options, the connection information has to be entered in a dialog box, then the browser opens. When choosing a virtual directory entry to browse, the connection information is already given.
+		</p></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Basic_Usage.html"><strong>Prev</strong>Chapter 3. Basic Usage</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_Partitions.html"><strong>Next</strong>Chapter 5. Managing Partitions</a></li></ul></body></html>

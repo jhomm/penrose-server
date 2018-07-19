@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 13. Customizing Schema</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html" title="Chapter 12. Using Services with Penrose Virtual Directory"/><link rel="next" href="chap-Admin_Guide-Configuring_Cache.html" title="Chapter 14. Configuring Cache"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 13. Customizing Schema</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_Cache.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="chap-Admin_Guide-Customizing_Schema">Chapter 13. Customizing Schema</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="chap-Admin_Guide-Customizing_Schema.html#sect-Admin_Guide-Customizing_Schema-About_Directory_and_Database_Schema">13.1. About Directory Schema</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Customizing_Schema.html#sect-Admin_Guide-Customizing_Schema-Default_Schema_Elements_and_Files">13.2. Default Schema Elements and Files</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Customizing_Schema.html#sect-Admin_Guide-Customizing_Schema-Creating_Schema_Files">13.3. Creating Custom Schema</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Customizing_Schema.html#exporting-schema">13.4. Exporting Schema</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Customizing_Schema.html#sect-Admin_Guide-Customizing_Schema-Importing_Schema_Files">13.5. Importing Schema Files</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Customizing_Schema.html#schema-manual">13.6. Loading a Schema File Manually</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Customizing_Schema.html#schema-converting">13.7. Converting the Schema Formatting from OpenLDAP to OpenDS</a></span></dt></dl></div><a id="d0e12494" class="indexterm"/><a id="d0e12497" class="indexterm"/><p>
+		This chapter describes the default schema included with Penrose Virtual Directory and explains how to create and load custom schema.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Customizing_Schema-About_Directory_and_Database_Schema">13.1. About Directory Schema</h2></div></div></div><a id="d0e12507" class="indexterm"/><p>
+			<span class="emphasis"><em>Schema</em></span> is the way the LDAP directories like Red Hat Directory Server and Active Directory describe entries. The schema defines the type of entry in general through the <span class="emphasis"><em>object classes</em></span>. Each object class has certain <span class="emphasis"><em>attributes</em></span>, something which describes a part of the entry. For example, a <code class="command">person</code> object class is for a general entry about a person. This has attributes for a person's first and last names and telephone number, all normal information to describe about a person.
+		</p><div class="note"><h2>TIP</h2><p>
+				For more detailed information on schema, check out <em class="citetitle">Understanding and Deploying LDAP Directory Services</em> by T. Howes, M. Smith, and G. Good and the IETF definitions at <a href="http://www.ietf.org/rfc/rfc2252.txt">http://www.ietf.org/rfc/rfc2252.txt</a>.
+			</p></div><p>
+			The schema elements (object classes and attributes) which are available for Penrose Virtual Directory entries are loaded in schema files.
+		</p><a id="d0e12538" class="indexterm"/><a id="d0e12543" class="indexterm"/><p>
+			An attribute entry must define the following:
+		</p><div class="itemizedlist"><ul><li><p>
+					An object identifier (OID)
+				</p></li><li><p>
+					The syntax of the attribute, meaning the kind of value that is allowed, like an integer or string (see <a href="chap-Admin_Guide-Customizing_Schema.html#tab.syntaxes" title="Table 13.2. Common LDAP Syntaxes">Table 13.2, “Common LDAP Syntaxes”</a>)
+				</p></li><li><p>
+					Whether there can only be a single value or whether there can be multiple uses of this attribute in the same entry
+				</p></li><li><p>
+					Indexing information
+				</p></li></ul></div><p>
+			For example, this is the Penrose Virtual Directory schema entry for the <em class="parameter"><code>displayName</code></em> attribute:
+		</p><a id="d0e12568" class="indexterm"/><a id="d0e12575" class="indexterm"/><pre class="screen"># displayName
+attributetype ( 2.16.840.1.113730.3.1.241
+        NAME 'displayName'
+        DESC 'RFC2798: preferred name to be used when displaying entries'
+        EQUALITY caseIgnoreMatch
+        SUBSTR caseIgnoreSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+        SINGLE-VALUE )</pre><a id="d0e12582" class="indexterm"/><a id="d0e12587" class="indexterm"/><p>
+			An object class entry must define the following:
+		</p><div class="itemizedlist"><ul><li><p>
+					An object identifier (OID)
+				</p></li><li><p>
+					The list of required (<code class="command">MUST</code>) and allowed (<code class="command">MAY</code>) attributes
+				</p></li><li><p>
+					Any superior object classes; a superior object class is an object class from which this object class inherits required and allowed attributes, without having to include those attributes in this object class definition
+				</p></li><li><p>
+					The function of the object class. <code class="command">STRUCTURAL</code> defines the type of entry being created and there can be only one per entry. <code class="command">AUXILIARY</code> is an object class which contains attributes that can apply to many different kinds of directory entries. An <code class="command">ABSTRACT</code> object class is not used directly by an LDAP entry but is referenced as a subclass by a <code class="command">STRUCTURAL</code> or <code class="command">AUXILIARY</code> object class.
+				</p></li></ul></div><a id="d0e12626" class="indexterm"/><a id="d0e12633" class="indexterm"/><p>
+			For example, this is the Penrose Virtual Directory schema entry for the <code class="command">inetorgperson</code> object class:
+		</p><pre class="screen"># inetOrgPerson
+objectclass     ( 2.16.840.1.113730.3.2.2
+    NAME 'inetOrgPerson'
+    DESC 'RFC2798: Internet Organizational Person'
+    SUP organizationalPerson
+    STRUCTURAL
+        MAY (
+                audio $ businessCategory $ carLicense $ departmentNumber $
+                displayName $ employeeNumber $ employeeType $ givenName $
+                homePhone $ homePostalAddress $ initials $ jpegPhoto $
+                labeledURI $ mail $ manager $ mobile $ o $ pager $
+                photo $ roomNumber $ secretary $ uid $ userCertificate $
+                x500uniqueIdentifier $ preferredLanguage $
+                userSMIMECertificate $ userPKCS12 )
+        )</pre><a id="d0e12645" class="indexterm"/><a id="d0e12648" class="indexterm"/><p>
+			Penrose Virtual Directory schema files use the OpenLDAP schema formatting. This means that each schema file has the extension <code class="filename">.schema</code> and uses some of the default OpenLDAP schema files. For more information on OpenLDAP schema elements and files, see <a href="http://www.openldap.org/doc/admin24/schema.html">http://www.openldap.org/doc/admin24/schema.html</a>.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Customizing_Schema-Default_Schema_Elements_and_Files">13.2. Default Schema Elements and Files</h2></div></div></div><a id="d0e12663" class="indexterm"/><a id="d0e12668" class="indexterm"/><p>
+			A variety of applciations use schemas to describe their information; some of these schemas conform to international standards, and some are specific to the application. Penrose Virtual Directory has schema definitions for a variety of common directory applications loaded to define a variety of information in the virtual directory; these are listed in <a href="chap-Admin_Guide-Customizing_Schema.html#tab.schemas" title="Table 13.1. Default Virtual Directory Schema Files">Table 13.1, “Default Virtual Directory Schema Files”</a>.
+		</p><p>
+			In Penrose Virtual Directory, all of the schema files are located in the <code class="filename">/opt/vd-server-2.0/schema</code>.
+		</p><div class="table" id="tab.schemas"><div class="table-contents"><table summary="Default Virtual Directory Schema Files" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+							Schema File
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							apache.schema
+						</td><td>
+							Contains object classes and attributes required to define Apache LDAP directory server entries.
+						</td></tr><tr><td>
+							apachedns.schema
+						</td><td>
+							Contains object classes and attributes required to define DNS records.
+						</td></tr><tr><td>
+							autofs.schema
+						</td><td>
+							Contains object classes and attributes required to define NFS mount shares in an NIS entry.
+						</td></tr><tr><td>
+							changelog.schema
+						</td><td>
+							Contains object classes and attributes required to define a changelog entry to track changes in data masters.
+						</td></tr><tr><td>
+							collective.schema
+						</td><td>
+							Contains X.500 elements for collective attributes for LDAP entries.
+						</td></tr><tr><td>
+							corba.schema
+						</td><td>
+							Contains schema elements to represent CORBA objects in an LDAP directory.
+						</td></tr><tr><td>
+							core.schema
+						</td><td>
+							Contains the core OpenLDAP schema elements.
+						</td></tr><tr><td>
+							cosine.schema
+						</td><td>
+							Contains LDAP schema derived from X.500 COSINE pilot schema.
+						</td></tr><tr><td>
+							dhcp.schema
+						</td><td>
+							Contains object classes and attributes to define DHCP server information.
+						</td></tr><tr><td>
+							extension.schema
+						</td><td>
+							Contains object classes and attributes to extend LDAP support in applications like Outlook and PAM.
+						</td></tr><tr><td>
+							inetorgperson.schema
+						</td><td>
+							Contains attributes to define <code class="command">inetOrgPerson</code> entries for people within an organization.
+						</td></tr><tr><td>
+							java.schema
+						</td><td>
+							Contains object classes and attributes to define Java objects in an LDAP directory.
+						</td></tr><tr><td>
+							krb5kdc.schema
+						</td><td>
+							Contains object classes and attributes to define Kerberos configuration entries.
+						</td></tr><tr><td>
+							misc.schema
+						</td><td>
+							Contains various object classes and attributes to define mail entries, including as mail accounts and mail servers. 
+							<div class="warning"><h2>WARNING</h2><p>
+									Several of these attributes are obsolete, not fully supported, or depend on expired standards. These attributes should not be used in a full production environment.
+								</p></div>
+						</td></tr><tr><td>
+							nis.schema
+						</td><td>
+							Contains object classes and attributes to define NIS servers and domains in an LDAP directory.
+						</td></tr><tr><td>
+							samba.schema
+						</td><td>
+							Contains object classes and attributes for storing Samba user accounts and group maps in LDAP entries.
+						</td></tr><tr><td>
+							solaris.schema
+						</td><td>
+							Contains object classes and attributes required to configure a NIS entry in a Red Hat Directory Server-style LDAP directory on Solaris.
+						</td></tr><tr><td>
+							system.schema
+						</td><td>
+							Contains required and administrative object classes and attributes to configure an LDAP directory, including root DSEs, administrative subschema, referrals, and general entry information.
+						</td></tr></tbody></table></div><h6>Table 13.1. Default Virtual Directory Schema Files</h6></div><br class="table-break"/><p>
+			These files are listed in Penrose Studio in the <span><strong class="guilabel">Built-in Schema</strong></span> folder.
+		</p><p>
+			The full configuration for each schema file is viewable in Penrose Studio and can be edited by double-clicking the attribute or object class to edit its setup, but adding additional schema elements, or by removing schema elements.
+		</p><div class="informalfigure"><div class="mediaobject"><img src="images/builtin-attr.png"/></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Customizing_Schema-Creating_Schema_Files">13.3. Creating Custom Schema</h2></div></div></div><a id="d0e12806" class="indexterm"/><p>
+			Schema files can be created through Penrose Studio. The new schema is then processed through Penrose Studio and sent to the Penrose Server, which writes it to a new file in the server configuration.
+		</p><p>
+			To create custom schema in Penrose Studio:
+		</p><div class="orderedlist"><ol><li><p>
+					In the server entry, expand the <span><strong class="guilabel">Schema</strong></span> folder.
+				</p></li><li><p>
+					Right-click the <span><strong class="guilabel">Custom Schemas</strong></span> folder, and select <span><strong class="guimenuitem">New Schema...</strong></span>.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newschema.png"/></div></div></li><li><p>
+					Name the new schema, and click <span><strong class="guibutton">Finish</strong></span>.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newschema1.png"/></div></div></li><li><p>
+					Double-click the new schema entry to open the entry editor.
+				</p></li><li><p>
+					Click the <span><strong class="guilabel">Attributes</strong></span> tab at the bottom of the editor.
+				</p></li><li><p>
+					Click the <span><strong class="guibutton">Add</strong></span> button.
+				</p></li><li><p>
+					Fill in the new attribute informaton.
+				</p><div class="itemizedlist"><ul><li><p>
+							The OID (required)
+						</p></li><li><p>
+							The name (required)
+						</p></li><li><p>
+							The OID of the syntax, which is the format of the attribute value (required)
+						</p></li><li><p>
+							A description (optional)
+						</p></li><li><p>
+							The matching rules for equality, substring, and ordering indexes, such as <code class="command">caseIgnoreMatch</code> (optional)
+						</p></li></ul></div><div class="informalfigure"><div class="mediaobject"><img src="images/schema-newattr1.png"/></div></div><p>
+					The OID can be any attribute defined by IANA or can be custom. The possible syntax OIDs are listed in <a href="chap-Admin_Guide-Customizing_Schema.html#tab.syntaxes" title="Table 13.2. Common LDAP Syntaxes">Table 13.2, “Common LDAP Syntaxes”</a>.
+				</p><a id="d0e12890" class="indexterm"/><div class="table" id="tab.syntaxes"><div class="table-contents"><table summary="Common LDAP Syntaxes" border="1"><colgroup><col/><col/></colgroup><thead><tr><th>
+									OID
+								</th><th>
+									Name
+								</th></tr></thead><tbody><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.4
+								</td><td>
+									Audio
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.5
+								</td><td>
+									Binary
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.7
+								</td><td>
+									Boolean
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.12
+								</td><td>
+									DN
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.15
+								</td><td>
+									Directory String
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.22
+								</td><td>
+									Telephone Number
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.24
+								</td><td>
+									Generalized Time
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.26
+								</td><td>
+									IA5 String
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.27
+								</td><td>
+									Integer
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.28
+								</td><td>
+									JPEG
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.36
+								</td><td>
+									Numeric String
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.40
+								</td><td>
+									Octet String
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.38
+								</td><td>
+									OID
+								</td></tr><tr><td>
+									1.3.6.1.4.1.1466.115.121.1.41
+								</td><td>
+									Postal Address
+								</td></tr></tbody></table></div><h6>Table 13.2. Common LDAP Syntaxes</h6></div><br class="table-break"/></li><li><p>
+					Fill in additional properties for the attribute.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/schema-newattr2.png"/></div></div><div class="itemizedlist"><ul><li><p>
+							The type of attribute, in the <span><strong class="guimenu">Usage</strong></span> drop-down menu, can be <code class="command">userApplication</code> (used by a client independent of the LDAP directory), <code class="command">directoryOperation</code> (used by the LDAP directory), <code class="command">distributedOperation</code> (shared between directory server instances), and <code class="command">dSAOperation</code> (unique to each individual directory server instance).
+						</p></li><li><p>
+							Whether the attribute is single- or multi-valued
+						</p></li><li><p>
+							Whether the attribute is shared among multiple types of entries (collective)
+						</p></li><li><p>
+							Whether the attribute definition can be modified
+						</p></li><li><p>
+							Whether the attribute is obsolete, which means it may not be widely supported
+						</p></li></ul></div></li><li><p>
+					Add an attribute entry for every attribute which will be used by the object classes in the schema.
+				</p></li><li><p>
+					Click the <span><strong class="guilabel">Attributes</strong></span> tab at the bottom of the editor.
+				</p></li><li><p>
+					Click the <span><strong class="guibutton">Add</strong></span> button.
+				</p></li><li><p>
+					Fill in the object class information.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/schema-newoc1.png"/></div></div><div class="itemizedlist"><ul><li><p>
+							The OID (required), which can be defined by IANA or custom
+						</p></li><li><p>
+							The name (required)
+						</p></li><li><p>
+							The type (required)
+						</p></li><li><p>
+							Any superior object class (optional)
+						</p></li><li><p>
+							A description (optional)
+						</p></li><li><p>
+							Whether the object class is obsolete (optional)
+						</p></li></ul></div></li><li><p>
+					Click the <span><strong class="guilabel">Attributes</strong></span> tab at the top of the object class editor, and click <span><strong class="guibutton">Add</strong></span> to add any required or allowed attributes for the object class.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/schema-newoc2.png"/></div></div><div class="note"><h2>NOTE</h2><p>
+						Penrose Server does not validate the schema, so it is possible to create schema entries which violate the LDAP standards.
+					</p></div></li><li><p>
+					Click <span><strong class="guibutton">Finish</strong></span>.
+				</p></li><li><p>
+					Close Penrose Studio, and restart Penrose Server. When Penrose Studio is opened again, the new imported schema is listed under the <span><strong class="guilabel">Custom Schema</strong></span> folder.
+				</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="exporting-schema">13.4. Exporting Schema</h2></div></div></div><p>
+			It is possible to export the schema configured for a connection so it can be used in other areas of Penrose Server or with other applications.
+		</p><div class="orderedlist"><ol><li><p>
+					Open the server entry.
+				</p></li><li><p>
+					In the top menu, expand the <span><strong class="guimenu">Partitions</strong></span> menu item, and select the <span><strong class="guilabel">Connections</strong></span> folder.
+				</p></li><li><p>
+					Open the <span><strong class="guilabel">Connections</strong></span> folder, and double-click the connection.
+				</p></li><li><p>
+					Click the <span><strong class="guilabel">Schema</strong></span> tab at the bottom of the window.
+				</p></li><li><p>
+					Click the <span><strong class="guilabel">Export</strong></span> link.
+				</p></li><li><p>
+					Select the location to save the schema file to.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/exportschema.png"/></div></div></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Customizing_Schema-Importing_Schema_Files">13.5. Importing Schema Files</h2></div></div></div><a id="d0e13131" class="indexterm"/><p>
+			Importing a schema file uses Penrose Studio to load an existing schema file into Penrose Server. As with creating a new schema file, the local file is imported into the Penrose Studio configuration, serialized to Penrose Server, and written into the server configuration.
+		</p><div class="note"><h2>NOTE</h2><p>
+				Any schema file must be of the type <code class="filename">.schema</code> for Penrose Server to load it.
+			</p></div><div class="orderedlist"><ol><li><p>
+					In the server entry, expand the <span><strong class="guilabel">Schema</strong></span> folder.
+				</p></li><li><p>
+					Right-click the <span><strong class="guilabel">Custom Schemas</strong></span> folder, and select <span><strong class="guimenuitem">Import Schema</strong></span>.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/importschema1.png"/></div></div></li><li><p>
+					Name the schema entry.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/importschema2.png"/></div></div></li><li><p>
+					Enter the absolute path to the schema file.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/importschema3.png"/></div></div></li><li><p>
+					Click <span><strong class="guibutton">Finish</strong></span>.
+				</p></li><li><p>
+					Close Penrose Studio, and restart Penrose Server. When Penrose Studio is opened again, the new imported schema is listed under the <span><strong class="guilabel">Custom Schema</strong></span> folder.
+				</p></li><li><p>
+					All custom schema files must also be loaded into Penrose Virtual Directory's OpenDS service. The formats used for Penrose Virtual Directory and OpenDS schema are the same, but the extensions are different. Schema files in Penrose Virtual Directory have a <code class="filename">.schema</code> extension and in OpenDS have a <code class="filename">.ldif</code> extension.
+				</p><pre class="screen">cp custom.schema /opt/vd-server-2.0/services/OpenDS/config/schema/custom.<strong class="userinput"><code>ldif</code></strong></pre><p>
+					If necessary, convert the custom schema file to an OpenDS format, as described in <a href="chap-Admin_Guide-Customizing_Schema.html#schema-converting" title="13.7. Converting the Schema Formatting from OpenLDAP to OpenDS">Section 13.7, “Converting the Schema Formatting from OpenLDAP to OpenDS”</a>.
+				</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="schema-manual">13.6. Loading a Schema File Manually</h2></div></div></div><a id="d0e13212" class="indexterm"/><p>
+			Any schema file can be loaded into Penrose Server to be available for the virtual directory entries. For Penrose Server to recognize the schema file, it must have a <code class="filename">.schema</code> extension.
+		</p><p>
+			To load the schema into Penrose Server manually:
+		</p><div class="orderedlist"><ol><li><p>
+					Create the schema file; this is described somewhat in <a href="chap-Admin_Guide-Customizing_Schema.html#sect-Admin_Guide-Customizing_Schema-About_Directory_and_Database_Schema" title="13.1. About Directory Schema">Section 13.1, “About Directory Schema”</a>.
+				</p><div class="note"><h2>NOTE</h2><p>
+						The schema file must have a <code class="filename">.schema</code> extension.
+					</p></div></li><li><p>
+					Copy the schema file into the <code class="filename">/opt/vd-server-2.0/schema</code> directory.
+				</p></li><li><p>
+					All custom schema files must also be loaded into Penrose Virtual Directory's OpenDS service. The formats used for Penrose Virtual Directory and OpenDS schema are the same, but the extensions are different. Schema files in Penrose Virtual Directory have a <code class="filename">.schema</code> extension and in OpenDS have a <code class="filename">.ldif</code> extension.
+				</p><pre class="screen">cp custom.schema /opt/vd-server-2.0/services/OpenDS/config/schema/custom.<strong class="userinput"><code>ldif</code></strong></pre><p>
+					If necessary, convert the custom schema file to an OpenDS format, as described in <a href="chap-Admin_Guide-Customizing_Schema.html#schema-converting" title="13.7. Converting the Schema Formatting from OpenLDAP to OpenDS">Section 13.7, “Converting the Schema Formatting from OpenLDAP to OpenDS”</a>.
+				</p></li><li><p>
+					Restart Penrose Server.
+				</p><pre class="screen">service vd-server restart</pre><div class="important"><h2>IMPORTANT</h2><p>
+						Always restart Penrose Server after editing the configuration file.
+					</p></div></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="schema-converting">13.7. Converting the Schema Formatting from OpenLDAP to OpenDS</h2></div></div></div><a id="d0e13274" class="indexterm"/><a id="d0e13279" class="indexterm"/><a id="d0e13284" class="indexterm"/><p>
+			Penrose Virtual Directory uses OpenDS-style schema files for some internal operations and OpenLDAP-style schema files for others. Penrose Virtual Directory has a tool, <code class="command">schema.sh</code>, which can convert the OpenLDAP schema files to OpenDS schema files so that they can be loaded into Penrose Server.
+		</p><p>
+			Any custom schema file used with Penrose Virtual Directory has to be loaded into its OpenDS service as well as Penrose Server.
+		</p><div class="orderedlist"><ol><li><p>
+					Open the OpenDS directory for the integrated OpenDS services.
+				</p><pre class="screen">cd /opt/vd-server-2.0/services/OpenDS/bin/</pre></li><li><p>
+					Run the <code class="command">schema.sh</code> script to convert the specified schema file to the appropriate format.
+				</p><pre class="screen">schema.sh <em class="replaceable"><code>/path/to/file</code></em>.schema custom.ldif</pre></li><li><p>
+					Copy the converted schema file into the OpenDS directory.
+				</p><pre class="screen">cp custom.ldif /opt/vd-server-2.0/services/OpenDS/config/schema/custom.ldif</pre></li><li><p>
+					Restart Penrose Server.
+				</p><pre class="screen">service vd-server restart</pre></li></ol></div></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html"><strong>Prev</strong>Chapter 12. Using Services with Penrose Virtual D...</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_Cache.html"><strong>Next</strong>Chapter 14. Configuring Cache</a></li></ul></body></html>

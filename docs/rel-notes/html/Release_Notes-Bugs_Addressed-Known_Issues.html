@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>4. Known Issues</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><link rel="stylesheet" href="../../../../Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Penrose Virtual Directory 2.0 Release Notes"/><link rel="up" href="index.html" title="Penrose Virtual Directory 2.0 Release Notes"/><link rel="prev" href="Release_Notes-Dployment_Notes-Installing_RHDS_VER.html" title="3. Installing Penrose Server 2.0"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>4. Known Issues</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="Release_Notes-Dployment_Notes-Installing_RHDS_VER.html"><strong>Prev</strong></a></li><li class="next"/></ul><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="Release_Notes-Bugs_Addressed-Known_Issues">4. Known Issues</h2></div></div></div><p>
+			The following are some of the most important known issues in Penrose Server 2.0. If applicable, supported workarounds are also described.
+		</p><div class="table" id="Release_Notes-Known_Issues-Known_issues_in_RHDS_VER"><div class="table-contents"><table summary="Known Issues in Penrose Server 2.0" border="1"><colgroup><col width="1*"/><col width="4*"/><col width="3*"/></colgroup><thead><tr><th>
+							Bug Number
+						</th><th>
+							Description
+						</th><th>
+							Workaround
+						</th></tr></thead><tbody><tr valign="top"><td valign="top">
+							491917
+						</td><td valign="top">
+							<p>
+								If the heap settings are too high in the <code class="filename">/etc/vd.conf</code> file, then external tools used by Penrose Server may not run.
+							</p>
+							<p>
+								This means that, on slower connections, high heap settings can slow down or stop NIS synchronization entirely because Penrose Server cannot properly run the synchronization tools.
+							</p>
+						</td><td valign="top">
+							Lower the heap settings.
+						</td></tr></tbody></table></div><h6>Table 1. Known Issues in Penrose Server 2.0</h6></div><br class="table-break"/></div><ul class="docnav"><li class="previous"><a accesskey="p" href="Release_Notes-Dployment_Notes-Installing_RHDS_VER.html"><strong>Prev</strong>3. Installing Penrose Server 2.0</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li></ul></body></html>

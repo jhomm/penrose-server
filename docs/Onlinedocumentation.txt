@@ -1,0 +1,4 @@
+The project is not be maintained anymore by safehaus or red hat, so you can not find any documentation about the product.
+However, the web archive project (https://web.archive.org) has crawled the old sites many time so you will find some information about the old website version:
+
+https://web.archive.org/web/20140706143158/https://fedorahosted.org/penrose/

@@ -1,0 +1,1456 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 10. Configuring Identity Federation</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="Mapping.html" title="Chapter 9. Mapping Entries and Attributes"/><link rel="next" href="chap-Admin_Guide-Configuring_Modules.html" title="Chapter 11. Configuring Modules"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 10. Configuring Identity Federation</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="Mapping.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_Modules.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="chap-Admin_Guide-Configuring_Identity-Federation">Chapter 10. Configuring Identity Federation</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Identity-Federation.html#sect.identity-linking">10.1. About Identity Federation</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Identity-Federation.html#creating-domain">10.2. Creating the Federation Domain</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Identity-Federation.html#templates">10.3. Creating Templates</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Identity-Federation.html#globaltemplates">10.3.1. Creating Global Templates</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Identity-Federation.html#localtemplates-ldap">10.3.2. Creating LDAP Templates</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Identity-Federation.html#localtemplates-nis-all">10.3.3. Creating NIS-Related Templates</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Identity-Federation.html#local-repo-ldap">10.4. Adding LDAP Local Repositories through Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Identity-Federation.html#local-repo-nis">10.5. Adding NIS Local Repositories Using Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Identity-Federation.html#fed-plugin">10.6. Linking Identities</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Identity-Federation.html#resolving-conflicts">10.7. Resolving UID and GID Conflicts</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Identity-Federation.html#oat">10.8. Checking File Ownership with the Ownership Alignment Tool</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Identity-Federation.html#nis-migration">10.9. Synchronizing (or Migrating) NIS Data to LDAP</a></span></dt></dl></div><a id="d0e9634" class="indexterm"/><p>
+		This chapter describes how to configure identity federation for NIS, LDAP, and Active Directory sources.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect.identity-linking">10.1. About Identity Federation</h2></div></div></div><a id="d0e9642" class="indexterm"/><p>
+			<span class="emphasis"><em>Identity federation</em></span> or <span class="emphasis"><em>identity linking</em></span> is a method to unite entries from Active Directory, LDAPv3, or NIS servers. This method can be used to synchronize these types of servers or to simplify a NIS migration.
+		</p><p>
+			Identity federation is similar to mapping, which takes source entries to create a virtual directory entry, but is for different source environments. Identity linking, like join mapping, takes entities from different sources and combines them to create a single global directory entry. (Unlike join mapping, identity linking does not depend on having a single common attribute shared among the other source entries.)
+		</p><p>
+			Not every infrastructure can use a purely virtual directory because of requirements for migrations, synchronization, or other network changes. In these cases, Penrose Virtual Directory provides identity linking. Identity linking (or federation) creates a hybrid virtual directory and meta directory by using a global repository to combine and synchronize entries from the different sources. Local repositories (analogous to sources in the virtual directory configuration) are linked to the global repository. Using a mapping tool, the local identities are then matched to entries in the global repository.
+		</p><a id="d0e9659" class="indexterm"/><p>
+			Identity linking works with a smaller number of source types than virtual directory configuration. These can be any of three things:
+		</p><div class="itemizedlist"><ul><li><p>
+					LDAPv3 servers, such as Red Hat Directory Server
+				</p></li><li><p>
+					Active Directory
+				</p></li><li><p>
+					NIS servers
+				</p></li></ul></div><a id="d0e9676" class="indexterm"/><p>
+			For example, in <a href="chap-Admin_Guide-Configuring_Identity-Federation.html#fig.identity-linking" title="Figure 10.1. Merging Entries through Identity Linking">Figure 10.1, “Merging Entries through Identity Linking”</a>, there is no common attribute among the NIS, LDAP, and Active Directory identities. With identity linking, there is a <span class="emphasis"><em>global repository</em></span>, a separate and authoritative LDAP source for entries. In this figure, a NIS source is used to create the initial global entry. After that global repository is defined, entries from other sources (<span class="emphasis"><em>local repositories</em></span>) are linked to the global entry either manually or through matching rules.
+		</p><div class="figure" id="fig.identity-linking"><div class="figure-contents"><div class="mediaobject"><img src="images/identitymapping.png" alt="Merging Entries through Identity Linking"/></div></div><h6>Figure 10.1. Merging Entries through Identity Linking</h6></div><br class="figure-break"/><a id="d0e9699" class="indexterm"/><p>
+			There are several important differences between join mapping and identity linking:
+		</p><div class="itemizedlist"><ul><li><p>
+					Identity linking can combine entries which do not share a common attribute, using a tool to identify and link entries between sources, as described in <a href="chap-Admin_Guide-Configuring_Identity-Federation.html#fed-plugin" title="10.6. Linking Identities">Section 10.6, “Linking Identities”</a>.
+				</p></li><li><p>
+					Identity linking is configured through a plug-in which works with NIS, LDAP, and Active Directory sources.
+				</p></li></ul></div><a id="d0e9715" class="indexterm"/><p>
+			Identity federation uses a centralized, specialized partition to create a <span class="emphasis"><em>federation domain</em></span>. Each source repository is configured as its own sub-partition, which both defines its own connections, sources and mappings and also points back to the federation domain.
+		</p><p>
+			Federating or linking identities has the following process:
+		</p><div class="orderedlist"><ol><li><p>
+					Create the federation domain (<a href="chap-Admin_Guide-Configuring_Identity-Federation.html#creating-domain" title="10.2. Creating the Federation Domain">Section 10.2, “Creating the Federation Domain”</a>).
+				</p></li><li><p>
+					Create templates for the different repository types (<a href="chap-Admin_Guide-Configuring_Identity-Federation.html#templates" title="10.3. Creating Templates">Section 10.3, “Creating Templates”</a>).
+				</p><p>
+					Alternatively, it is also possible to add individual local repositories through Studio (<a href="chap-Admin_Guide-Configuring_Identity-Federation.html#local-repo-ldap" title="10.4. Adding LDAP Local Repositories through Penrose Studio">Section 10.4, “Adding LDAP Local Repositories through Penrose Studio”</a> and <a href="chap-Admin_Guide-Configuring_Identity-Federation.html#local-repo-nis" title="10.5. Adding NIS Local Repositories Using Penrose Studio">Section 10.5, “Adding NIS Local Repositories Using Penrose Studio”</a>).
+				</p></li><li><p>
+					Configure attribute mapping (<a href="Mapping.html#id-mapping" title="9.6. Creating Advanced Mappings">Section 9.6, “Creating Advanced Mappings”</a>).
+				</p></li><li><p>
+					Link local identities to global identities (<a href="chap-Admin_Guide-Configuring_Identity-Federation.html#fed-plugin" title="10.6. Linking Identities">Section 10.6, “Linking Identities”</a>).
+				</p></li><li><p>
+					<span class="emphasis"><em>Optionally.</em></span> Migrate and synchronize NIS information (<a href="chap-Admin_Guide-Configuring_Identity-Federation.html#nis-migration" title="10.9. Synchronizing (or Migrating) NIS Data to LDAP">Section 10.9, “Synchronizing (or Migrating) NIS Data to LDAP”</a>).
+				</p></li><li><p>
+					Resolve any conflicts between UID and GID numbers among global entries (<a href="chap-Admin_Guide-Configuring_Identity-Federation.html#resolving-conflicts" title="10.7. Resolving UID and GID Conflicts">Section 10.7, “Resolving UID and GID Conflicts”</a>).
+				</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="creating-domain">10.2. Creating the Federation Domain</h2></div></div></div><p>
+			Identity federation works by creating relationships between different repositories of information. The primary organization for identity federation is a domain; each repository of information belongs to that domain. The domain and repositories themselves are essentially partition entries. The federation
+		</p><p>
+			The first step for configuring identity federation is creating the federation domain.
+		</p><div class="note"><h2>NOTE</h2><p>
+				The federation domain must be created manually.
+			</p></div><div class="orderedlist"><ol><li><p>
+					Open the partitions directory.
+				</p><pre class="screen">cd /opt/vd-server-2.0/partitions</pre></li><li><p>
+					Create a new directory; the name of the directory is the name of the new federation domain. For example:
+				</p><pre class="screen">mkdir ExDomain/</pre></li><li><p>
+					Open the new federation directory.
+				</p><pre class="screen">cd ExDomain/</pre></li><li><p>
+					Create a <code class="filename">DIR-INF/</code> directory.
+				</p><pre class="screen">mkdir DIR-INF/</pre></li><li><p>
+					In the <code class="filename">DIR-INF/</code> directory, copy over the regular partition files, <code class="filename">partition.xml</code>, <code class="filename">connections.xml</code>, <code class="filename">sources.xml</code>, <code class="filename">modules.xml</code>, and <code class="filename">directory.xml</code>. For example:
+				</p><pre class="screen">cd DIR-INF/
+cp /opt/vd-server-2.0/conf/*.xml .</pre></li><li><p>
+					Edit the <code class="filename">partition.xml</code>; this file is blank.
+				</p><pre class="screen">vim partition.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE partition PUBLIC "-//Penrose/DTD Partition 2.0//EN" "http://penrose.safehaus.org/dtd/partition.dtd"&gt;
+
+&lt;partition /&gt;</pre></li><li><p>
+					Create the <code class="filename">federation.xml</code> file. This file will eventually hold the entries for the global and local repositories.
+				</p><p>
+					For example:
+				</p><pre class="screen">vim federation.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE directory PUBLIC "-//Penrose/DTD Directory 2.0//EN" "http://penrose.safehaus.org/dtd/directory.dtd"&gt;
+
+&lt;federation&gt;
+
+&lt;/federation&gt;</pre></li><li><p>
+					Edit the <code class="filename">modules.xml</code> file to use the federation modules. There are several different modules to load for federation, including the main federation module, modules for the NIS and LDAP repositories, and plug-ins to manage user and group conflicts.
+				</p><pre class="screen">vim modules.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE modules PUBLIC "-//Penrose/DTD Modules 2.0//EN" "http://penrose.safehaus.org/dtd/modules.dtd"&gt;
+
+&lt;modules&gt;
+  &lt;module name="Federation"&gt;
+    &lt;module-class&gt;org.safehaus.penrose.federation.module.FederationModule&lt;/module-class&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;config&lt;/param-name&gt;
+      &lt;param-value&gt;federation.xml&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;repositoryTypes&lt;/param-name&gt;
+      &lt;param-value&gt;LDAP,NIS&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;conflictDetections&lt;/param-name&gt;
+      &lt;param-value&gt;Users,Groups&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/module&gt;
+
+  &lt;module name="LDAP"&gt;
+    &lt;module-class&gt;org.safehaus.penrose.federation.module.LDAPRepositoryModule&lt;/module-class&gt;
+  &lt;/module&gt;
+
+  &lt;module name="NIS"&gt;
+    &lt;module-class&gt;org.safehaus.penrose.federation.module.NISRepositoryModule&lt;/module-class&gt;
+  &lt;/module&gt;
+
+  &lt;module name="Users"&gt;
+    &lt;module-class&gt;org.safehaus.penrose.federation.module.ConflictDetectionModule&lt;/module-class&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;objectClass&lt;/param-name&gt;
+      &lt;param-value&gt;person&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;attribute&lt;/param-name&gt;
+      &lt;param-value&gt;uidNumber&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/module&gt;
+
+  &lt;module name="Groups"&gt;
+    &lt;module-class&gt;org.safehaus.penrose.federation.module.ConflictDetectionModule&lt;/module-class&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;objectClass&lt;/param-name&gt;
+      &lt;param-value&gt;posixGroup&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;attribute&lt;/param-name&gt;
+      &lt;param-value&gt;gidNumber&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/module&gt;
+
+&lt;/modules&gt;</pre></li><li><p>
+					Restart the server.
+				</p><pre class="screen">service vd-server start</pre><p>
+					When the server is restarted, the new federation domain shows up as a partition under the <span><strong class="guilabel">Partitions</strong></span> folder and is listed under the <span><strong class="guilabel">Federation</strong></span> folder, with <span><strong class="guilabel">NIS</strong></span> and <span><strong class="guilabel">LDAP</strong></span> subfolders for the repositories.
+				</p></li><li><p>
+					Configure the <code class="filename">connections.xml</code> file to point to the global repository, which is an LDAPv3 server such as Red Hat Directory Server or Active Directory. For example:
+				</p><pre class="screen">vim connections.xml
+
+&lt;connections&gt;
+  &lt;connection name="LDAP"&gt;
+    &lt;adapter-name&gt;LDAP&lt;/adapter-name&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.provider.url&lt;/param-name&gt;
+      &lt;param-value&gt;ldap://server1.example.com:1389/ ldap://server2.example.com:1389/&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.security.principal&lt;/param-name&gt;
+      &lt;param-value&gt;cn=Directory Manager&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.security.credentials&lt;/param-name&gt;
+      &lt;param-value&gt;secret&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.ldap.attributes.binary&lt;/param-name&gt;
+      &lt;param-value&gt;SeeAlso&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/connection&gt;
+&lt;/connections&gt;</pre><p>
+					The possible parameters to configure connections are listed in <a href="chap-Admin_Guide-Configuring_connections.html#tab.connection-configuration" title="Table 6.1. Connection Configuration Values">Table 6.1, “Connection Configuration Values”</a>.
+				</p></li><li><p>
+					Edit the <code class="filename">directory.xml</code> file. Only two virtual directory entries are necessary: one for the base DN (<code class="command">dc=example,dc=com</code>) and one for the user-facing entry. Users will always access this subtree. On the backend, either the global repository or the local repository can be chained to that subtree. During a NIS migration, for example, this subtree can be chained to <code class="command">ou=nis</code>, the NIS repository. After migration is complete, the subtree can be chained to <code class="command">ou=global</code>. Users and LDAP clients, however, only have to access one subtree.
+				</p><div class="note"><h2>NOTE</h2><p>
+						The configuration in the <code class="filename">directory.xml</code> file depends on the formatting of the virtual directory tree and your infrastructure.
+					</p></div><p>
+					For example:
+				</p><pre class="screen">vim directory.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE directory PUBLIC "-//Penrose/DTD Directory 2.0//EN" "http://penrose.safehaus.org/dtd/directory.dtd"&gt;
+
+&lt;directory&gt;
+  &lt;entry dn="dc=example,dc=com"&gt;
+    &lt;oc&gt;dcObject&lt;/oc&gt;
+    &lt;at name="dc" rdn="true"&gt;
+      &lt;constant&gt;example&lt;/constant&gt;
+    &lt;/at&gt;
+    &lt;oc&gt;o&lt;/oc&gt;
+    &lt;at name="o" rdn="true"&gt;
+      &lt;constant&gt;example&lt;/constant&gt;
+    &lt;/at&gt;
+    &lt;aci&gt;
+      &lt;permission&gt;rs&lt;/permission&gt;
+    &lt;/aci&gt;
+  &lt;/entry&gt;
+
+  &lt;entry dn="ou=federation,dc=example,dc=com"&gt;
+    &lt;oc&gt;organizationalUnit&lt;/oc&gt;
+    &lt;at name="ou" rdn="true"&gt;
+      &lt;constant&gt;federation&lt;/constant&gt;
+    &lt;/at&gt;
+  &lt;/entry&gt;
+&lt;/directory&gt;</pre></li></ol></div><p>
+			Once the federation domain entries are created, the federation configuration, including modules and containers for sources, directories, and mappings, is available in Penrose Studio.
+		</p><div class="figure" id="fig.fed-domain"><div class="figure-contents"><div class="mediaobject"><img src="images/fed-domain.png" alt="Federation Domain Entries"/></div></div><h6>Figure 10.2. Federation Domain Entries</h6></div><br class="figure-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="templates">10.3. Creating Templates</h2></div></div></div><p>
+			Penrose Server can use templates to automatically generate repositories that have consistent mappings, directory structures and modules.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="globaltemplates">10.3.1. Creating Global Templates</h3></div></div></div><a id="d0e9928" class="indexterm"/><a id="d0e9931" class="indexterm"/><div class="orderedlist"><ol><li><p>
+						Open the federation domain partition directory.
+					</p><pre class="screen">cd /opt/vd-server-2.0/partitions/ExDomain/</pre></li><li><p>
+						Create a templates directory.
+					</p><pre class="screen">mkdir templates/</pre></li><li><p>
+						Open the new templates directory.
+					</p><pre class="screen">cd templates/</pre></li><li><p>
+						Inside the templates directory, create a new partition-style directory for the global repository. For example:
+					</p><pre class="screen">mkdir global/
+mkdir global/DIR-INF/</pre></li><li><p>
+						Open the <code class="filename">DIR-INF</code> directory.
+					</p><pre class="screen">cd global/DIR-INF/</pre></li><li><p>
+						Create a new <code class="filename">partition.xml</code> file that points to the federation domain and an entry for the global entry in the <code class="filename">federation.xml</code> file.
+					</p><pre class="screen">vim partition.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE partition PUBLIC "-//Penrose/DTD Partition 2.0//EN" "http://penrose.safehaus.org/dtd/partition.dtd"&gt;
+
+&lt;partition depends="ExDomain,ex_global"&gt;
+
+&lt;/partition&gt;</pre></li><li><p>
+						Create a new <code class="filename">directory.xml</code> file that defines the directory tree and entries for the global subtree.
+					</p><div class="note"><h2>NOTE</h2><p>
+							The configuration in the <code class="filename">directory.xml</code> file depends on the formatting of the virtual directory tree and your infrastructure.
+						</p></div><p>
+						For example:
+					</p><pre class="screen">vim directory.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE directory PUBLIC "-//Penrose/DTD Directory 2.0//EN" "http://penrose.safehaus.org/dtd/directory.dtd"&gt;
+
+&lt;directory&gt;
+
+  &lt;entry dn="ou=global,dc=example,dc=com"&gt;
+    &lt;oc&gt;organizationalUnit&lt;/oc&gt;
+    &lt;at name="ou" rdn="true"&gt;
+      &lt;constant&gt;global&lt;/constant&gt;
+    &lt;/at&gt;
+    &lt;aci subject="self"&gt;
+      &lt;permission&gt;rws&lt;/permission&gt;
+    &lt;/aci&gt;
+    &lt;aci&gt;
+      &lt;target&gt;ATTRIBUTES&lt;/target&gt;
+      &lt;attributes&gt;userPassword&lt;/attributes&gt;
+      &lt;action&gt;deny&lt;/action&gt;
+      &lt;permission&gt;rs&lt;/permission&gt;
+    &lt;/aci&gt;
+    &lt;aci&gt;
+      &lt;permission&gt;rs&lt;/permission&gt;
+    &lt;/aci&gt;
+  &lt;/entry&gt;
+
+  &lt;entry dn="ou=Users,ou=global,dc=example,dc=com"&gt;
+    &lt;oc&gt;organizationalUnit&lt;/oc&gt;
+    &lt;at name="ou" rdn="true"&gt;
+      &lt;constant&gt;Users&lt;/constant&gt;
+    &lt;/at&gt;
+  &lt;/entry&gt;
+
+  &lt;entry dn="uid=...,ou=Users,ou=global,dc=example,dc=com"&gt;
+    &lt;entry-class&gt;com.analog.penrose.directory.GlobalUserEntry&lt;/entry-class&gt;
+    &lt;mapping-name&gt;virtual_users&lt;/mapping-name&gt;
+    &lt;at name="uid" rdn="true"&gt;
+      &lt;variable&gt;g.uid&lt;/variable&gt;
+    &lt;/at&gt;
+    &lt;source alias="g" bind="required"&gt;
+      &lt;partition-name&gt;example&lt;/partition-name&gt;
+      &lt;source-name&gt;users&lt;/source-name&gt;
+      &lt;mapping-name&gt;virtual_users_to_global_users&lt;/mapping-name&gt;
+      &lt;field name="uid" primaryKey="true"&gt;
+        &lt;variable&gt;rdn.uid&lt;/variable&gt;
+      &lt;/field&gt;
+    &lt;/source&gt;
+    &lt;source alias="a" bind="required"&gt;
+      &lt;partition-name&gt;ex_global&lt;/partition-name&gt;
+      &lt;source-name&gt;users&lt;/source-name&gt;
+      &lt;mapping-name&gt;virtual_users_to_ad_users&lt;/mapping-name&gt;
+      &lt;field name="objectGUID"&gt;
+        &lt;variable&gt;g.adiSeeAlsoObjectGUID&lt;/variable&gt;
+      &lt;/field&gt;
+    &lt;/source&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;checkAccountDisabled&lt;/param-name&gt;
+      &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/entry&gt;
+
+  &lt;entry dn="ou=Groups,ou=global,dc=example,dc=com"&gt;
+    &lt;oc&gt;organizationalUnit&lt;/oc&gt;
+    &lt;at name="ou" rdn="true"&gt;
+      &lt;constant&gt;Groups&lt;/constant&gt;
+    &lt;/at&gt;
+  &lt;/entry&gt;
+
+  &lt;entry dn="cn=...,ou=Groups,ou=global,dc=example,dc=com"&gt;
+    &lt;entry-class&gt;org.safehaus.penrose.directory.DynamicEntry&lt;/entry-class&gt;
+    &lt;mapping-name&gt;virtual_groups&lt;/mapping-name&gt;
+    &lt;at name="cn" rdn="true"&gt;
+      &lt;variable&gt;g.primaryKey.cn&lt;/variable&gt;
+    &lt;/at&gt;
+    &lt;source alias="g"&gt;
+      &lt;partition-name&gt;example&lt;/partition-name&gt;
+      &lt;source-name&gt;groups&lt;/source-name&gt;
+      &lt;mapping-name&gt;virtual_groups_to_global_groups&lt;/mapping-name&gt;
+      &lt;field name="cn" primaryKey="true"&gt;
+        &lt;variable&gt;rdn.cn&lt;/variable&gt;
+      &lt;/field&gt;
+    &lt;/source&gt;
+    &lt;source alias="a"&gt;
+      &lt;partition-name&gt;ex_global&lt;/partition-name&gt;
+      &lt;source-name&gt;groups&lt;/source-name&gt;
+      &lt;mapping-name&gt;virtual_groups_to_ad_groups&lt;/mapping-name&gt;
+      &lt;field name="objectGuid"&gt;
+        &lt;variable&gt;g.adiSeeAlsoObjectGUID&lt;/variable&gt;
+      &lt;/field&gt;
+    &lt;/source&gt;
+  &lt;/entry&gt;
+
+&lt;/directory&gt;</pre></li><li><p>
+						Create the mappings for the global directory. Mappings are described in <a href="Mapping.html#id-mapping" title="9.6. Creating Advanced Mappings">Section 9.6, “Creating Advanced Mappings”</a>, and the number, types, and values of the mappings, as well as the source which supplies the values, varies for each deployment.
+					</p><pre class="screen">&lt;mappings&gt;
+
+  &lt;mapping name="virtual_users"&gt;
+
+    &lt;rule name="objectClass"&gt;
+      &lt;constant&gt;person&lt;/constant&gt;
+    &lt;/rule&gt;
+    &lt;rule name="sn" required="false"&gt;
+      &lt;condition&gt;!a.sn.equals("NULL")&lt;/condition&gt;
+      &lt;variable&gt;a.sn&lt;/variable&gt;
+    &lt;/rule&gt;
+    &lt;rule name="sn" required="false"&gt;
+      &lt;condition&gt;!g.sn.equals("NULL")&lt;/condition&gt;
+      &lt;variable&gt;g.sn&lt;/variable&gt;
+    &lt;/rule&gt;
+    &lt;rule name="cn" required="false"&gt;
+      &lt;condition&gt;!a.name.equals("NULL")&lt;/condition&gt;
+      &lt;variable&gt;a.name&lt;/variable&gt;
+    &lt;/rule&gt;
+    &lt;rule name="cn" required="false"&gt;
+      &lt;condition&gt;!g.cn.equals("NULL")&lt;/condition&gt;
+      &lt;variable&gt;g.cn&lt;/variable&gt;
+    &lt;/rule&gt;
+
+&lt;/mapping&gt;</pre></li><li><p>
+						Configure the modules for the repository, and map them to the subtree defined for the global repository.
+					</p><pre class="screen">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE modules PUBLIC "-//Penrose/DTD Modules 2.0//EN" "http://penrose.safehaus.org/dtd/modules.dtd"&gt;
+
+&lt;modules&gt;
+
+  &lt;module name="Cache"&gt;
+    &lt;module-class&gt;org.safehaus.penrose.cache.module.CacheModule&lt;mod/ule-class&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;querySize&lt;/param-name&gt;
+      &lt;param-value&gt;100&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;resultSize&lt;/param-name&gt;
+      &lt;param-value&gt;100&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;expiration&lt;/param-name&gt;
+      &lt;param-value&gt;5&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/module&gt;
+
+  &lt;module-mapping&gt;
+    &lt;module-name&gt;Cache&lt;mod/ule-name&gt;
+    &lt;base-dn&gt;ou=global,dc=example,dc=com&lt;/base-dn&gt;
+  &lt;mod/ule-mapping&gt;
+
+&lt;mod/ules&gt;</pre></li><li><p>
+						Add the global repository to the <code class="filename">federation.xml</code> file as a partition entry. The partition entry should point to the template for the global repository, and the name of the entry should be the same as the one given in the <code class="filename">partition.xml</code> file. For example:
+					</p><pre class="screen">vim federation.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE directory PUBLIC "-//Penrose/DTD Directory 2.0//EN" "http://penrose.safehaus.org/dtd/directory.dtd"&gt;
+
+&lt;federation&gt;
+
+  &lt;partition name="ex_global"&gt;
+       &lt;template&gt;partitions/ExDomain/templates/global&lt;/template&gt;
+  &lt;/partition&gt;
+
+&lt;/federation&gt;</pre></li><li><p>
+						Restart the server. The global partition will be automatically created using the global template.
+					</p><pre class="screen">service vd-server restart</pre></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="localtemplates-ldap">10.3.2. Creating LDAP Templates</h3></div></div></div><p>
+				The local repository template uses variables to generate the specific information to the server being automatically supplied when the new partition is generated.
+			</p><div class="orderedlist"><ol><li><p>
+						Open the federation domain partition directory.
+					</p><pre class="screen">cd /opt/vd-server-2.0/partitions/ExDomain/</pre></li><li><p>
+						Create a templates directory, if it is not already created.
+					</p><pre class="screen">mkdir templates/</pre></li><li><p>
+						Open the templates directory.
+					</p><pre class="screen">cd templates/</pre></li><li><p>
+						Inside the templates directory, create a new partition-style directory for the LDAP repository. For example:
+					</p><pre class="screen">mkdir ldap/
+mkdir ldap/DIR-INF/</pre></li><li><p>
+						Open the <code class="filename">DIR-INF</code> directory.
+					</p><pre class="screen">cd ldap/DIR-INF/</pre></li><li><p>
+						Create a new <code class="filename">partition.xml</code> file that points to the federation domain and an entry for the local LDAP repository entry in the <code class="filename">federation.xml</code> file.
+					</p><pre class="screen">vim partition.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE partition PUBLIC "-//Penrose/DTD Partition 2.0//EN" "http://penrose.safehaus.org/dtd/partition.dtd"&gt;
+
+&lt;partition depends="ExDomain,ldap1"&gt;
+
+&lt;/partition&gt;</pre></li><li><p>
+						Create a new <code class="filename">connections.xml</code> file that defines the directory tree and entries for the global subtree. The values for the connection parameters should be variables for the server-specific values. It is also possible to set connection configuration options, as listed in <a href="chap-Admin_Guide-Configuring_connections.html#tab.connection-configuration" title="Table 6.1. Connection Configuration Values">Table 6.1, “Connection Configuration Values”</a>.
+					</p><pre class="screen">vim connections.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE connections PUBLIC "-//Penrose/DTD Connections 2.0//EN" "http://penrose.safehaus.org/dtd/connections.dtd"&gt;
+
+&lt;connections&gt;
+
+  &lt;connection name="LDAP"&gt;
+    &lt;adapter-name&gt;LDAP&lt;/adapter-name&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.provider.url&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>${ldap.url}</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.security.principal&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>${ldap.user}</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.security.credentials&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>${ldap.password}</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+
+  &lt;/connection&gt;
+
+&lt;/connections&gt;</pre></li><li><p>
+						Create the mappings for the local repository. Mappings are described in <a href="Mapping.html#id-mapping" title="9.6. Creating Advanced Mappings">Section 9.6, “Creating Advanced Mappings”</a>, and the number, types, and values of the mappings, as well as the source which supplies the values, varies for each deployment. This is an abbreviated example:
+					</p><pre class="screen">vim mappings.xml
+
+&lt;mappings&gt;
+
+  &lt;mapping name="import_users"&gt;
+
+    &lt;rule name="objectClass"&gt;
+      &lt;constant&gt;person&lt;/constant&gt;
+    &lt;/rule&gt;
+    &lt;rule name="sn" required="false"&gt;
+      &lt;condition&gt;!a.sn.equals("NULL")&lt;/condition&gt;
+      &lt;variable&gt;a.sn&lt;/variable&gt;
+    &lt;/rule&gt;
+    &lt;rule name="cn" required="false"&gt;
+      &lt;condition&gt;!a.name.equals("NULL")&lt;/condition&gt;
+      &lt;variable&gt;a.name&lt;/variable&gt;
+    &lt;/rule&gt;
+
+&lt;/mapping&gt;</pre><div class="note"><h2>NOTE</h2><p>
+							These same mappings are also specified in the global repository. Here, source alias for the LDAP template is <code class="command">a</code>, so all of the mappings here are prefaced with <code class="command">a</code>. In the global template, there are mappings for both <code class="command">a</code> (LDAP) and <code class="command">g</code> (global) attributes, and there are usually two mappings per attribute.
+						</p></div></li><li><p>
+						Configure the identity linking modules. The linking modules define relationships between mappings, source keys, source aliass, and other attributes used by the linking service. For example:
+					</p><pre class="screen">vim modules.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE modules PUBLIC "-//Penrose/DTD Modules 2.0//EN" "http://penrose.safehaus.org/dtd/modules.dtd"&gt;
+
+&lt;modules&gt;
+
+  &lt;<strong class="userinput"><code>module name="IdentityLinking" enabled="true"</code></strong>&gt;
+    &lt;<strong class="userinput"><code>module-class&gt;org.safehaus.penrose.federation.module.IdentityLinkingModule&lt;/module-class</code></strong>&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;source&lt;/param-name&gt;
+      &lt;param-value&gt;LDAP&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;target&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>ExDomain.Global</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;sourceKey&lt;/param-name&gt;
+      &lt;param-value&gt;objectGUID&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+    &lt;param-name&gt;targetAttribute&lt;/param-name&gt;
+      &lt;param-value&gt;seeAlso&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;mapping&lt;/param-name&gt;
+      &lt;param-value&gt;import_users&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;mappingPrefix&lt;/param-name&gt;
+      &lt;param-value&gt;a&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;guidAttributes&lt;/param-name&gt;
+      &lt;param-value&gt;objectGUID&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;sidAttributes&lt;/param-name&gt;
+      &lt;param-value&gt;objectSid&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/module&gt;
+
+&lt;/modules&gt;</pre></li><li><p>
+						Edit the <code class="filename">sources.xml</code> file to define the LDAP sources. As with the <code class="filename">connections.xml</code> file, this allows variables to be inserted into the parameter values, which will be automatically generated when the partition is created.
+					</p><p>
+						This example mapping defines sources and fields for both user and group entries. For example:
+					</p><pre class="screen">vim sources.xml
+
+&lt;sources&gt;
+
+  &lt;source name="LDAP"&gt;
+
+    &lt;connection-name&gt;LDAP&lt;/connection-name&gt;
+
+    &lt;parameter&gt;
+      &lt;param-name&gt;baseDn&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>${ldap.suffix}</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+
+  &lt;/source&gt;
+
+  &lt;source name="users"&gt;
+
+    &lt;source-class&gt;org.safehaus.penrose.ldap.source.ADUserSource&lt;/source-class&gt;
+
+    &lt;connection-name&gt;LDAP&lt;/connection-name&gt;
+
+    &lt;field name="dn" primaryKey="true"/&gt;
+    &lt;field name="sn"/&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;objectClasses&lt;/param-name&gt;
+      &lt;param-value&gt;user&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;filter&lt;/param-name&gt;
+      &lt;param-value&gt;(objectClass=user)&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;baseDn&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>${ldap.suffix}</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;checkPassword&lt;/param-name&gt;
+      &lt;param-value&gt;false&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;checkAccountDisabled&lt;/param-name&gt;
+      &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/parameter&gt;
+
+  &lt;/source&gt;
+
+ &lt;source name="groups"&gt;
+
+    &lt;connection-name&gt;LDAP&lt;/connection-name&gt;
+
+    &lt;field name="dn" primaryKey="true"/&gt;
+    &lt;field name="objectGUID"/&gt;
+
+    &lt;parameter&gt;
+      &lt;param-name&gt;objectClasses&lt;/param-name&gt;
+      &lt;param-value&gt;group&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;filter&lt;/param-name&gt;
+      &lt;param-value&gt;(objectClass=group)&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;baseDn&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>${ldap.suffix}</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+
+  &lt;/source&gt;
+
+&lt;/sources&gt;</pre></li><li><p>
+						Add an LDAP repository entry (or multiple entries) to the <code class="filename">federation.xml</code> file as a <code class="command">&lt;repository&gt;</code> entry. The <code class="command">&lt;repository&gt;</code> entry should point to the template for the LDAP repository, the LDAP server's URL and suffix, and give the username and password to access that server. The values for those parameters are applied to the template to generate the new partition. For example:
+					</p><pre class="screen">vim federation.xml
+
+&lt;federation&gt;
+
+  &lt;<strong class="userinput"><code>repository name="ldap1"</code></strong> type="LDAP"&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;url&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>ldap://ldap.example.com/</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;suffix&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>DC=ldap,DC=server,DC=com</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;user&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>cn=Directory Manager</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;password&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>secret</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/repository&gt;
+
+...
+
+&lt;/federation&gt;</pre></li><li><p>
+						Restart the server. The newly-defined LDAP partition will be automatically created using the local LDAP template and the values in the repository entry.
+					</p><pre class="screen">service vd-server restart</pre></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="localtemplates-nis-all">10.3.3. Creating NIS-Related Templates</h3></div></div></div><p>
+				The local repository template uses variables to generate the specific information to the server being automatically supplied when the new partition is generated. For NIS services, there are actually three templates to be created for NSS, NIS, and YP services. Any or all of these repositories can be created, depending on the NIS configuration.
+			</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="localtemplates-nis">10.3.3.1. Creating a NIS Template</h4></div></div></div><div class="note"><h2>NOTE</h2><p>
+						The <code class="filename">directory.xml</code> files for the NIS template is empty.
+					</p></div><div class="orderedlist"><ol><li><p>
+							Open the federation domain partition directory.
+						</p><pre class="screen">cd /opt/vd-server-2.0/partitions/ExDomain/</pre></li><li><p>
+							Create a templates directory, if it is not already created.
+						</p><pre class="screen">mkdir templates/</pre></li><li><p>
+							Open the templates directory.
+						</p><pre class="screen">cd templates/</pre></li><li><p>
+							Inside the templates directory, create a new partition-style directory for the NIS repository. For example:
+						</p><pre class="screen">mkdir nis/
+mkdir nis/DIR-INF/</pre></li><li><p>
+							Open the <code class="filename">DIR-INF</code> directory.
+						</p><pre class="screen">cd nis/DIR-INF/</pre></li><li><p>
+							Create a new <code class="filename">partition.xml</code> file that points to the federation domain.
+						</p><pre class="screen">vim partition.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE partition PUBLIC "-//Penrose/DTD Partition 2.0//EN" "http://penrose.safehaus.org/dtd/partition.dtd"&gt;
+
+&lt;partition depends="ExDomain"&gt;
+
+&lt;/partition&gt;</pre></li><li><p>
+							Create a new <code class="filename">connections.xml</code> file that points to the JDBC server used by NIS. As with the LDAP configuration, this allows a variable for the NIS server name, which is automatically filled when the new partition is generated. It is also possible to set connection configuration options, as listed in <a href="chap-Admin_Guide-Configuring_connections.html#tab.connection-configuration" title="Table 6.1. Connection Configuration Values">Table 6.1, “Connection Configuration Values”</a>.
+						</p><p>
+							For example:
+						</p><pre class="screen">vim connections.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE connections PUBLIC "-//Penrose/DTD Connections 2.0//EN" "http://penrose.safehaus.org/dtd/connections.dtd"&gt;
+
+&lt;connections&gt;
+
+  &lt;connection name="Database"&gt;
+    &lt;adapter-name&gt;JDBC&lt;/adapter-name&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;driver&lt;/param-name&gt;
+      &lt;param-value&gt;org.hsqldb.jdbcDriver&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;url&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>jdbc:hsqldb:file:db/${nis.name}</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;user&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>admin</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;password&lt;/param-name&gt;
+      &lt;param-value&gt;&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;shutdown&lt;/param-name&gt;
+      &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/parameter&gt;
+
+  &lt;/connection&gt;
+
+&lt;/connections&gt;</pre></li><li><p>
+							Create the mappings for the local repository. Mappings are described in <a href="Mapping.html#id-mapping" title="9.6. Creating Advanced Mappings">Section 9.6, “Creating Advanced Mappings”</a>, and the number, types, and values of the mappings, as well as the source which supplies the values, varies for each deployment. This file defines the mappings to use for entries being moved from the NIS domain to the global repository. This is an abbreviated example:
+						</p><pre class="screen">vim mappings.xml
+
+&lt;mappings&gt;
+
+  &lt;mapping name="import_users"&gt;
+
+    &lt;rule name="objectClass"&gt;
+      &lt;constant&gt;person&lt;/constant&gt;
+    &lt;/rule&gt;
+    &lt;rule name="sn" required="false"&gt;
+      &lt;condition&gt;!n.sn.equals("NULL")&lt;/condition&gt;
+      &lt;variable&gt;n.sn&lt;/variable&gt;
+    &lt;/rule&gt;
+    &lt;rule name="cn" required="false"&gt;
+      &lt;condition&gt;!n.name.equals("NULL")&lt;/condition&gt;
+      &lt;variable&gt;n.name&lt;/variable&gt;
+    &lt;/rule&gt;
+
+&lt;/mapping&gt;</pre></li><li><p>
+							Configure the identity linking modules. The linking modules define relationships between mappings, source keys, source aliass, and other attributes used by the linking service. For NIS servers, there are also modules for performing synchronization and for realigning file permissions after resolving UID or GID conflicts. The Ownership Alignment Module can be applied twice, once for users and again for groups. For example:
+						</p><pre class="screen">vim modules.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE modules PUBLIC "-//Penrose/DTD Modules 2.0//EN" "http://penrose.safehaus.org/dtd/modules.dtd"&gt;
+
+&lt;modules&gt;
+
+  &lt;module name="Synchronization" enabled="true"&gt;
+    &lt;module-class&gt;<strong class="userinput"><code>org.safehaus.penrose.nis.module.NISSynchronizationModule</code></strong>&lt;/module-class&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;source&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>ex_${nis.name}_yp.LDAP</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;target&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>LDAP</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;errors&lt;/param-name&gt;
+      &lt;param-value&gt;errors&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;ignoredObjectClasses&lt;/param-name&gt;
+      &lt;param-value&gt;nisNoSync&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;ignoredAttributes&lt;/param-name&gt;
+      &lt;param-value&gt;seeAlso&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;nisMap.aliases&lt;/param-name&gt;
+      &lt;param-value&gt;ou=Aliases&lt;/param-value&gt;
+    &lt;/parameter&gt;
+
+... <em class="replaceable"><code>there can be multiple NIS maps and subtrees specific, depending on the NIS domains</code></em> ...
+
+  &lt;/module&gt;
+
+  &lt;module name="IdentityLinking" enabled="true"&gt;
+    &lt;module-class&gt;<strong class="userinput"><code>org.safehaus.penrose.federation.module.IdentityLinkingModule</code></strong>&lt;/module-class&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;source&lt;/param-name&gt;
+      &lt;param-value&gt;LDAP&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;target&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>ExDomain.Global</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;sourceAttribute&lt;/param-name&gt;
+      &lt;param-value&gt;seeAlso&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;sourceKey&lt;/param-name&gt;
+      &lt;param-value&gt;dn&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;targetAttribute&lt;/param-name&gt;
+      &lt;param-value&gt;seeAlso&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;targetKey&lt;/param-name&gt;
+      &lt;param-value&gt;dn&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;mapping&lt;/param-name&gt;
+      &lt;param-value&gt;import_users&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;mappingPrefix&lt;/param-name&gt;
+      &lt;param-value&gt;n&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/module&gt;
+
+  &lt;module name="Users"&gt;
+    &lt;module-class&gt;<strong class="userinput"><code>org.safehaus.penrose.federation.module.OwnershipAlignmentModule</code></strong>&lt;/module-class&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;objectClass&lt;/param-name&gt;
+      &lt;param-value&gt;posixAccount&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;rdnAttribute&lt;/param-name&gt;
+      &lt;param-value&gt;uid&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;sourceAttribute&lt;/param-name&gt;
+      &lt;param-value&gt;uidNumber&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;targetAttribute&lt;/param-name&gt;
+      &lt;param-value&gt;uidNumber&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;linkingAttribute&lt;/param-name&gt;
+      &lt;param-value&gt;seeAlso&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;linkingKey&lt;/param-name&gt;
+      &lt;param-value&gt;dn&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/module&gt;
+
+... <em class="replaceable"><code> the</code></em> <strong class="userinput"><code>OwnershipAlignmentModule</code></strong> <em class="replaceable"><code>can be invoked again for groups</code></em> ...
+&lt;/modules&gt;</pre></li><li><p>
+							Edit the <code class="filename">sources.xml</code> file to define the LDAP sources. As with the <code class="filename">connections.xml</code> file, this allows variables to be inserted into the parameter values, which will be automatically generated when the partition is created.
+						</p><p>
+							This example mapping defines sources and fields for both user and group entries. For example:
+						</p><pre class="screen">vim sources.xml
+
+&lt;sources&gt;
+
+  &lt;source name="LDAP"&gt;
+
+    &lt;connection-name&gt;LDAP&lt;/connection-name&gt;
+
+    &lt;parameter&gt;
+      &lt;param-name&gt;baseDn&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>${ldap.suffix}</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+
+  &lt;/source&gt;
+
+  &lt;source name="users"&gt;
+
+    &lt;source-class&gt;org.safehaus.penrose.ldap.source.ADUserSource&lt;/source-class&gt;
+
+    &lt;connection-name&gt;LDAP&lt;/connection-name&gt;
+
+    &lt;field name="dn" primaryKey="true"/&gt;
+    &lt;field name="sn"/&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;objectClasses&lt;/param-name&gt;
+      &lt;param-value&gt;user&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;filter&lt;/param-name&gt;
+      &lt;param-value&gt;(objectClass=user)&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;baseDn&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>${ldap.suffix}</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;checkPassword&lt;/param-name&gt;
+      &lt;param-value&gt;false&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;checkAccountDisabled&lt;/param-name&gt;
+      &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/parameter&gt;
+
+  &lt;/source&gt;
+
+ &lt;source name="groups"&gt;
+
+    &lt;connection-name&gt;LDAP&lt;/connection-name&gt;
+
+    &lt;field name="dn" primaryKey="true"/&gt;
+    &lt;field name="objectGUID"/&gt;
+
+    &lt;parameter&gt;
+      &lt;param-name&gt;objectClasses&lt;/param-name&gt;
+      &lt;param-value&gt;group&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;filter&lt;/param-name&gt;
+      &lt;param-value&gt;(objectClass=group)&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;baseDn&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>${ldap.suffix}</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+
+  &lt;/source&gt;
+
+&lt;/sources&gt;</pre></li><li><p>
+							Add an NIS repository entry (or multiple entries) to the <code class="filename">federation.xml</code> file as a <code class="command">&lt;repository&gt;</code> entry. The <code class="command">&lt;repository&gt;</code> entry should point to the template for the NIS repository, the NIS domain, and the NIS server. The values for those parameters are applied to the template to generate the new partition.
+						</p><p>
+							Then add a <code class="command">&lt;partition&gt;</code> entry for the NIS server, pointing to the NIS template directory.
+						</p><pre class="screen">vim federation.xml
+
+&lt;federation&gt;
+
+  &lt;<strong class="userinput"><code>repository name="nis1"</code></strong> type="NIS"&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;<strong class="userinput"><code>server</code></strong>&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>nis1.example.com/</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;<strong class="userinput"><code>domain</code></strong>&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>nis.example.com/</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/repository&gt;
+
+...
+
+  &lt;partition name="ex_nis"&gt;
+    &lt;template&gt;partitions/ExDomain/templates/nis&lt;/template&gt;
+    &lt;repository-ref name="nis" repository="ex_nis"/&gt;
+  &lt;/partition&gt;
+
+
+&lt;/federation&gt;</pre></li><li><p>
+							Restart the server. The newly-defined LDAP partition will be automatically created using the local LDAP template and the values in the repository entry.
+						</p><pre class="screen">service vd-server restart</pre></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="localtemplates-nss">10.3.3.2. Creating an NSS Template</h4></div></div></div><div class="orderedlist"><ol><li><p>
+							Open the federation domain partition directory.
+						</p><pre class="screen">cd /opt/vd-server-2.0/partitions/ExDomain/</pre></li><li><p>
+							Create a templates directory, if it is not already created.
+						</p><pre class="screen">mkdir templates/</pre></li><li><p>
+							Open the templates directory.
+						</p><pre class="screen">cd templates/</pre></li><li><p>
+							Inside the templates directory, create a new partition-style directory for the NSS repository. For example:
+						</p><pre class="screen">mkdir nss/
+mkdir nss/DIR-INF/</pre></li><li><p>
+							Open the <code class="filename">DIR-INF</code> directory.
+						</p><pre class="screen">cd nss/DIR-INF/</pre></li><li><p>
+							Create a new <code class="filename">partition.xml</code> file that points to the federation domain, the NIS repository, and the LDAP repository entry in the <code class="filename">federation.xml</code> file.
+						</p><pre class="screen">vim partition.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE partition PUBLIC "-//Penrose/DTD Partition 2.0//EN" "http://penrose.safehaus.org/dtd/partition.dtd"&gt;
+
+&lt;partition depends="ExDomain,<strong class="userinput"><code>ex_${nis.name}</code></strong>,<strong class="userinput"><code>ldap1</code></strong>"&gt;
+
+&lt;/partition&gt;</pre></li><li><p>
+							Add a source for each NIS service, such as services, protocols, hosts, and automounts.
+						</p><p>
+							The source is the LDAP repository, and the base DN for the subtree is mapped between the NIS subtree and the NSS subtree.
+						</p><p>
+							A variable can be used for the NIS server's name, which is filled in automatically when the partition is created.
+						</p><pre class="screen">vim sources.xml
+
+&lt;sources&gt;
+
+  &lt;source name="hosts"&gt;
+    &lt;partition-name&gt;ExDomain&lt;/partition-name&gt;
+    &lt;connection-name&gt;LDAP&lt;/connection-name&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;baseDn&lt;/param-name&gt;
+      &lt;param-value&gt;ou=Hosts,<strong class="userinput"><code>ou=${nis.name},ou=nis,</code></strong>dc=analog,dc=com&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;newBaseDn&lt;/param-name&gt;
+      &lt;param-value&gt;ou=Hosts,<strong class="userinput"><code>ou=${nis.name},ou=nss,</code></strong>dc=analog,dc=com&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/source&gt;
+
+&lt;/sources&gt;</pre></li><li><p>
+							Define the directory subtrees for the NSS services in the <code class="filename">directory.xml</code> file. This directory configuration is going to be different for every network. The directory entries can use variables to identify the NIS domain, which are automatically supplied when the real partition is generated.
+						</p><p>
+							First, define the subtree.
+						</p><pre class="screen">vim directory.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE directory PUBLIC "-//Penrose/DTD Directory 2.0//EN" "http://penrose.safehaus.org/dtd/directory.dtd"&gt;
+
+&lt;directory&gt;
+
+  &lt;entry dn="<strong class="userinput"><code>ou=${nis.name},ou=nss,</code></strong>dc=analog,dc=com"&gt;
+    &lt;oc&gt;organizationalUnit&lt;/oc&gt;
+    &lt;oc&gt;nisDomainObject&lt;/oc&gt;
+    &lt;at name="ou" rdn="true"&gt;
+      &lt;constant&gt;<strong class="userinput"><code>${nis.name}</code></strong>&lt;/constant&gt;
+    &lt;/at&gt;
+    &lt;at name="nisDomain"&gt;
+      &lt;constant&gt;<strong class="userinput"><code>${nis.domain}</code></strong>&lt;/constant&gt;
+    &lt;/at&gt;
+    &lt;aci subject="self"&gt;
+      &lt;permission&gt;rws&lt;/permission&gt;
+    &lt;/aci&gt;
+    &lt;aci&gt;
+      &lt;target&gt;ATTRIBUTES&lt;/target&gt;
+      &lt;attributes&gt;userPassword&lt;/attributes&gt;
+      &lt;action&gt;deny&lt;/action&gt;
+      &lt;permission&gt;rs&lt;/permission&gt;
+    &lt;/aci&gt;
+    &lt;aci&gt;
+      &lt;permission&gt;rs&lt;/permission&gt;
+    &lt;/aci&gt;
+  &lt;/entry&gt;</pre><p>
+							Next, define a users subtree and groups subtree. (Only the users subtree is shown in this example.) Notice that this entry points to several mappings.
+						</p><pre class="screen">  &lt;entry dn="uid=...,ou=Users,<strong class="userinput"><code>ou=${nis.name},ou=nss</code></strong>,dc=analog,dc=com"&gt;
+    &lt;entry-class&gt;com.analog.penrose.directory.NSSUserEntry&lt;/entry-class&gt;
+    &lt;mapping-name&gt;virtual_users&lt;/mapping-name&gt;
+    &lt;at name="uid" rdn="true"&gt;
+      &lt;variable&gt;n.uid&lt;/variable&gt;
+    &lt;/at&gt;
+    &lt;source alias="n" bindOrder="1" bind="sufficient"&gt;
+      &lt;partition-name&gt;analog_${nis.name}&lt;/partition-name&gt;
+      &lt;source-name&gt;users&lt;/source-name&gt;
+      &lt;mapping-name&gt;virtual_users_to_nis_users&lt;/mapping-name&gt;
+      &lt;field name="uid" primaryKey="true"&gt;
+        &lt;variable&gt;rdn.uid&lt;/variable&gt;
+      &lt;/field&gt;
+    &lt;/source&gt;
+    &lt;source alias="g" bindOrder="0" bind="sufficient"&gt;
+      &lt;partition-name&gt;analog&lt;/partition-name&gt;
+      &lt;source-name&gt;users&lt;/source-name&gt;
+      &lt;mapping-name&gt;virtual_users_to_global_users&lt;/mapping-name&gt;
+      &lt;field name="dn"&gt;
+        &lt;variable&gt;n.seeAlso&lt;/variable&gt;
+      &lt;/field&gt;
+    &lt;/source&gt;
+    &lt;source alias="a" bindOrder="2" search="ignore" bind="required"&gt;
+      &lt;partition-name&gt;analog_ad&lt;/partition-name&gt;
+      &lt;source-name&gt;users&lt;/source-name&gt;
+      &lt;field name="objectGUID"&gt;
+        &lt;variable&gt;g.adiSeeAlsoObjectGUID&lt;/variable&gt;
+      &lt;/field&gt;
+    &lt;/source&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;checkAccountDisabled&lt;/param-name&gt;
+      &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/entry&gt;</pre><p>
+							Last, create proxy entries in the subtree for each NIS service, like aliases, automounts, protocols, hosts, or bootparams. These proxy entries all correspond to the different sources defined in the <code class="filename">sources.xml</code> file and to the new base DN set in the source parameters. For example:
+						</p><pre class="screen">  &lt;entry dn="ou=Hosts,ou=<strong class="userinput"><code>${nis.name},ou=nss</code></strong>,dc=analog,dc=com"&gt;
+    &lt;entry-class&gt;org.safehaus.penrose.directory.ProxyEntry&lt;/entry-class&gt;
+    &lt;source&gt;
+      &lt;source-name&gt;hosts&lt;/source-name&gt;
+    &lt;/source&gt;
+  &lt;/entry&gt;</pre></li><li><p>
+							Create the mappings for the local repository. Mappings are described in <a href="Mapping.html#id-mapping" title="9.6. Creating Advanced Mappings">Section 9.6, “Creating Advanced Mappings”</a>, and the number, types, and values of the mappings, as well as the source which supplies the values, varies for each deployment. As with the global template, there are two mappings for each attribute, pointing to the global attribute (in the <code class="command">g.</code><span class="emphasis"><em>attributes</em></span>) and the NIS attributes (in the <code class="command">n.</code><span class="emphasis"><em>attributes</em></span>). This is an abbreviated example:
+						</p><pre class="screen">vim mappings.xml
+
+&lt;mappings&gt;
+
+  &lt;mapping name="virtual_users"&gt;
+
+    &lt;rule name="objectClass"&gt;
+      &lt;constant&gt;person&lt;/constant&gt;
+    &lt;/rule&gt;
+    &lt;rule name="sn" required="false"&gt;
+      &lt;condition&gt;!g.sn.equals("NULL")&lt;/condition&gt;
+      &lt;variable&gt;g.sn&lt;/variable&gt;
+    &lt;/rule&gt;
+    &lt;rule name="sn" required="false"&gt;
+      &lt;condition&gt;!n.sn.equals("NULL")&lt;/condition&gt;
+      &lt;variable&gt;n.sn&lt;/variable&gt;
+    &lt;/rule&gt;
+    &lt;rule name="cn" required="false"&gt;
+      &lt;condition&gt;!g.cn.equals("NULL")&lt;/condition&gt;
+      &lt;variable&gt;g.cn&lt;/variable&gt;
+    &lt;/rule&gt;
+
+&lt;/mapping&gt;</pre></li><li><p>
+							For the NIS services, the only module to use is the cache module, mapped to the NIS server's subtree under the NSS's subtree. For example:
+						</p><pre class="screen">vim modules.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE modules PUBLIC "-//Penrose/DTD Modules 2.0//EN" "http://penrose.safehaus.org/dtd/modules.dtd"&gt;
+
+&lt;modules&gt;
+
+  &lt;module name="Cache"&gt;
+    &lt;module-class&gt;org.safehaus.penrose.cache.module.CacheModule&lt;/module-class&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;querySize&lt;/param-name&gt;
+      &lt;param-value&gt;100&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;resultSize&lt;/param-name&gt;
+      &lt;param-value&gt;100&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;expiration&lt;/param-name&gt;
+      &lt;param-value&gt;5&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/module&gt;
+
+  &lt;module-mapping&gt;
+    &lt;module-name&gt;Cache&lt;/module-name&gt;
+    &lt;base-dn&gt;<strong class="userinput"><code>ou=${nis.name},ou=nss</code></strong>,dc=analog,dc=com&lt;/base-dn&gt;
+  &lt;/module-mapping&gt;
+
+&lt;/modules&gt;</pre></li><li><p>
+							The NIS repository should already be added to the <code class="filename">federation.xml</code> file as a <code class="command">&lt;repository&gt;</code> entry. Add the NSS as a partition entry which points to that NIS <code class="command">&lt;repository&gt;</code> entry and to the NSS template entry. For example:
+						</p><pre class="screen">vim federation.xml
+
+&lt;federation&gt;
+
+...
+  &lt;partition name="ex_nis_nss"&gt;
+    &lt;template&gt;partitions/ExDomain/templates/nss&lt;/template&gt;
+    &lt;repository-ref name="nis" repository="ex_nis"/&gt;
+  &lt;/partition&gt;
+...
+
+&lt;/federation&gt;</pre></li><li><p>
+							Restart the server. The newly-defined NSS partition is automatically created using the local NSS template and the values in the repository entry.
+						</p><pre class="screen">service vd-server restart</pre></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="localtemplates-yp">10.3.3.3. Creating a YP Template</h4></div></div></div><div class="note"><h2>NOTE</h2><p>
+						The <code class="filename">partition.xml</code> and <code class="filename">modules.xml</code> files are empty for the YP template. There is no <code class="filename">mappings.xml</code> file for the YP service.
+					</p></div><div class="orderedlist"><ol><li><p>
+							Open the federation domain partition directory.
+						</p><pre class="screen">cd /opt/vd-server-2.0/partitions/ExDomain/</pre></li><li><p>
+							Create a templates directory, if it is not already created.
+						</p><pre class="screen">mkdir templates/</pre></li><li><p>
+							Open the templates directory.
+						</p><pre class="screen">cd templates/</pre></li><li><p>
+							Inside the templates directory, create a new partition-style directory for the YP repository. For example:
+						</p><pre class="screen">mkdir yp/
+mkdir yp/DIR-INF/</pre></li><li><p>
+							Open the <code class="filename">DIR-INF</code> directory.
+						</p><pre class="screen">cd yp/DIR-INF/</pre></li><li><p>
+							Create a new <code class="filename">connections.xml</code> file that points to the YP server on the NIS server. The values for the connection parameters should be variables for the server-specific values. It is also possible to set connection configuration options, as listed in <a href="chap-Admin_Guide-Configuring_connections.html#tab.connection-configuration" title="Table 6.1. Connection Configuration Values">Table 6.1, “Connection Configuration Values”</a>.
+						</p><pre class="screen">vim connections.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE connections PUBLIC "-//Penrose/DTD Connections 2.0//EN" "http://penrose.safehaus.org/dtd/connections.dtd"&gt;
+
+&lt;connections&gt;
+
+  &lt;connection <strong class="userinput"><code>name="NIS"</code></strong>&gt;
+    &lt;adapter-name&gt;NIS&lt;/adapter-name&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.factory.initial&lt;/param-name&gt;
+      &lt;param-value&gt;com.sun.jndi.nis.NISCtxFactory&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.provider.url&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>nis://${nis.server}/${nis.domain}</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;com.sun.jndi.nis.mailaliases&lt;/param-name&gt;
+      &lt;param-value&gt;nonull&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;method&lt;/param-name&gt;
+      &lt;param-value&gt;<strong class="userinput"><code>yp</code></strong>&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/connection&gt;
+
+&lt;/connections&gt;</pre></li><li><p>
+							Edit the <code class="filename">sources.xml</code> file to define the LDAP source and the NIS sources for the YP service and to list the basic mappings for each source.
+						</p><p>
+							For each NIS source — like hosts, services, protocols, automounts — specified in the NIS nad NSS configurations, there is a corresponding source in the YP <code class="filename">sources.xml</code> file. This example shows the <code class="command">users</code> source and the <code class="command">hosts</code> source.
+						</p><p>
+							Variables can be inserted into the parameter values, which will be automatically generated when the partition is created.
+						</p><pre class="screen">vim sources.xml
+
+&lt;sources&gt;
+
+  &lt;source name="LDAP"&gt;
+      &lt;source-class&gt;org.safehaus.penrose.partition.source.PartitionSource&lt;/source-class&gt;
+  &lt;/source&gt;
+
+  &lt;source name="users"&gt;
+    &lt;connection-name&gt;NIS&lt;/connection-name&gt;
+    &lt;field name="uid" primaryKey="true"/&gt;
+    &lt;field name="uidNumber"/&gt;
+    &lt;field name="gidNumber"/&gt;
+    &lt;field name="homeDirectory"/&gt;
+    &lt;field name="userPassword"/&gt;
+    &lt;field name="loginShell"/&gt;
+    &lt;field name="gecos"/&gt;
+    &lt;field name="description"/&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;objectClasses&lt;/param-name&gt;
+      &lt;param-value&gt;posixAccount&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;base&lt;/param-name&gt;
+      &lt;param-value&gt;passwd&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/source&gt;
+
+  &lt;source name="hosts"&gt;
+    &lt;connection-name&gt;NIS&lt;/connection-name&gt;
+    &lt;field name="cn"/&gt;
+    &lt;field name="ipHostNumber" primaryKey="true"/&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;objectClasses&lt;/param-name&gt;
+      &lt;param-value&gt;ipHost&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;base&lt;/param-name&gt;
+      &lt;param-value&gt;hosts&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/source&gt;
+
+&lt;/sources&gt;</pre></li><li><p>
+							Define the directory structure for the YP services entries. This example points to the user subtree and the hosts subtree, with basic mappings for the entry attributes.
+						</p><p>
+							Different variables can be used to supply the NIS server and domain information, and the values are automatically supplied when the new partition is generated.
+						</p><p>
+							First create an entry that points to the top NIS subtree.
+						</p><pre class="screen">vim directory.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE directory PUBLIC "-//Penrose/DTD Directory 2.0//EN" "http://penrose.safehaus.org/dtd/directory.dtd"&gt;
+
+&lt;directory&gt;
+
+  &lt;entry dn="ou=${nis.name},ou=nss,dc=analog,dc=com"&gt;
+    &lt;oc&gt;organizationalUnit&lt;/oc&gt;
+    &lt;oc&gt;nisDomainObject&lt;/oc&gt;
+    &lt;at name="ou" rdn="true"&gt;
+      &lt;constant&gt;${nis.name}&lt;/constant&gt;
+    &lt;/at&gt;
+    &lt;at name="nisDomain"&gt;
+      &lt;constant&gt;${nis.domain}&lt;/constant&gt;
+    &lt;/at&gt;
+    &lt;aci subject="self"&gt;
+      &lt;permission&gt;rws&lt;/permission&gt;
+    &lt;/aci&gt;
+    &lt;aci&gt;
+      &lt;target&gt;ATTRIBUTES&lt;/target&gt;
+      &lt;attributes&gt;userPassword&lt;/attributes&gt;
+      &lt;action&gt;deny&lt;/action&gt;
+      &lt;permission&gt;rs&lt;/permission&gt;
+    &lt;/aci&gt;
+    &lt;aci&gt;
+      &lt;permission&gt;rs&lt;/permission&gt;
+    &lt;/aci&gt;
+  &lt;/entry&gt;</pre><p>
+							Then, create the users and groups subtrees.
+						</p><pre class="screen">  &lt;entry dn="ou=Users,ou=${nis.name},ou=nss,dc=analog,dc=com"&gt;
+    &lt;oc&gt;organizationalUnit&lt;/oc&gt;
+    &lt;at name="ou" rdn="true"&gt;
+      &lt;constant&gt;Users&lt;/constant&gt;
+    &lt;/at&gt;
+  &lt;/entry&gt;
+
+  &lt;entry dn="uid=...,ou=Users,ou=${nis.name},ou=nss,dc=analog,dc=com"&gt;
+    &lt;entry-class&gt;com.analog.penrose.directory.NSSUserEntry&lt;/entry-class&gt;
+    &lt;mapping-name&gt;virtual_users&lt;/mapping-name&gt;
+    &lt;at name="uid" rdn="true"&gt;
+      &lt;variable&gt;n.uid&lt;/variable&gt;
+    &lt;/at&gt;
+    &lt;source alias="n" bindOrder="1" bind="sufficient"&gt;
+      &lt;partition-name&gt;analog_${nis.name}&lt;/partition-name&gt;
+      &lt;source-name&gt;users&lt;/source-name&gt;
+      &lt;mapping-name&gt;virtual_users_to_nis_users&lt;/mapping-name&gt;
+      &lt;field name="uid" primaryKey="true"&gt;
+        &lt;variable&gt;rdn.uid&lt;/variable&gt;
+      &lt;/field&gt;
+    &lt;/source&gt;
+    &lt;source alias="g" bindOrder="0" bind="sufficient"&gt;
+      &lt;partition-name&gt;analog&lt;/partition-name&gt;
+      &lt;source-name&gt;users&lt;/source-name&gt;
+      &lt;mapping-name&gt;virtual_users_to_global_users&lt;/mapping-name&gt;
+      &lt;field name="dn"&gt;
+        &lt;variable&gt;n.seeAlso&lt;/variable&gt;
+      &lt;/field&gt;
+    &lt;/source&gt;
+    &lt;source alias="a" bindOrder="2" search="ignore" bind="required"&gt;
+      &lt;partition-name&gt;analog_ad&lt;/partition-name&gt;
+      &lt;source-name&gt;users&lt;/source-name&gt;
+      &lt;field name="objectGUID"&gt;
+        &lt;variable&gt;g.adiSeeAlsoObjectGUID&lt;/variable&gt;
+      &lt;/field&gt;
+    &lt;/source&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;checkAccountDisabled&lt;/param-name&gt;
+      &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/entry&gt;</pre><p>
+							Last, create proxy entries for every source for the NIS domain, like hosts, protocols, or automounts.
+						</p><pre class="screen">  &lt;entry dn="ou=Hosts,ou=${nis.name},ou=nss,dc=analog,dc=com"&gt;
+    &lt;entry-class&gt;org.safehaus.penrose.directory.ProxyEntry&lt;/entry-class&gt;
+    &lt;source&gt;
+      &lt;source-name&gt;hosts&lt;/source-name&gt;
+    &lt;/source&gt;
+  &lt;/entry&gt;</pre></li><li><p>
+							The NIS repository should already be added to the <code class="filename">federation.xml</code> file as a <code class="command">&lt;repository&gt;</code> entry. Add the YP service as a partition entry which points to that NIS <code class="command">&lt;repository&gt;</code> entry and to the YP template entry. For example:
+						</p><pre class="screen">vim federation.xml
+
+&lt;federation&gt;
+
+...
+  &lt;partition name="ex_nis_nss"&gt;
+    &lt;template&gt;partitions/ExDomain/<strong class="userinput"><code>templates/yp</code></strong>&lt;/template&gt;
+    &lt;repository-ref name="nis" repository="ex_nis"/&gt;
+  &lt;/partition&gt;
+...
+
+&lt;/federation&gt;</pre></li><li><p>
+							Restart the server. The newly-defined LDAP partition will be automatically created using the local LDAP template and the values in the repository entry.
+						</p><pre class="screen">service vd-server restart</pre></li></ol></div></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="local-repo-ldap">10.4. Adding LDAP Local Repositories through Penrose Studio</h2></div></div></div><a id="d0e10626" class="indexterm"/><a id="d0e10631" class="indexterm"/><a id="d0e10638" class="indexterm"/><p>
+			A local repository is a source for the data in the centralized, or <span class="emphasis"><em>federated</em></span>, global repository. The LDAP local repository can be used for identity federation or as part of a migration from NIS to LDAP, between different kinds of LDAP servers, or migrations from LDAP to Red Hat IPA. An LDAP local repository can be any LDAP server, including Active Directory, Red Hat Directory Server, and OpenLDAP.
+		</p><p>
+			LDAP repositories can be created individually in Penrose Studio, specifying the templates created in <a href="chap-Admin_Guide-Configuring_Identity-Federation.html#localtemplates-ldap" title="10.3.2. Creating LDAP Templates">Section 10.3.2, “Creating LDAP Templates”</a>.
+		</p><div class="orderedlist"><ol><li><p>
+					Open the <span><strong class="guilabel">Federation</strong></span> folder.
+				</p></li><li><p>
+					Double-click the <span><strong class="guilabel">LDAP</strong></span> link.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/globalrepo1.png"/></div></div></li><li><p>
+					Click the <span><strong class="guibutton">Add</strong></span> button to add the LDAP server for the local repository.
+				</p></li><li><p>
+					Enter a name for the LDAP repository.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/localrepo1.png"/></div></div></li><li><p>
+					Click <span><strong class="guibutton">Add</strong></span>, and enter the LDAP server information.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/localrepo2a.png"/></div></div><div class="itemizedlist"><ul><li><p>
+							Connection protocol, either standard LDAP or secure LDAPS
+						</p></li><li><p>
+							The hostname and port
+						</p></li></ul></div></li><li><p>
+					Click <span><strong class="guibutton">Add</strong></span>, and enter the LDAP directory connection information.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/localrepo2.png"/></div></div><div class="itemizedlist"><ul><li><p>
+							The directory subtree (suffix) to access
+						</p></li><li><p>
+							The bind DN and password to use
+						</p></li></ul></div></li><li><p>
+					Give the name of the suffix and template to use to create a partition entry for the LDAP repository. Creating templates is described in <a href="chap-Admin_Guide-Configuring_Identity-Federation.html#localtemplates-ldap" title="10.3.2. Creating LDAP Templates">Section 10.3.2, “Creating LDAP Templates”</a>. When the template is given, the corresponding partition is automatically created.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/localrepo4.png"/></div></div></li><li><p>
+					Enter the attributes to use for identity linking.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/localrepo3.png"/></div></div><div class="itemizedlist"><ul><li><p>
+							The <span class="emphasis"><em>local attribute</em></span> is the LDAP attribute to store in the global entry; this is a unique identifying attribute, such as the DN or UID.
+						</p></li><li><p>
+							The <span class="emphasis"><em>global attribute</em></span> is the attribute in the global entry that stores the local attribute; this is usually a reference attribute, such as <em class="parameter"><code>seeAlso</code></em>.
+						</p></li></ul></div></li><li><p>
+					Fill in the mapping entry to use to import local entries into global entries.
+				</p></li><li><p>
+					Fill in the prefix to use to identify local attributes during import. Mapping entries have the form <span class="emphasis"><em>repo_name.attribute</em></span> to identify the source of an entry value. This field is the <span class="emphasis"><em>repo_name</em></span>.
+				</p></li><li><p>
+					Click <span><strong class="guibutton">Finish</strong></span>.
+				</p></li><li><p>
+					Close Penrose Studio, and restart Penrose Server.
+				</p><pre class="screen">service vd-server restart</pre></li></ol></div><p>
+			A new entry for the LDAP local repository is listed under the <span><strong class="guilabel">LDAP</strong></span> folder in the <span><strong class="guilabel">Federation</strong></span> area and in the <span><strong class="guilabel">Partitions</strong></span> area.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="local-repo-nis">10.5. Adding NIS Local Repositories Using Penrose Studio</h2></div></div></div><a id="d0e10799" class="indexterm"/><a id="d0e10804" class="indexterm"/><a id="d0e10811" class="indexterm"/><p>
+			A local repository is a source for the data in the centralized, or <span class="emphasis"><em>federated</em></span>, global repository. The NIS local repository can be used for identity federation or as part of a migration from NIS to LDAP.
+		</p><p>
+			NIS repositories can be created individually in Penrose Studio, specifying the templates created in <a href="chap-Admin_Guide-Configuring_Identity-Federation.html#localtemplates-nis-all" title="10.3.3. Creating NIS-Related Templates">Section 10.3.3, “Creating NIS-Related Templates”</a>.
+		</p><div class="orderedlist"><ol><li><p>
+					Open the <span><strong class="guilabel">Federation</strong></span> folder.
+				</p></li><li><p>
+					Double-click the <span><strong class="guilabel">NIS</strong></span> link.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/globalrepo1.png"/></div></div></li><li><p>
+					Click the <span><strong class="guibutton">Add</strong></span> button to add the NIS server for the local repository.
+				</p></li><li><p>
+					Enter a name for the NIS repository entry.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/nisrepo1.png"/></div></div></li><li><p>
+					Enter the NIS server information.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/nisrepo2.png"/></div></div><div class="itemizedlist"><ul><li><p>
+							The fully-qualified domain name for the NIS server
+						</p></li><li><p>
+							The name of the NIS domain
+						</p></li></ul></div></li><li><p>
+					Each NIS domain can have NIS, NSS, or YP services running. Select whether each service is enabled, and then enter the suffix and templates to use to create the NIS, NSS, and YP partitions, as were created in <a href="chap-Admin_Guide-Configuring_Identity-Federation.html#localtemplates-nis-all" title="10.3.3. Creating NIS-Related Templates">Section 10.3.3, “Creating NIS-Related Templates”</a>. The template path is relative to the Penrose Virtual Directory installation directory.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/nisrepo3.png"/></div></div><div class="itemizedlist"><ul><li><p>
+							The NIS partition provides a proxy to the NIS data stored in the Red Hat Directory Server instance used in NIS migration.
+						</p></li><li><p>
+							The NSS partition allows stacking authentication, as described in <a href="chap-Admin_Guide-Overview_of_RHVD.html#stacking-auth" title="1.3.7. Planning Authentication">Section 1.3.7, “Planning Authentication”</a>.
+						</p></li><li><p>
+							The YP partition provides a proxy to the NIS data stored in the NIS server.
+						</p></li></ul></div><p>
+					The YP and NIS partitions are used to synchronize NIS data into Red Hat Directory Server. The NSS partition is used by client machines listed in the <code class="filename">/etc/nsswitch.conf</code>.
+				</p></li><li><p>
+					Enter the attributes to use for identity linking.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/nisrepo4.png"/></div></div><div class="itemizedlist"><ul><li><p>
+							The <span class="emphasis"><em>local attribute</em></span> is the LDAP attribute to store in the global entry; this is a unique identifying attribute, such as the DN or UID.
+						</p></li><li><p>
+							The <span class="emphasis"><em>global attribute</em></span> is the attribute in the global entry that stores the local attribute; this is usually a reference attribute, such as <em class="parameter"><code>seeAlso</code></em>.
+						</p></li></ul></div></li><li><p>
+					Fill in the mapping entry to use to import local entries into global entries.
+				</p></li><li><p>
+					Fill in the prefix to use to identify local attributes during import. Mapping entries have the form <span class="emphasis"><em>repo_name.attribute</em></span> to identify the source of an entry value. This field is the <span class="emphasis"><em>repo_name</em></span>.
+				</p></li><li><p>
+					Click <span><strong class="guibutton">Finish</strong></span>.
+				</p></li><li><p>
+					Close Penrose Studio, and restart Penrose Server.
+				</p><pre class="screen">service vd-server restart</pre></li></ol></div><p>
+			A new entry for the NIS local repository is listed under the <span><strong class="guilabel">NIS</strong></span> folder in the <span><strong class="guilabel">Federation</strong></span> area and in the <span><strong class="guilabel">Partitions</strong></span> area.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="fed-plugin">10.6. Linking Identities</h2></div></div></div><a id="d0e10967" class="indexterm"/><a id="d0e10972" class="indexterm"/><a id="d0e10975" class="indexterm"/><a id="d0e10980" class="indexterm"/><a id="d0e10985" class="indexterm"/><p>
+			After the global and local repositories have been created, then the identities in those repositories need to be linked. Linking the entries is used for authentication and other operations performed through Penrose Virtual Directory against the repositories.
+		</p><p>
+			Both LDAP and NIS repositories have identity linking tools.
+		</p><div class="note"><h2>NOTE</h2><p>
+				NIS entries must be migrated into a Red Hat Directory Server instance before linking can be configured.
+			</p></div><div class="orderedlist"><ol><li><p>
+					Open the <span><strong class="guilabel">Federation</strong></span> folder.
+				</p></li><li><p>
+					Click one of the local repository folders, <span><strong class="guilabel">NIS</strong></span> or <span><strong class="guilabel">LDAP</strong></span>, and open the specific repository to link.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/id-tools.png"/></div></div></li><li><p>
+					Double-click the <span><strong class="guilabel">Identity Linking</strong></span> link to open the linking editor in the main window.
+				</p><p>
+					The left side of the window shows the local identity, and the right side the global identity.
+				</p></li><li><p>
+					Enter the search parameters to find the local identities which will be linked.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/idlinking.png"/></div></div><div class="itemizedlist"><ul><li><p>
+							The <span class="emphasis"><em>base</em></span> is the subtree to search.
+						</p></li><li><p>
+							The <span class="emphasis"><em>filter</em></span> is the object class or attribute to search for, such as <code class="command">(objectclass=inetorgperson)</code>
+						</p></li><li><p>
+							The <span class="emphasis"><em>scope</em></span> is how far down the subtree to search.
+						</p></li></ul></div></li><li><p>
+					Click <span><strong class="guibutton">Search</strong></span>.
+				</p></li><li><p>
+					Next, search for matching global identities to link to the local entries. Again, enter the search parameters to search for entries in the global repository.
+				</p><div class="itemizedlist"><ul><li><p>
+							The <span class="emphasis"><em>base</em></span> is the subtree to search.
+						</p></li><li><p>
+							The <span class="emphasis"><em>filter</em></span> is the object class or attribute to search for, such as <code class="command">(uid=${uid})</code>
+						</p><div class="note"><h2>TIP</h2><p>
+								The expression <code class="command">(uid=${uid})</code> means that Penrose Virtual Directory searches for entries in the global repository which match <em class="parameter"><code>uid</code></em>s of the returned entries for the local repository.
+							</p></div></li><li><p>
+							The <span class="emphasis"><em>scope</em></span> is how far down the subtree to search.
+						</p></li></ul></div></li><li><p>
+					Click <span><strong class="guibutton">Search</strong></span>.
+				</p></li><li><p>
+					Check the search results.
+				</p><div class="itemizedlist"><ul><li><p>
+							If there are matching global entities, verify that the local identity and the global identity reference the same person. If they are the same, then right-click on the <span class="emphasis"><em>global identity</em></span>, and select <span><strong class="guilabel">Link</strong></span>.
+						</p><p>
+							Multiple local identities can be selected at the same time to perform the same operation at once.
+						</p><p>
+							The status for the local identity is now <code class="command">Linked</code>.
+						</p></li><li><p>
+							If there is no matching global identity, either change the search parameters and search again or import the local identity as a new global identity. Right-click the local identity and select <span><strong class="guimenuitem">Import</strong></span>. The new global entry attributes are mapped using the mapping configured for the local repository.
+						</p><p>
+							After it is imported, the new global entry is automatically linked back to the local identity.
+						</p></li></ul></div></li></ol></div><a id="d0e11136" class="indexterm"/><a id="d0e11143" class="indexterm"/><a id="d0e11148" class="indexterm"/><p>
+			The linking information is stored in the global identity in the <em class="parameter"><code>seeAlso</code></em> attribute. If there is more than one local identity linked to the same global identity, then the global entry has multiple <em class="parameter"><code>seeAlso</code></em> attributes.
+		</p><a id="d0e11159" class="indexterm"/><a id="d0e11164" class="indexterm"/><a id="d0e11169" class="indexterm"/><a id="d0e11174" class="indexterm"/><a id="d0e11179" class="indexterm"/><p>
+			To unlink identities, right-click either the local or global identity, and select <span><strong class="guimenuitem">Unlink</strong></span>. To delete a global identity, right-click it, and select <span><strong class="guimenuitem">Delete</strong></span>; this removes the global identity and all linking information, even to other local identities.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="resolving-conflicts">10.7. Resolving UID and GID Conflicts</h2></div></div></div><a id="d0e11193" class="indexterm"/><a id="d0e11198" class="indexterm"/><a id="d0e11201" class="indexterm"/><a id="d0e11204" class="indexterm"/><a id="d0e11207" class="indexterm"/><a id="d0e11212" class="indexterm"/><a id="d0e11217" class="indexterm"/><a id="d0e11224" class="indexterm"/><a id="d0e11231" class="indexterm"/><p>
+			Because identity federation combines entries from many different sources, there can be conflicts between the user and group identification numbers used by the systems. The <span class="emphasis"><em>Ownership Alignment Tool</em></span> in Penrose Virtual Directory processes any conflicts in the UID or GID values assigned to global identities and allows you to reassign UIDs and GIDs to resolve conflicts.
+		</p><div class="orderedlist"><ol><li><p>
+					Open the <span><strong class="guilabel">Federation</strong></span> folder.
+				</p></li><li><p>
+					Open the <span><strong class="guilabel">Global</strong></span> folder.
+				</p></li><li><p>
+					Double-click the <span><strong class="guilabel">Conflict Detection</strong></span> folder.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/conflicttool1.png"/></div></div></li><li><p>
+					Click the <span><strong class="guilabel">Users</strong></span> tab to check for user conflicts, or click the <span><strong class="guilabel">Groups</strong></span> tab to check for group conflicts.
+				</p></li><li><p>
+					Click <span><strong class="guibutton">Search</strong></span> to search for conflicts.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/conflicttool2.png"/></div></div></li><li><p>
+					In the results list on the left, click the line of an identity with conflicts. The entries with conflicting UIDs will be listed in the top table on the right. Matching entries for that identity are listed in the bottom table on the right.
+				</p></li><li><p>
+					Resolve the conflict. For example, change the UID of one of the conflicting entries by selecting the identity and clicking <span><strong class="guibutton">Edit</strong></span>.
+				</p></li><li><p>
+					Save the changes.
+				</p></li><li><p>
+					Click <span><strong class="guibutton">Search</strong></span> again to make sure that the conflicts were resolved.
+				</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="oat">10.8. Checking File Ownership with the Ownership Alignment Tool</h2></div></div></div><p>
+			The Conflict Detection Tool for the global repository detects and helps resolve collisions in user or group ID numbers when the different repositories are unified. Once those numbers are resolved, however, the permissions on files and directories can be wrong. The Ownership Alignment Tool identifies the list of all files and directories which have permissions that need updated, and the UID with which they are associated.
+		</p><div class="orderedlist"><ol><li><p>
+					Open the <span><strong class="guilabel">Federation</strong></span> folder.
+				</p></li><li><p>
+					Open the <span><strong class="guilabel">NIS</strong></span> folder.
+				</p></li><li><p>
+					Double-click the <span><strong class="guilabel">Ownership Alignment</strong></span> folder.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/nis-tools.png"/></div></div></li><li><p>
+					Click <span><strong class="guibutton">Refresh</strong></span> to create the list of changed file permissions.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/oat.png"/></div></div></li><li><p>
+					If there is a list of affected files, then export the list by clicking the <span><strong class="guibutton">Export</strong></span> button. The exported file can be used with a script or as a reference to update the file permissions.
+				</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="nis-migration">10.9. Synchronizing (or Migrating) NIS Data to LDAP</h2></div></div></div><a id="d0e11356" class="indexterm"/><a id="d0e11361" class="indexterm"/><a id="d0e11366" class="indexterm"/><a id="d0e11371" class="indexterm"/><p>
+			Data can be imported from a NIS domain into Red Hat Directory Server.
+		</p><div class="note"><h2>NOTE</h2><p>
+				Migrating data is not required for identity federation, but the identity federation tools and configuration can be used to facilitate a NIS to LDAP migration.
+			</p></div><div class="orderedlist"><ol><li><p>
+					Open the <span><strong class="guilabel">Federation</strong></span> folder.
+				</p></li><li><p>
+					Open the <span><strong class="guilabel">NIS</strong></span> folder. The NIS domains configured in Penrose Virtual Directory are listed below it; open the specific NIS instance.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/nis-tools.png"/></div></div></li><li><p>
+					Double-click <span><strong class="guimenuitem">Synchronize</strong></span> to start importing the NIS data into Red Hat Directory Server.
+				</p></li></ol></div><p>
+			When the information is migrated, Apache Directory Studio can be used to view the NIS data in Red Hat Directory Server.
+		</p><a id="d0e11410" class="indexterm"/><a id="d0e11415" class="indexterm"/><p>
+			When the information is changed on the NIS server, synchronize the changes to Red Hat Directory Server. There are two ways to synchronize NIS data:
+		</p><div class="itemizedlist"><ul><li><p>
+					To synchronize manually, simply click the <span><strong class="guibutton">Synchronize</strong></span> button in Penrose Server. To synchronize through the command line, use the <code class="command">nis.sh</code> tool:
+				</p><pre class="screen">/opt/vd-server-2.0/bin/nis.sh -D uid=admin,ou=system -w secret synchronize <em class="replaceable"><code>domain   map</code></em></pre><p>
+					<code class="option">-D</code> is the username to bind to Penrose Virtual Directory, and <code class="option">-w</code> is the password.
+				</p></li><li><p>
+					To synchronize the NIS domain and Red Hat Directory Server periodically, set up a cron job for the <code class="command">nis.sh</code> script. For information on setting up cron jobs, see <a href="http://www.hmug.org/man/5/crontab.php">http://www.hmug.org/man/5/crontab.php</a>.
+				</p></li></ul></div></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="Mapping.html"><strong>Prev</strong>Chapter 9. Mapping Entries and Attributes</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_Modules.html"><strong>Next</strong>Chapter 11. Configuring Modules</a></li></ul></body></html>

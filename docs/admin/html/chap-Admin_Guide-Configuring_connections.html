@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 6. Configuring Connections</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Configuring_Partitions.html" title="Chapter 5. Managing Partitions"/><link rel="next" href="chap-Admin_Guide-Configuring_sources.html" title="Chapter 7. Configuring Data Sources"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 6. Configuring Connections</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_Partitions.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_sources.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="chap-Admin_Guide-Configuring_connections">Chapter 6. Configuring Connections</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_connections.html#connections-overview">6.1. About Connections</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_connections.html#adding-nis-adapter">6.2. Adding a NIS Adapter</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_connections.html#sect-Admin_Guide-Configuring_an_LDAP_Partition-Configuring_Connections-studio">6.3. Creating Connections in Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_connections.html#editing-connections">6.4. Editing Connections in Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_connections.html#sect-Admin_Guide-Configuring_an_LDAP_Partition-Configuring_Connections-cmd">6.5. Creating and Editing Connections Manually</a></span></dt></dl></div><p>
+		A virtual directory in Penrose Virtual Directory establishes relationships between different data sources. The source exists on a connection which is, most simply, a server host and application.
+	</p><p>
+		This chapter covers how to add new server connections to Penrose Virtual Directory.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="connections-overview">6.1. About Connections</h2></div></div></div><a id="d0e3428" class="indexterm"/><p>
+			A virtual directory establishes relationships between different data sources, which may not speak the same native protocol or have shared attributes, even shared entries. In Penrose Virtual Directory, the virtual directory is defined by configuring the Penrose Server to recognize data sources.
+		</p><p>
+			A <span class="emphasis"><em>connection</em></span> is the connection information and parameters to the host machine of a data source for the virtual directory. One connection is configured automatically for the server, and there can be an unlimited number of connections for failover and for other data sources.
+		</p><a id="d0e3440" class="indexterm"/><a id="d0e3445" class="indexterm"/><p>
+			A connection defines kind of data source (and the service for the Penrose Server to use to connect) through <span class="emphasis"><em>adapters</em></span>, a backend service used by the server. There are two adapters defined in Penrose Server for LDAP and JDBC (which includes JDBC, Microsoft SQL Server, Oracle, MySQL, PostgreSQL, ODBC, and Sybase). A NIS adapter can be added to the Penrose Server to handle NIS migrations and integration.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="adding-nis-adapter">6.2. Adding a NIS Adapter</h2></div></div></div><a id="d0e3456" class="indexterm"/><a id="d0e3461" class="indexterm"/><p>
+			<span class="emphasis"><em>Adapters</em></span> are abstraction layers to access data sources. LDAP and JDBC adapters are configured by default, and a NIS adapter can be configured.
+		</p><div class="orderedlist"><ol><li><p>
+					Open the configuration file for the partition. For the default partition, this is in <code class="filename">/opt/vd-server-2.0/conf/server.xml</code>; for added partitions, it is in <code class="filename">/opt/vd-server-2.0/partitions/</code><span class="emphasis"><em>partition_name</em></span><code class="filename">/DIR-INF</code><code class="filename">/partition.xml</code>.
+				</p><pre class="screen"> vim /opt/vd-server-2.0/conf/server.xml</pre></li><li><p>
+					Add the NIS adapter entry.
+				</p><pre class="screen">&lt;adapter name="NIS"&gt;
+  &lt;adapter-class&gt;org.safehaus.penrose.nis.adapter.NISAdapter&lt;/adapter-class&gt;
+&lt;/adapter&gt;</pre></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Configuring_an_LDAP_Partition-Configuring_Connections-studio">6.3. Creating Connections in Penrose Studio</h2></div></div></div><a id="d0e3495" class="indexterm"/><a id="d0e3502" class="indexterm"/><div class="orderedlist"><ol><li><p>
+					Open the server entry.
+				</p></li><li><p>
+					In the top menu, expand the <span><strong class="guimenu">Partitions</strong></span> menu item, and select the <span><strong class="guilabel">Connections</strong></span> folder.
+				</p></li><li><p>
+					Right-click <span><strong class="guilabel">Connections</strong></span>, and select the type of new connection to create from the menu.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newconnection1.png"/></div></div></li><li><p>
+					Name the connection and, if necessary, give a brief description.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newconnection3.png"/></div></div><p>
+					The <span><strong class="guilabel">Class</strong></span> is available for applying a custom Java class to the entry, but, if it is not given, the default class is used. The default is fine for almost all applications.
+				</p></li><li><p>
+					Fill in all of the connection parameters; this is different for every kind of connection. For example, for an LDAP connection:
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newconnection4.png"/></div></div><p>
+					Use the <span><strong class="guibutton">Test Connection</strong></span> button to make sure that the correction parameters are entered properly and that the connection server or application is available.
+				</p></li><li><p>
+					Optionally, fill in connection pool parameters for the connection. The LDAP and JDBC connection parameters are listed in <a href="chap-Admin_Guide-Configuring_connections.html#tab.connection-parameters" title="Table 6.2. Connection Pool Options for LDAP and JDBC">Table 6.2, “Connection Pool Options for LDAP and JDBC”</a>.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/newconnection5.png"/></div></div></li><li><p>
+					Click <span><strong class="guibutton">Finish</strong></span>.
+				</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="editing-connections">6.4. Editing Connections in Penrose Studio</h2></div></div></div><a id="d0e3572" class="indexterm"/><a id="d0e3579" class="indexterm"/><a id="d0e3584" class="indexterm"/><a id="d0e3589" class="indexterm"/><p>
+			A connection can be viewed and edited in Penrose Studio. There are several tabs which correspond to a different area of the connection entry:
+		</p><div class="itemizedlist"><ul><li><p>
+					There is a tab named for the type of connection, such as <span><strong class="guilabel">LDAP</strong></span>, which allows the connection information to be changed.
+				</p></li><li><p>
+					The <span><strong class="guilabel">Properties</strong></span> tab contains all optional configuration entries for the connection, like connection pool parameters.
+				</p></li><li><p>
+					The <span><strong class="guilabel">Schema</strong></span> tab shows the object classes and attributes which are accessed through the connection.
+				</p></li></ul></div><p>
+			There is also a <span><strong class="guilabel">Browser</strong></span> tab, which displays the entries configured within the connection.
+		</p><p>
+			To edit the connection:
+		</p><div class="orderedlist"><ol><li><p>
+					Open the server entry.
+				</p></li><li><p>
+					Expand the <span><strong class="guimenu">Partitions</strong></span> menu item, and open the <span><strong class="guilabel">Connections</strong></span> folder.
+				</p></li><li><p>
+					Double-click the connection entry or right-click and select <span><strong class="guimenuitem">Open</strong></span> to open the entry in the main window.
+				</p></li><li><p>
+					In the <span><strong class="guilabel">LDAP|JDBC|NIS</strong></span> tab, depending on the type of connection, and change the connection parameters.
+				</p><div class="informalfigure"><div class="mediaobject"><img src="images/editconnection1.png"/></div></div></li><li><p>
+					Close the main tab and save the changes when prompted.
+				</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Configuring_an_LDAP_Partition-Configuring_Connections-cmd">6.5. Creating and Editing Connections Manually</h2></div></div></div><a id="d0e3657" class="indexterm"/><a id="d0e3662" class="indexterm"/><p>
+			Connection settings are defined in the file <code class="filename">connections.xml</code>. For the default partition, this file is in <code class="filename">/opt/vd-server-2.0/conf</code>; for additional partitions, this file is in <code class="filename">/opt/vd-server-2.0/partitions/</code><span class="emphasis"><em>partition_name</em></span><code class="filename">/DIR-INF</code>.
+		</p><a id="d0e3680" class="indexterm"/><div class="example" id="connections.xml-default"><div class="example-contents"><pre class="screen"> &lt;connections&gt; <em class="lineannotation"><span class="lineannotation">main file tag</span></em>  
+
+   &lt;connection name="..."&gt; <em class="lineannotation"><span class="lineannotation">begins the connection entry</span></em>  
+
+     &lt;adapter-name&gt;...&lt;/adapter-name&gt; <em class="lineannotation"><span class="lineannotation">the connection type, LDAP, JDBC, or NIS</span></em> 
+
+     &lt;parameter&gt; <em class="lineannotation"><span class="lineannotation">the configuration settings, in attribute-value pairs</span></em> 
+          &lt;param-name&gt;...&lt;/param-name&gt; 
+          &lt;param-value&gt;...&lt;/param-value&gt;
+     &lt;/parameter&gt;
+  
+   &lt;/connection&gt;
+  
+ &lt;/connections&gt;</pre></div><h6>Example 6.1. Annotated connections.xml File</h6></div><br class="example-break"/><p>
+			To create a new connection, add a new connection entry to the <code class="filename">connections.xml</code> file. To edit a connection, add, remove, or edit parameters within the entry. <a href="chap-Admin_Guide-Configuring_connections.html#ex.connections.xml-example" title="Example 6.2. Example connections.xml File">Example 6.2, “Example connections.xml File”</a> shows three different connection entries for a partition, for each adapter type.
+		</p><div class="important"><h2>IMPORTANT</h2><p>
+				Always restart Penrose Server after editing the configuration file. For example:
+			</p><pre class="screen">service vd-server restart</pre></div><div class="example" id="ex.connections.xml-example"><div class="example-contents"><pre class="screen">&lt;connections&gt;
+
+&lt;connection name="DirectoryServer"&gt;
+  &lt;adapter-name&gt;LDAP&lt;/adapter-name&gt;
+  &lt;parameter&gt;
+    &lt;param-name&gt;maxActive&lt;/param-name&gt;
+    &lt;param-value&gt;500&lt;/param-value&gt;
+  &lt;/parameter&gt;
+  &lt;parameter&gt;
+    &lt;param-name&gt;testOnBorrow&lt;/param-name&gt;
+    &lt;param-value&gt;true&lt;/param-value&gt;
+  &lt;/parameter&gt;
+  &lt;parameter&gt;
+    &lt;param-name&gt;java.naming.provider.url&lt;/param-name&gt;
+    &lt;param-value&gt;ldap://localhost/&lt;/param-value&gt;
+  &lt;/parameter&gt;
+  &lt;parameter&gt;
+    &lt;param-name&gt;java.naming.security.principal&lt;/param-name&gt;
+    &lt;param-value&gt;cn=Directory Manager&lt;/param-value&gt;
+  &lt;/parameter&gt;
+  &lt;parameter&gt;
+    &lt;param-name&gt;java.naming.security.credentials&lt;/param-name&gt;
+    &lt;param-value&gt;secret&lt;/param-value&gt;
+  &lt;/parameter&gt;
+&lt;/connection&gt;
+
+&lt;connection name="MySQL"&gt;
+    &lt;adapter-name&gt;JDBC&lt;/adapter-name&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;user&lt;/param-name&gt;
+      &lt;param-value&gt;exampleuser&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;password&lt;/param-name&gt;
+      &lt;param-value&gt;secret&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;url&lt;/param-name&gt;
+      &lt;param-value&gt;jdbc:mysql://localhost/example?autoReconnect=true&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;driver&lt;/param-name&gt;
+      &lt;param-value&gt;com.mysql.jdbc.Driver&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/connection&gt;
+
+&lt;connection name="NIS"&gt;
+    &lt;adapter-name&gt;NIS&lt;/adapter-name&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.factory.initial&lt;/param-name&gt;
+      &lt;param-value&gt;com.sun.jndi.nis.NISCtxFactory&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.provider.url&lt;/param-name&gt;
+      &lt;param-value&gt;nis://localhost/&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;com.sun.jndi.nis.mailaliases&lt;/param-name&gt;
+      &lt;param-value&gt;nonull&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;method&lt;/param-name&gt;
+      &lt;param-value&gt;yp&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/connection&gt;
+
+&lt;/connections&gt;</pre></div><h6>Example 6.2. Example connections.xml File</h6></div><br class="example-break"/><p>
+			The different configuration settings for the file are in <a href="chap-Admin_Guide-Configuring_connections.html#tab.connection-configuration" title="Table 6.1. Connection Configuration Values">Table 6.1, “Connection Configuration Values”</a>.
+		</p><a id="d0e3725" class="indexterm"/><div class="table" id="tab.connection-configuration"><div class="table-contents"><table summary="Connection Configuration Values" border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+							Configuration Setting
+						</th><th>
+							Description
+						</th><th>
+							Example
+						</th></tr></thead><tbody><tr><td colspan="3">
+							<span><strong class="application">LDAP Connections</strong></span>
+						</td></tr><tr><td>
+							java.naming.provider.url
+						</td><td>
+							Gives a URL to a naming service on a remote machine. To specify failover machines, separate the URLs with a space, and the Penrose Server will try them in order.
+						</td><td>
+							ldap://remote.example.com/
+						</td></tr><tr><td>
+							java.naming.security.principal
+						</td><td>
+							Gives the bind DN to use to connect to the LDAP service.
+						</td><td>
+							cn=Directory Manager
+						</td></tr><tr><td>
+							java.naming.security.credentials
+						</td><td>
+							Contains the password associated with the bind DN.
+						</td><td>
+							secret
+						</td></tr><tr><td colspan="3">
+							<span><strong class="application">JDBC Connections</strong></span>
+						</td></tr><tr><td>
+							driver
+						</td><td>
+							Gives the JDBC driver class name for the database.
+						</td><td>
+							com.mysql.jdbc.Driver
+						</td></tr><tr><td>
+							url
+						</td><td>
+							Gives the URL to connect to the database.
+						</td><td>
+							jdbc:mysql://localhost/example?autoReconnect=true
+						</td></tr><tr><td>
+							user
+						</td><td>
+							Gives the username to use to connect to the database.
+						</td><td>
+							exampleuser
+						</td></tr><tr><td>
+							password
+						</td><td>
+							Gives the password associated with the username.
+						</td><td>
+							secret
+						</td></tr><tr><td>
+							quote
+						</td><td>
+							Delimiter for quoting identifiers.
+						</td><td>
+						</td></tr><tr><td>
+							queryTimeout
+						</td><td>
+							Sets the JDBC query timeout limit, in seconds.
+						</td><td>
+							30
+						</td></tr><tr><td colspan="3">
+							<span><strong class="application">NIS Connections</strong></span>
+						</td></tr><tr><td>
+							java.naming.factory.initial
+						</td><td>
+							Sets the naming service for Penrose Server to use. The NIS JNDI service class is <code class="command">com.sun.jndi.nis.NISCtxFactory</code>.
+						</td><td>
+							com.sun.jndi.nis.NISCtxFactory
+						</td></tr><tr><td>
+							java.naming.provider.url
+						</td><td>
+							Gives a URL to a naming service on a remote machine.
+						</td><td>
+							nis://localhost/
+						</td></tr><tr><td>
+							method
+						</td><td>
+							Defines the way to connect to the NIS source. There are three options: 
+							<div class="itemizedlist"><ul><li><p>
+										YP clients (<code class="command">yp</code>)
+									</p></li><li><p>
+										JNDI (<code class="command">jndi</code>)
+									</p></li><li><p>
+										Local files (<code class="command">local</code>)
+									</p></li></ul></div>
+						</td><td>
+							jndi
+						</td></tr></tbody></table></div><h6>Table 6.1. Connection Configuration Values</h6></div><br class="table-break"/><p>
+			LDAP and JDBC connections have addtional, optional parameters to configure the connection pool settings for the connection to the source.
+		</p><a id="d0e3873" class="indexterm"/><div class="table" id="tab.connection-parameters"><div class="table-contents"><table summary="Connection Pool Options for LDAP and JDBC" border="1"><colgroup><col/><col/><col/><col/></colgroup><thead><tr><th>
+							Parameter
+						</th><th>
+							Definition
+						</th><th>
+							LDAP Connection
+						</th><th>
+							JDBC Connection
+						</th></tr></thead><tbody><tr><td>
+							maxActive
+						</td><td>
+							The maximum number of active connections that can be allocated from this pool at the same time, or zero for no limit.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							maxIdle
+						</td><td>
+							The maximum number of active connections that can remain idle in the pool, without extra ones being released, or zero for no limit.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							minIdle
+						</td><td>
+							The minimum number of active connections that can remain idle in the pool, without extra ones being created, or zero to create none.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							maxWait
+						</td><td>
+							The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception, or -1 to wait indefinitely.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							testOnBorrow
+						</td><td>
+							Indicates whether objects will be validated before being borrowed from the pool. If the object fails to validate, it will be dropped from the pool, and Penrose Server attempts to borrow another.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							testOnReturn
+						</td><td>
+							Indicates whether objects will be validated before being returned to the pool.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							testWhileIdle
+						</td><td>
+							Indicates whether objects will be validated by the idle object evictor (if any). If an object fails to validate, it will be dropped from the pool.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							minEvictableIdleTimeMillis
+						</td><td>
+							The minimum amount of time an object may sit idle in the pool before it is eligable for eviction by the idle object evictor (if any).
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							numTestsPerEvictionRun
+						</td><td>
+							The number of objects to examine during each run of the idle object evictor thread (if any).
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							timeBetweenEvictionRunsMillis
+						</td><td>
+							The number of milliseconds to sleep between runs of the idle object evictor thread. When non-positive, no idle object evictor thread will be run.
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							whenExhaustedAction
+						</td><td>
+							fail, block, or grow
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td><td>
+						</td></tr><tr><td>
+							initialSize
+						</td><td>
+							The initial size of the connection pool.
+						</td><td>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr><tr><td>
+							validationQuery
+						</td><td>
+							The SQL query that will be used to validate connections from this pool before returning them to the caller. If specified, this query MUST be an SQL SELECT statement that returns at least one row.
+						</td><td>
+						</td><td>
+							<span class="inlinemediaobject"><img src="images/check.png"/></span>
+						</td></tr></tbody></table></div><h6>Table 6.2. Connection Pool Options for LDAP and JDBC</h6></div><br class="table-break"/></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_Partitions.html"><strong>Prev</strong>Chapter 5. Managing Partitions</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Configuring_sources.html"><strong>Next</strong>Chapter 7. Configuring Data Sources</a></li></ul></body></html>

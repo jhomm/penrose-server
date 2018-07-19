@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 12. Using Services with Penrose Virtual Directory</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Configuring_Modules.html" title="Chapter 11. Configuring Modules"/><link rel="next" href="chap-Admin_Guide-Customizing_Schema.html" title="Chapter 13. Customizing Schema"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 12. Using Services with Penrose Virtual Directory</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_Modules.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Customizing_Schema.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="chap-Admin_Guide-Enabling_Services_to_Work_with_VD">Chapter 12. Using Services with Penrose Virtual Directory</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html#sect-Admin_Guide-Enabling_Services_to_Work_with_VD-Default_Services">12.1. About Services in Penrose Virtual Directory</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html#sect-Admin_Guide-Enabling_Services_to_Work_with_VD-Configuring_Additional_Supported_Servives">12.2. Configuring Additional Services</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html#new-services-studio">12.2.1. Adding Services in Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html#new-services-cmd">12.2.2. Adding and Editing Services Manually</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html#enabling-services">12.3. Enabling and Disabling Services</a></span></dt></dl></div><a id="d0e11901" class="indexterm"/><a id="d0e11904" class="indexterm"/><p>
+		<span class="emphasis"><em>Services</em></span> are front-end components of Penrose Virtual Directory which communicate directly with client applications. This chapter gives an overview of what services are and how they are used, as well as instructions for creating custom services to use in addition to the default Penrose Virtual Directory services.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Enabling_Services_to_Work_with_VD-Default_Services">12.1. About Services in Penrose Virtual Directory</h2></div></div></div><a id="d0e11917" class="indexterm"/><p>
+			<span class="emphasis"><em>Services</em></span> provide a communication avenue between clients and Penrose Server. By default, Penrose Virtual Directory provides services that communicate with LDAP servers (ApacheDS, OpenDS, and MINA) and Java clients (JMX).
+		</p><p>
+			Penrose Virtual Directory provides three different LDAP services, ApacheDS, OpenDS, and MINA. By default, only OpenDS is enabled.
+		</p><div class="note"><h2>NOTE</h2><p>
+				All three LDAP services can be configured to run for Penrose Virtual Directory, as long as they are listening on different ports.
+			</p></div><p>
+			The JMX service connects to any client which uses the JMX protocol, including Penrose Studio.
+		</p><p>
+			Each service configured in Penrose Virtual Directory is located in <code class="filename">/opt/vd-server-2.0/services</code>; similarly to the partition configuration, each service has a folder named for the service and a subfolder called <code class="filename">SERVICE-INF</code>. There can also be additional folders for libraries, databases, LDIF files, configuration files, and other files used by the specific service. The files used by the default services are listed in <a href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html#tab.default-service-files" title="Table 12.1. Default Service Configuration Files">Table 12.1, “Default Service Configuration Files”</a>.
+		</p><a id="d0e11946" class="indexterm"/><a id="d0e11951" class="indexterm"/><a id="d0e11956" class="indexterm"/><a id="d0e11961" class="indexterm"/><a id="d0e11966" class="indexterm"/><a id="d0e11971" class="indexterm"/><a id="d0e11974" class="indexterm"/><a id="d0e11977" class="indexterm"/><a id="d0e11980" class="indexterm"/><div class="table" id="tab.default-service-files"><div class="table-contents"><table summary="Default Service Configuration Files" border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+							Service
+						</th><th>
+							Folder
+						</th><th>
+							Description
+						</th></tr></thead><tbody><tr><td>
+							ApacheDS
+						</td><td>
+							/opt/vd-server-2.0/services/ApacheDS
+						</td><td>
+							The main service directory.
+						</td></tr><tr><td>
+							ApacheDS
+						</td><td>
+							/opt/vd-server-2.0/services/ApacheDS/bin
+						</td><td>
+							Contains the <code class="command">schema.sh</code> and <code class="command">schema.bat</code> files to compile custom schema to allow it to be used by ApacheDS.
+						</td></tr><tr><td>
+							ApacheDS
+						</td><td>
+							/opt/vd-server-2.0/services/ApacheDS/conf
+						</td><td>
+							Contains a <code class="filename">server.xml</code> file which defines the MBeans object used to run the service.
+						</td></tr><tr><td>
+							ApacheDS
+						</td><td>
+							/opt/vd-server-2.0/services/ApacheDS/SERVICE-INF
+						</td><td>
+							Contains the <code class="filename">service.xml</code> file, which defines the service for Penrose Server, and a <code class="filename">lib/</code> directory which contains the libraries used by the LDAP service.
+						</td></tr><tr><td>
+							ApacheDS
+						</td><td>
+							/opt/vd-server-2.0/services/ApacheDS/SERVICE-INF/lib
+						</td><td>
+							Contains the libraries used by the LDAP service.
+						</td></tr><tr><td>
+							JMX
+						</td><td>
+							/opt/vd-server-2.0/services/JMX
+						</td><td>
+							The main service directory.
+						</td></tr><tr><td>
+							JMX
+						</td><td>
+							/opt/vd-server-2.0/services/JMX/conf
+						</td><td>
+							Contains a <code class="filename">log4j.xml</code> file which defines logging for the JMX service.
+						</td></tr><tr><td>
+							JMX
+						</td><td>
+							/opt/vd-server-2.0/services/JMX/SERVICE-INF
+						</td><td>
+							Contains the <code class="filename">service.xml</code> file, which defines the service for Penrose Server, and a <code class="filename">lib/</code> directory which contains the libraries used by the JMX service.
+						</td></tr><tr><td>
+							JMX
+						</td><td>
+							/opt/vd-server-2.0/services/JMX/SERVICE-INF/lib
+						</td><td>
+							Contains the libraries used by the JMX service.
+						</td></tr><tr><td>
+							MINA
+						</td><td>
+							/opt/vd-server-2.0/services/LDAP
+						</td><td>
+							The main service directory.
+						</td></tr><tr><td>
+							MINA
+						</td><td>
+							/opt/vd-server-2.0/services/LDAP/SERVICE-INF
+						</td><td>
+							Contains the <code class="filename">service.xml</code> file, which defines the service for Penrose Server, and a <code class="filename">lib/</code> directory which contains the libraries used by the MINA LDAP service.
+						</td></tr><tr><td>
+							MINA
+						</td><td>
+							/opt/vd-server-2.0/services/LDAP/SERVICE-INF/lib
+						</td><td>
+							Contains the libraries used by the MINA LDAP service.
+						</td></tr><tr><td>
+							OpenDS
+						</td><td>
+							/opt/vd-server-2.0/services/OpenDS
+						</td><td>
+							The main service directory.
+						</td></tr><tr><td>
+							OpenDS
+						</td><td>
+							/opt/vd-server-2.0/services/OpenDS/config
+						</td><td>
+							Contains LDIF files, scripts, schema, and templates used by the OpenDS service.
+						</td></tr><tr><td>
+							OpenDS
+						</td><td>
+							/opt/vd-server-2.0/services/OpenDS/db
+						</td><td>
+							Contains database files used by the OpenDS service.
+						</td></tr><tr><td>
+							OpenDS
+						</td><td>
+							/opt/vd-server-2.0/services/OpenDS/locks
+						</td><td>
+							Contains lock files used by different components of the OpenDS service.
+						</td></tr><tr><td>
+							OpenDS
+						</td><td>
+							/opt/vd-server-2.0/services/OpenDS/logs
+						</td><td>
+							Contains access, error, and replication logs generated by the OpenDS service.
+						</td></tr><tr><td>
+							OpenDS
+						</td><td>
+							/opt/vd-server-2.0/services/OpenDS/SERVICE-INF
+						</td><td>
+							Contains the <code class="filename">service.xml</code> file, which defines the service for Penrose Server, and a <code class="filename">lib/</code> directory which contains the libraries used by the OpenDS LDAP service.
+						</td></tr><tr><td>
+							OpenDS
+						</td><td>
+							/opt/vd-server-2.0/services/OpenDS/SERVICE-INF/lib
+						</td><td>
+							Contains the libraries used by the OpenDS LDAP service.
+						</td></tr></tbody></table></div><h6>Table 12.1. Default Service Configuration Files</h6></div><br class="table-break"/><a id="d0e12165" class="indexterm"/><p>
+			Creating a custom service requires creating a new service directory in <code class="filename">/opt/vd-server-2.0/services</code> such as <code class="filename">/opt/vd-server-2.0/services/</code><span class="emphasis"><em>service_name</em></span>. The service is defined in the <code class="filename">SERVICE-INF/service.xml</code> file. Put any custom libraries in the <code class="filename">SERVICE-INF/lib</code> directory. The default class, if none are specified, is <code class="command">org.safehaus.penrose.service.Service</code>.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-Enabling_Services_to_Work_with_VD-Configuring_Additional_Supported_Servives">12.2. Configuring Additional Services</h2></div></div></div><p>
+			Other services can be added to operate with Penrose Server, giving a new or extended interface to communicate with server clients.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="new-services-studio">12.2.1. Adding Services in Penrose Studio</h3></div></div></div><a id="d0e12199" class="indexterm"/><div class="orderedlist"><ol><li><p>
+						In the top menu, click the <span><strong class="guimenu">Services</strong></span> menu, and select <span><strong class="guimenuitem">New Service...</strong></span>.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/service1.png"/></div></div><p>
+						Alternatively, open the server, and right-click the <span><strong class="guilabel">Services</strong></span> folder, then select <span><strong class="guimenuitem">New Service...</strong></span>.
+					</p></li><li><p>
+						Fill in the name of the service, the service's class, and whether the service is enabled.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/service2.png"/></div></div><p>
+						Any custom class must be listed in the service's configuration folder in the proper locate for all classes used by the service, <code class="filename">/opt/vd-server-2.0/services/</code><span class="emphasis"><em>service_name</em></span><code class="filename">/SERVICE-INF/lib</code>. The default class, if none are specified, is <code class="command">org.safehaus.penrose.service.Service</code>.
+					</p></li><li><p>
+						Fill in any configuration parameters that will be used by clients to connect to the service, such as port numbers or bind credentials.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/service3.png"/></div></div></li><li><p>
+						Click <span><strong class="guibutton">Finish</strong></span>.
+					</p></li></ol></div><a id="d0e12260" class="indexterm"/><p>
+				To edit a service's configuration, double-click the service under the <span><strong class="guilabel">Services</strong></span> folder to open the entry editor, and then edit or add configuration settings as desired.
+			</p><div class="informalfigure"><div class="mediaobject"><img src="images/editservice.png"/></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="new-services-cmd">12.2.2. Adding and Editing Services Manually</h3></div></div></div><a id="d0e12277" class="indexterm"/><a id="d0e12282" class="indexterm"/><a id="d0e12285" class="indexterm"/><p>
+				All of the service configuration, for a basic configuration, is stored in a subdirectory under <code class="filename">/opt/vd-server-2.0/services/</code>. This subdirectory is named whatever the Penrose Server service name is. For example, a JBoss service may be defined in <code class="filename">/opt/vd-server-2.0/services/JBoss/</code>; in Penrose Studio, this service is displayed as <span><strong class="guilabel">JBoss</strong></span>.
+			</p><p>
+				Within the <span class="emphasis"><em>service_name</em></span> folder is, at least, a <code class="filename">SERVICE-INF/</code> folder which contains a <code class="filename">service.xml</code> file to define the service and a <code class="filename">lib/</code> directory which holds all of the JAR files used by the service.
+			</p><div class="note"><h2>NOTE</h2><p>
+					Depending on the type of service created, there can be additional database, configuration, tool, or log folders. The service can be as complex as required.
+				</p></div><p>
+				The <code class="filename">service.xml</code> file contains three pieces of information:
+			</p><div class="itemizedlist"><ul><li><p>
+						Whether the service is enabled
+					</p></li><li><p>
+						The class name used by the service
+					</p></li><li><p>
+						Optional parameters to define connections to the service
+					</p></li></ul></div><p>
+				This is illustrated in <a href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html#ex.annotated-service.xml" title="Example 12.1. Annotated Example service.xml File">Example 12.1, “Annotated Example service.xml File”</a>.
+			</p><a id="d0e12337" class="indexterm"/><div class="example" id="ex.annotated-service.xml"><div class="example-contents"><pre class="screen">&lt;service enabled="true"&gt; <em class="lineannotation"><span class="lineannotation">whether the service is active</span></em>  
+
+  &lt;service-class&gt;org.safehaus.penrose.mina.MinaLDAPService&lt;/service-class&gt;  <em class="lineannotation"><span class="lineannotation">class used by the service</span></em>  
+
+  &lt;parameter&gt;  <em class="lineannotation"><span class="lineannotation">optional connection or configuration parameters</span></em>  
+    &lt;param-name&gt;ldapPort&lt;/param-name&gt;
+    &lt;param-value&gt;10389&lt;/param-value&gt;
+  &lt;/parameter&gt;
+
+&lt;/service&gt;</pre></div><h6>Example 12.1. Annotated Example service.xml File</h6></div><br class="example-break"/><div class="important"><h2>IMPORTANT</h2><p>
+					Always restart Penrose Server after editing the configuration file. For example:
+				</p><pre class="screen">service vd-server restart</pre></div><p>
+				The configuration options for the <code class="filename">service.xml</code> file are listed in <a href="chap-Admin_Guide-Enabling_Services_to_Work_with_VD.html#tab.service.xml-param" title="Table 12.2. Tags and Parameters for service.xml">Table 12.2, “Tags and Parameters for service.xml”</a>.
+			</p><a id="d0e12370" class="indexterm"/><a id="d0e12375" class="indexterm"/><div class="table" id="tab.service.xml-param"><div class="table-contents"><table summary="Tags and Parameters for service.xml" border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+								Source Parameters
+							</th><th>
+								Description
+							</th><th>
+								Example
+							</th></tr></thead><tbody><tr><td>
+								&lt;service&gt;
+							</td><td>
+								The main file tag.
+							</td><td>
+							</td></tr><tr><td>
+								enabled="..."
+							</td><td>
+								Sets whether the service is available to communicate with clients.
+							</td><td>
+<pre class="screen">&lt;service enabled="true"&gt;</pre>
+							</td></tr><tr><td>
+								&lt;parameter&gt;
+							</td><td>
+								Contains an attribuate-value pair of tags.
+							</td><td>
+<pre class="screen">&lt;parameter&gt;
+     &lt;param-name&gt;ldapPort&lt;/param-name&gt;
+     &lt;param-valuee&gt;10389&lt;/param-valuee&gt;
+&lt;/arameter&gt;</pre>
+							</td></tr><tr><td>
+								&lt;param-name&gt;
+							</td><td>
+								Contains the name of the attribute or configuration parameter.
+							</td><td>
+<pre class="screen">&lt;param-name&gt;
+  ldapPort
+&lt;/param-name&gt;</pre>
+							</td></tr><tr><td>
+								&lt;param-value&gt;
+							</td><td>
+								Contains the value of the attribute or configuration parameter specified in the <code class="command">&lt;param-name&gt;</code> tag.
+							</td><td>
+<pre class="screen">&lt;param-value&gt;
+  10389
+&lt;/param-value&gt;</pre>
+							</td></tr></tbody></table></div><h6>Table 12.2. Tags and Parameters for service.xml</h6></div><br class="table-break"/></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="enabling-services">12.3. Enabling and Disabling Services</h2></div></div></div><a id="d0e12446" class="indexterm"/><p>
+			A service must be enabled for a client to be able to use it to communicate with Penrose Server. To enable or disable services in Penrose Studio, open the properties editor for the service and check the <span><strong class="guilabel">Enable</strong></span> checkbox.
+		</p><div class="informalfigure"><div class="mediaobject"><img src="images/enableservice.png"/></div></div><a id="d0e12460" class="indexterm"/><p>
+			To enable or disable a service manually, edit its <code class="filename">service.xml</code> file and change the <em class="parameter"><code>enabled=</code></em> to <code class="command">true</code> (enabled) or <code class="command">false</code> (disabled).
+		</p><pre class="screen">&lt;service enabled="<strong class="userinput"><code>true</code></strong>"&gt;</pre><div class="important"><h2>IMPORTANT</h2><p>
+				Always restart Penrose Server after editing the configuration file. For example:
+			</p><pre class="screen">service vd-server restart</pre></div></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_Modules.html"><strong>Prev</strong>Chapter 11. Configuring Modules</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="chap-Admin_Guide-Customizing_Schema.html"><strong>Next</strong>Chapter 13. Customizing Schema</a></li></ul></body></html>

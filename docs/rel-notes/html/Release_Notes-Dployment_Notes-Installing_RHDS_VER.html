@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>3. Installing Penrose Server 2.0</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><link rel="stylesheet" href="../../../../Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Penrose Virtual Directory 2.0 Release Notes"/><link rel="up" href="index.html" title="Penrose Virtual Directory 2.0 Release Notes"/><link rel="prev" href="Release_Notes-Deployment_Notes.html" title="2. System Requirements"/><link rel="next" href="Release_Notes-Bugs_Addressed-Known_Issues.html" title="4. Known Issues"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>3. Installing Penrose Server 2.0</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="Release_Notes-Deployment_Notes.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="Release_Notes-Bugs_Addressed-Known_Issues.html"><strong>Next</strong></a></li></ul><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="Release_Notes-Dployment_Notes-Installing_RHDS_VER">3. Installing Penrose Server 2.0</h2></div></div></div><p>
+			For more detailed instructions to install Penrose Server 2.0, see the <em class="citetitle">Penrose Admin's Guide</em>.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="Release_Notes-Deployment_Notes-Installing">3.1. Installing Penrose Virtual Directory</h3></div></div></div><p>
+				A virtual directory maps information from disparate data sources, such as directory services and databases, into a single location for users to access, while keeping the virtual service lightweight and simple to administer. Penrose Server establishes the virtual directory.
+			</p><div class="orderedlist"><ol><li><p>
+						Download the RPMs. There are two packages for Penrose Server, one for the core server and the other for client tools.
+					</p></li><li><p>
+						Install the packages. For example:
+					</p><pre class="screen">rpm -i vd-server-2.0-<em class="replaceable"><code>build#</code></em>.el5.noarch.rpm vd-client-2.0-<em class="replaceable"><code>build#</code></em>.el5.noarch.rpm</pre><p>
+						The Penrose Server components are installed in the <code class="filename">/opt/vd-server-2.0</code> and <code class="filename">/opt/vd-client-2.0</code> directories.
+					</p></li><li><p>
+						Make sure that the proper JDK is configured for Penrose Server to use:
+					</p><div class="orderedlist"><ol><li><p>
+								Open the <code class="filename">vd.conf</code> file with the Penrose Server directory.
+							</p><pre class="screen">vim /opt/vd-server-2.0/etc/vd.conf</pre></li><li><p>
+								Add the <code class="command">JAVA_HOME</code> environment variable, pointing to Sun JDK 1.5.0. For example:
+							</p><pre class="screen">JAVA_HOME=/usr/lib/jdk1.5.0_17/</pre></li><li><p>
+								After editing the <code class="filename">vd.conf</code> file, copy it into the host's <code class="filename">/etc</code> directory.
+							</p><pre class="screen">cp /opt/vd-server-2.0/etc/vd.conf /etc</pre></li></ol></div></li><li><p>
+						Run a configuration script to reset the server hostname, give the admin username and password, and set the port numbers and other information for the associated LDAP and JMX services. Hitting <span><strong class="keycap">Enter</strong></span> accepts the defaults in the brackets.
+					</p><p>
+						For example:
+					</p><pre class="screen">[root@server bin]# ./vd-config.sh
+Configuring VD Server:
+----------------------
+
+Hostname [server.example.com]:
+Root DN [uid=admin,ou=system]:
+Root Password [*****]: secret12
+User account [root]:
+Group account [root]:
+
+Configuring OpenDS Service:
+---------------------------
+
+LDAP Enabled [true]:
+LDAP Port [389]:
+Secure LDAP Enabled [true]:
+Secure LDAP Port [636]:
+SSL Certificate Name [server-cert]:
+Key Store Type (JKS/PKCS12) [PKCS12]:
+Key Store File [config/keystore.p12]:
+Key Store PIN File [config/keystore.pin]:
+
+
+Configuring JMX Service:
+------------------------
+
+RMI Port [1099]:
+RMI Transport Port [40888]:</pre></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="Release_Notes-Deployment_Notes-InstallingStudio">3.2. Installing Penrose Studio</h3></div></div></div><p>
+				Red Hat Penrose Studio is a simple user interface for administering entries, mapping, and data sources in Penrose Server, as well as a browser for the virtual directory. Penrose Studio is a client to access Penrose Server and can be installed on different machines, even different platforms, than Penrose Server itself.
+			</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="Release_Notes-Deployment_Notes-InstallingStudioRHEL">3.2.1. On Red Hat Enterprise Linux</h4></div></div></div><div class="orderedlist"><ol><li><p>
+							Download the RPM.
+						</p></li><li><p>
+							Install the packages. For example:
+						</p><pre class="screen">rpm -ivh vd-studio-2.0-<em class="replaceable"><code>build#</code></em>.el5.i386.rpm</pre></li></ol></div><p>
+					Penrose Studio is installed in <code class="filename">/opt/vd-studio-2.0</code> on Red Hat Enterprise Linux systems.
+				</p><div class="note"><h2>NOTE</h2><p>
+						The default username and password for Penrose Studio to use to connect to the Penrose Server is <code class="command">uid=admin,ou=system</code> and <code class="command">secret</code>, respectively.
+					</p></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="Release_Notes-Deployment_Notes-InstallingStudioWindows">3.2.2. On Windows</h4></div></div></div><div class="orderedlist"><ol><li><p>
+							Download the Windows installer.
+						</p></li><li><p>
+							Double-click the <code class="filename">.exe</code> file, and go through the installer.
+						</p></li></ol></div><p>
+					Penrose Studio is installed in <code class="filename">C:\Program Files\Identyx Corporation\VD Studio 2.0</code> on Windows systems.
+				</p><div class="note"><h2>NOTE</h2><p>
+						The default username and password for Penrose Studio to use to connect to the Penrose Server is <code class="command">uid=admin,ou=system</code> and <code class="command">secret</code>, respectively.
+					</p></div></div></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="Release_Notes-Deployment_Notes.html"><strong>Prev</strong>2. System Requirements</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="Release_Notes-Bugs_Addressed-Known_Issues.html"><strong>Next</strong>4. Known Issues</a></li></ul></body></html>

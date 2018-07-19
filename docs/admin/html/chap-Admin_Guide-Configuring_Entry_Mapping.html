@@ -1,0 +1,829 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 8. Configuring the Virtual Directory</title><link rel="stylesheet" href="./Common_Content/css/default.css" type="text/css"/><meta name="generator" content="publican"/><link rel="start" href="index.html" title="Admin Guide"/><link rel="up" href="index.html" title="Admin Guide"/><link rel="prev" href="chap-Admin_Guide-Configuring_sources.html" title="Chapter 7. Configuring Data Sources"/><link rel="next" href="Mapping.html" title="Chapter 9. Mapping Entries and Attributes"/></head><body><p id="title"><a href="https://fedorahosted.org/publican"><strong>Chapter 8. Configuring the Virtual Directory</strong></a></p><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_sources.html"><strong>Prev</strong></a></li><li class="next"><a accesskey="n" href="Mapping.html"><strong>Next</strong></a></li></ul><div class="chapter" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="chap-Admin_Guide-Configuring_Entry_Mapping">Chapter 8. Configuring the Virtual Directory</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#directory-overview">8.1. About the Virtual Directory Tree and Handling Entries</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory">8.2. Creating and Editing the Virtual Subtrees</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-studio">8.2.1. Creating the Virtual Directory in Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-editing-studio">8.2.2. Editing the Virtual Directory in Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-cmd">8.2.3. Configuring the Virtual Directory Manually</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#sect-Admin_Guide-special-dit-entries">8.3. Creating Special Directory Entries</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#sect-Admin_Guide-ldap-snapshot">8.4. Duplicating Existing LDAP Servers</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#map-ldap-tree">8.4.1. Mapping an LDAP Tree</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#map-root-dse">8.4.2. Mapping the Root DSE</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#map-ad-schema">8.4.3. Mapping Active Directory Schema</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#Proxy">8.5. Using Proxy Services</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#sect-Admin_Guide-ldap-proxy">8.5.1. Creating an LDAP Proxy</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#prox-manualy">8.5.2. Configuring an LDAP Proxy Manually</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#auth-proxy">8.5.3. Configuring Authentication for Proxies</a></span></dt></dl></dd><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-editing-acls">8.6. Setting Access Controls on the Virtual Directory</a></span></dt><dd><dl><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#aci-inheritance">8.6.1. Placing ACIs and ACI Inheritance</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#aci-default">8.6.2. Default ACIs</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-editing-acls-studio">8.6.3. Setting Access Controls in Penrose Studio</a></span></dt><dt><span class="section"><a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-editing-acls-cmd">8.6.4. Setting Access Controls Manually</a></span></dt></dl></dd></dl></div><a id="d0e4722" class="indexterm"/><a id="d0e4725" class="indexterm"/><p>
+		The purpose of a Penrose Virtual Directory is to establish relationships between existing servers, databases, and applications which contain data and to make that unified information easily accessible. This is done by creating a new, centralized organization for the entire data set (<span class="emphasis"><em>virtual directory tree</em></span>), then establishing how the different pieces of information in different data sets relate to the new directory (<span class="emphasis"><em>mappings</em></span>).
+	</p><p>
+		This chapter describes how to create and manage virtual directory trees and create relationships (mappings) between entries in data sources to create virtual directory entries.
+	</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="directory-overview">8.1. About the Virtual Directory Tree and Handling Entries</h2></div></div></div><a id="d0e4741" class="indexterm"/><p>
+			Different data sources may not speak the same native protocol or have shared attributes, or even shared entries. The virtual directory "creates" a new hierarchy, analogous to the directory tree in a directory service, which names and organizes entries. However, this tree view does not create entries or configure a directory in reality; it is a virtual, dynamic way of viewing that information.
+		</p><a id="d0e4748" class="indexterm"/><p>
+			A virtual directory mirrors an LDAP directory. It has a hierarchical structure with a base DN, subtrees, and entries which can be searched and modified by LDAP operations and return data in LDIF. This is true regardless of the applications which store the data.
+		</p><p>
+			To create the unified view of all the disparate data sources, then, first define the structure of the directory tree and the way that information in a source is collected in the corresponding virtual directory entries.
+		</p><p>
+			As with an LDAP service, the first step is to decide what kind of hierarchy the directory tree will have. Each directory tree is laid out in forks and branches, similar to a genealogical tree. Since Penrose Virtual Directory creates a new view of data, the virtual directory does not need to imitate an existing directory hierarchy.
+		</p><p>
+			One option is to create a separate subtree for each data source. For example, if there are several different databases which hold employee data, each one could be carried into separate user subtrees, as shown in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#fig.merge-mapping2" title="Figure 8.1. Keeping Data in Separate Subtrees">Figure 8.1, “Keeping Data in Separate Subtrees”</a>. The entries are still searchable in a single location by searching the base DN.
+		</p><div class="figure" id="fig.merge-mapping2"><div class="figure-contents"><div class="mediaobject"><img src="images/mergemapping2.png" alt="Keeping Data in Separate Subtrees"/></div></div><h6>Figure 8.1. Keeping Data in Separate Subtrees</h6></div><br class="figure-break"/><a id="d0e4769" class="indexterm"/><a id="d0e4776" class="indexterm"/><p>
+			However, the obvious problem is that there can be dozens, even hundreds, of data sources for a single company, and having a dispersed directory tree is unnecessarily unwieldy. There can also be a lot of overlap between the information in one database (or directories or human resources applications), and it makes sense to arrange the grouping of the directory according to the types of information in it. Penrose Virtual Directory can unify all of that information, allowing it to be reorganized in a more logical and easier to find way. To re-group the information in different sources, Penrose Virtual Directory can merge the entries into a single subtree, simply by pointing the configuration for each data source to the same subtree, as shown in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#fig.merge-mapping" title="Figure 8.2. Merging Data Sources into a Single Subtree">Figure 8.2, “Merging Data Sources into a Single Subtree”</a>. Even if a single sources holds different kinds of information (such as users and machines), the information can still be mapped to the appropriate subtree.
+		</p><div class="figure" id="fig.merge-mapping"><div class="figure-contents"><div class="mediaobject"><img src="images/mergemapping.png" alt="Merging Data Sources into a Single Subtree"/></div></div><h6>Figure 8.2. Merging Data Sources into a Single Subtree</h6></div><br class="figure-break"/><p>
+			For example, Example Company has several major applications: NIS servers, Active Directory domains, and several different kinds of SQL databases. All employees in the company have entries in the Active Directory domain and one of the SQL servers, while customer information is in a SQL server, and engineering and support have NIS entries.
+		</p><p>
+			Example Company decides to create an employees subtree, a customer subtree, and a server machine subtree. The data will still reside on the individual data sources (sparing the IT department the migration) but all of the relevant information will be unified into a single directory view.
+		</p><div class="figure" id="fig.example-comparny-dit"><div class="figure-contents"><div class="mediaobject"><img src="images/dit1.png" alt="Example Company's Virtual Directory Tree"/></div></div><h6>Figure 8.3. Example Company's Virtual Directory Tree</h6></div><br class="figure-break"/></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="configuration-directory">8.2. Creating and Editing the Virtual Subtrees</h2></div></div></div><a id="d0e4804" class="indexterm"/><a id="d0e4809" class="indexterm"/><p>
+			The virtual directory tree is a hierarchical view, created by a Penrose Server administrator, to help organize the data from different sources. A directory entry is created in Penrose Studio in the <span><strong class="guilabel">Directory</strong></span> folder in the <span><strong class="guilabel">Partitions</strong></span> section. The configuration file is <code class="filename">directory.xml</code> in <code class="filename">/opt/vd-server-2.0/conf/</code> for the default partition and <code class="filename">/opt/vd-server-2.0/partitions/</code><span class="emphasis"><em>partition_name</em></span><code class="filename">/DIR-INF</code> for additional partitions.
+		</p><a id="d0e4835" class="indexterm"/><p>
+			A virtual directory contains seven pieces of information:
+		</p><div class="itemizedlist"><ul><li><p>
+					The distinguished name (DN) of the subtree or branch in the virtual directory tree; this is the only required parameter
+				</p></li><li><p>
+					Optionally, a class file to use to process operations against the entry
+				</p></li><li><p>
+					The sources to use for the directory
+				</p></li><li><p>
+					The object classes allowed for virtual directory entries
+				</p></li><li><p>
+					Attribute mappings, which define as what virtual directory attributes the source attributes are rendered
+				</p></li><li><p>
+					Source fields which map virtual directory attributes back to the original source attributes (reverse mappings)
+				</p></li><li><p>
+					Access control instructions (ACIs) that control user permissions to <span class="emphasis"><em>virtual directory</em></span> entries
+				</p></li></ul></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="configuration-directory-studio">8.2.1. Creating the Virtual Directory in Penrose Studio</h3></div></div></div><a id="d0e4870" class="indexterm"/><p>
+				The virtual directory tree is a hierarchical view, created by a Penrose Server administrator, to help organize the data from different sources.
+			</p><div class="orderedlist"><ol><li><p>
+						The first step is adding a root entry, creating the base DN as in a regular directory, in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-studio-root" title="8.2.1.1. Adding a Base DN (Root Entry)">Section 8.2.1.1, “Adding a Base DN (Root Entry)”</a>.
+					</p></li><li><p>
+						The next step involves specifying the subtrees, either by explicitly creating them (<a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-studio-static" title="8.2.1.2. Adding a Static Directory Entry">Section 8.2.1.2, “Adding a Static Directory Entry”</a>) or by creating rules which dynamically determine what entries to include (<a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-studio-dynamic" title="8.2.1.3. Adding a Dynamic Directory Entry">Section 8.2.1.3, “Adding a Dynamic Directory Entry”</a>).
+					</p></li></ol></div><p>
+				A new directory tree can also be started by taking a snapshot image of an existing LDAP or by imitating an existing LDAP or Active Directory tree (called <span class="emphasis"><em>mapping</em></span> the tree). See <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#sect-Admin_Guide-ldap-snapshot" title="8.4. Duplicating Existing LDAP Servers">Section 8.4, “Duplicating Existing LDAP Servers”</a> for more information on LDAP snapshots.
+			</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="configuration-directory-studio-root">8.2.1.1. Adding a Base DN (Root Entry)</h4></div></div></div><a id="d0e4902" class="indexterm"/><div class="note"><h2>NOTE</h2><p>
+						The base DN entry is the highest entry in the directory tree.
+					</p></div><div class="orderedlist"><ol><li><p>
+							In Penrose Studio, open the server entry, then expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+						</p></li><li><p>
+							Right-click the <span><strong class="guilabel">Directory</strong></span> folder, and select the <span><strong class="guimenuitem">New Root Entry...</strong></span> option.
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newdirectory1.png"/></div></div></li><li><p>
+							Fill in the distinguished name (DN) for the entry. This usually has the format <code class="command">dc=</code><span class="emphasis"><em>domainComponent1</em></span>, <code class="command">dc=</code><span class="emphasis"><em>domainComponent2</em></span>.
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newdirectory2.png"/></div></div><p>
+							Optionally, supply the path name to a class for the static entry. There are five options: 
+							<a id="d0e4953" class="indexterm"/>
+							<a id="d0e4961" class="indexterm"/>
+							<a id="d0e4969" class="indexterm"/>
+							<a id="d0e4977" class="indexterm"/>
+							<a id="d0e4985" class="indexterm"/>
+							<a id="d0e4993" class="indexterm"/>
+							<a id="d0e5001" class="indexterm"/>
+							<a id="d0e5009" class="indexterm"/>
+							<a id="d0e5017" class="indexterm"/>
+							<a id="d0e5025" class="indexterm"/>
+							<a id="d0e5033" class="indexterm"/>
+							<a id="d0e5041" class="indexterm"/>
+						</p><div class="itemizedlist"><ul><li><p>
+									<code class="command">org.safehaus.penrose.directory.Entry</code>, the default class, which generates a directory without referencing an external source.
+								</p></li><li><p>
+									<code class="command">org.safehaus.penrose.directory.Entry.DynamicEntry</code>, which creates and joins entries from different external sources. For LDAP servers, this will also flatten the directory namespaces.
+								</p></li><li><p>
+									<code class="command">org.safehaus.penrose.directory.Entry.ProxyEntry</code>, which preserves the existing structure of an LDAP source, although DNs can be renamed. A proxy entry can only be used with LDAP sources and cannot be used for joining multiple sources.
+								</p></li><li><p>
+									<code class="command">org.safehaus.penrose.directory.Entry.SchemaEntry</code>, which creates a <code class="command">cn=subschema</code> subtree, as in a regular LDAP server.
+								</p></li><li><p>
+									<code class="command">org.safehaus.penrose.directory.Entry.RootEntry</code>, which creates a root DSE, a special entry which contains information related to a server instance.
+								</p></li></ul></div><p>
+							If no class is given, then Penrose Server uses the base class, <code class="command">org.safehaus.penrose.directory.Entry</code>.
+						</p></li><li><p>
+							Select the object classes for the entries in the virtual directory tree on the left, then click the <span><strong class="guilabel">&gt;</strong></span> arrows to move the object class to the list on the right. These object classes are used to define the entries displayed in the virtual directory, which also defines what attributes are allowed and required for the entries and how they are named.
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newdirectory3.png"/></div></div></li><li><p>
+							Select which attribute will be used as the relative DN (RDN). This is the attribute that appears first in the entry name, also called the <span class="emphasis"><em>naming attribute</em></span>. The selected attributes are <span class="emphasis"><em>primary keys</em></span>, meaning those attributes must be present in the source entry for it to be included in the virtual directory. 
+							<a id="d0e5107" class="indexterm"/>
+							<a id="d0e5113" class="indexterm"/>
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newdirectory4.png"/></div></div><p>
+							The naming attribute determines what the far left component of the name for an entry is. For example, if the naming attribute is <em class="parameter"><code>dc</code></em>, then the name of an entry could be <code class="command">dc=example</code>; if it is <em class="parameter"><code>ou</code></em>, the name could be <code class="command">ou=People</code>; or if it is <em class="parameter"><code>cn</code></em>, the name could be <code class="command">cn=John Smith</code>.
+						</p></li><li><p>
+							Select attributes which will be available to the entries. By default, only the required attributes for the previously-selected object classes are listed. To add more attributes, click the <span><strong class="guibutton">Add</strong></span> button. In the window, select the object class and then attributes from its list.<sup>[<a id="rootdse-attribute" href="#ftn.rootdse-attribute">1</a>]</sup>
+						</p></li><li><p>
+							Optionally, double-click an attribute, and set rules for the possible attribute values. These are mappings which define the values of the virtual directory entry attributes.
+						</p><div class="itemizedlist"><ul><li><p>
+									<span class="emphasis"><em>text</em></span> is an exact string of what the attribute value should be.
+								</p></li><li><p>
+									<span class="emphasis"><em>binary</em></span> means that the attribute values are binary, such as for the <em class="parameter"><code>jpegPhoto</code></em>, <em class="parameter"><code>objectGID</code></em>, or <em class="parameter"><code>userCertificate</code></em> attributes. When <code class="command">binary</code> is selected, no value needs to be supplied.
+								</p></li><li><p>
+									<span class="emphasis"><em>variable</em></span> means to use whatever value is in a given attribute in a specific data source. For example, for the <em class="parameter"><code>cn</code></em> attribute, use the <em class="parameter"><code>cn</code></em> attribute from the LDAP1 source, <code class="command">LDAP1.cn</code>.
+								</p></li><li><p>
+									<span class="emphasis"><em>expression</em></span> is a BeanShell script which transforms the attribute value in some way, such as generating it from other attribute values.
+								</p></li></ul></div></li><li><p>
+							Click <span><strong class="guibutton">Finish</strong></span> at the bottom of the RDN window to save the new root entry.
+						</p></li></ol></div><a id="d0e5208" class="indexterm"/><a id="d0e5213" class="indexterm"/><div class="note"><h2>NOTE</h2><p>
+						Choosing the object classes and primary keys can automatically create subtrees beneath the root DN. For example:
+					</p><div class="orderedlist"><ol><li><p>
+								When setting up the root DN, an admin selects the <code class="command">dcObject</code> object class (for the base DN entry) and also the <code class="command">organizationalUnit</code> and <code class="command">inetorgperson</code> object classes.
+							</p></li><li><p>
+								Along with selecting the <em class="parameter"><code>dc</code></em> attribute as a naming attribute, the admin selects the <em class="parameter"><code>ou</code></em> attribute and <em class="parameter"><code>cn</code></em> attribute.
+							</p></li><li><p>
+								The base DN is created. Penrose Virtual Directory also creates a static <code class="command">ou=people</code> subtree entry and a dynamic <code class="command">cn=...</code> entry.
+							</p></li></ol></div></div><p>
+					When the entry is created, the base DN entry is not configured with any sources. To configure sources, see <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#editing-virt-source" title="8.2.2.2. Editing the Directory Sources">Section 8.2.2.2, “Editing the Directory Sources”</a>.
+				</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="configuration-directory-studio-static">8.2.1.2. Adding a Static Directory Entry</h4></div></div></div><a id="d0e5264" class="indexterm"/><a id="d0e5269" class="indexterm"/><a id="d0e5274" class="indexterm"/><p>
+					A static entry is for a clearly-defined subtree with constant values, such as <code class="command">ou=People</code>.
+				</p><div class="orderedlist"><ol><li><p>
+							In Penrose Studio, open the server entry, then expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+						</p></li><li><p>
+							Open the <span><strong class="guilabel">Directory</strong></span> folder.
+						</p></li><li><p>
+							Right-click the virtual directory entry under which to create the static subtree, and select the <span><strong class="guimenuitem">New Static Entry...</strong></span> option.
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newstatic1.png"/></div></div><div class="note"><h2>NOTE</h2><p>
+								A static entry can be created under the root entry, under another static subtree, or under a dynamic subtree, depending on the planned virtual directory tree.
+							</p></div></li><li><p>
+							Enter the relative distinguished name (RDN) for the subtree entry (the name which is farthest on the left) and the parent DN. For example, if the subtree is named <code class="command">ou=People,dc=example,dc=com</code>, the RDN is <code class="command">ou=People</code> and the parent DN is <code class="command">dc=example,dc=com</code>.
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newstatic2.png"/></div></div><p>
+							Optionally, supply the path name to a class for the static entry. There are five options: 
+							<a id="d0e5328" class="indexterm"/>
+							<a id="d0e5336" class="indexterm"/>
+							<a id="d0e5344" class="indexterm"/>
+							<a id="d0e5352" class="indexterm"/>
+							<a id="d0e5360" class="indexterm"/>
+							<a id="d0e5368" class="indexterm"/>
+							<a id="d0e5376" class="indexterm"/>
+							<a id="d0e5384" class="indexterm"/>
+							<a id="d0e5392" class="indexterm"/>
+							<a id="d0e5400" class="indexterm"/>
+							<a id="d0e5408" class="indexterm"/>
+							<a id="d0e5416" class="indexterm"/>
+						</p><div class="itemizedlist"><ul><li><p>
+									<code class="command">org.safehaus.penrose.directory.Entry</code>, the default class, which generates a directory without referencing an external source.
+								</p></li><li><p>
+									<code class="command">org.safehaus.penrose.directory.Entry.DynamicEntry</code>, which creates and joins entries from different external sources. For LDAP servers, this will also flatten the directory namespaces.
+								</p></li><li><p>
+									<code class="command">org.safehaus.penrose.directory.Entry.ProxyEntry</code>, which preserves the existing structure of an LDAP source, although DNs can be renamed. A proxy entry can only be used with LDAP sources and cannot be used for joining multiple sources.
+								</p></li><li><p>
+									<code class="command">org.safehaus.penrose.directory.Entry.SchemaEntry</code>, which creates a <code class="command">cn=subschema</code> subtree, as in a regular LDAP server.
+								</p></li><li><p>
+									<code class="command">org.safehaus.penrose.directory.Entry.RootEntry</code>, which creates a root DSE, a special entry which contains information related to a server instance.
+								</p></li></ul></div></li><li><p>
+							Enter the object classes to use or to allow for entries in this subtree. Click the object class in the list on the left, then click the <span><strong class="guilabel">&gt;</strong></span> arrows to move the object class to the list on the right.
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newstatic3.png"/></div></div></li><li><p>
+							Check the checkbox by an attribute to set the relative DN (RDN). This is the attribute that appears first in the entry name, also called the <span class="emphasis"><em>naming attribute</em></span>. The selected attributes are <span class="emphasis"><em>primary keys</em></span>, meaning those attributes must be present in the source entry for it to be included in the virtual directory.
+						</p><a id="d0e5477" class="indexterm"/><a id="d0e5482" class="indexterm"/><p>
+							The naming attribute determines what the far left component of the name for an entry is. For example, if the naming attribute is <em class="parameter"><code>dc</code></em>, then the name of an entry could be <code class="command">dc=example</code>; if it is <em class="parameter"><code>ou</code></em>, the name could be <code class="command">ou=People</code>; or if it is <em class="parameter"><code>cn</code></em>, the name could be <code class="command">cn=John Smith</code>.
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newstatic4.png"/></div></div></li><li><p>
+							Select attributes which will be available to the entries. By default, only the required attributes for the previously-selected object classes are listed. To add more attributes, click the <span><strong class="guibutton">Add</strong></span> button. In the window, select the object class and then attributes from its list.<sup>[<a href="#ftn.rootdse-attribute">1</a>]</sup>
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newdynamic62.png"/></div></div></li><li><p>
+							Optionally, double-click an attribute, and set rules for the possible attribute values. These are mappings which define the values of the virtual directory entry attributes.
+						</p><p>
+							The attribute value can be any of the following:
+						</p><div class="itemizedlist"><ul><li><p>
+									<span class="emphasis"><em>text</em></span>, an exact string of what the attribute value should be.
+								</p></li><li><p>
+									<span class="emphasis"><em>binary</em></span> means that the attribute values are binary, such as for the <em class="parameter"><code>jpegPhoto</code></em>, <em class="parameter"><code>objectGID</code></em>, or <em class="parameter"><code>userCertificate</code></em> attributes. When <code class="command">binary</code> is selected, no value needs to be supplied.
+								</p></li><li><p>
+									<span class="emphasis"><em>variable</em></span>, using whatever value is in a given attribute in a specific data source. For example, for the <em class="parameter"><code>cn</code></em> attribute, use the <em class="parameter"><code>cn</code></em> attribute from the LDAP1 source, <code class="command">LDAP1.cn</code>.
+								</p></li><li><p>
+									<span class="emphasis"><em>expression</em></span>, a BeanShell script which transforms the attribute value in some way, such as generating it from other attribute values.
+								</p></li></ul></div></li><li><p>
+							Click the <span><strong class="guibutton">Finish</strong></span> button at the bottom of the RDN window to save the new static subtree.
+						</p></li></ol></div><p>
+					When the entry is created, the static entry is not configured with any sources. To configure sources, see <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#editing-virt-source" title="8.2.2.2. Editing the Directory Sources">Section 8.2.2.2, “Editing the Directory Sources”</a>.
+				</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="configuration-directory-studio-dynamic">8.2.1.3. Adding a Dynamic Directory Entry</h4></div></div></div><a id="d0e5587" class="indexterm"/><a id="d0e5592" class="indexterm"/><a id="d0e5597" class="indexterm"/><p>
+					A dynamic DN is used for RDNs which are constantly changing or which are numerous, such as user entries. The RDNs which are contained in a dynamic subtree are determined by the actual data being processed.
+				</p><div class="orderedlist"><ol><li><p>
+							In Penrose Studio, open the server entry, then expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+						</p></li><li><p>
+							Open the <span><strong class="guilabel">Directory</strong></span> folder.
+						</p></li><li><p>
+							Right-click the directory entry under which to create the dynamic entry, and select the <span><strong class="guimenuitem">New Dynamic Entry...</strong></span> option.
+						</p><p>
+							A dynamic entry can be created under the root entry, under a static subtree, or under another dynamic subtree, depending on the planned virtual directory tree. More probably, this will go under a static entry, such as putting both directory and database user entries under a single <code class="command">ou=People</code> subtree.
+						</p><a id="d0e5628" class="indexterm"/><div class="note"><h2>NOTE</h2><p>
+								Alternatively, select <span><strong class="guimenuitem">New Dynamic Entry from Source...</strong></span>. This automatically creates a subtree based on the configuration of the selected source, such as using the configured object classes and using the source's primary key for the RDN, and skips source configuration steps.
+							</p></div><div class="informalfigure"><div class="mediaobject"><img src="images/newdynamic1.png"/></div></div></li><li><p>
+							Click the <span><strong class="guibutton">Add</strong></span> to add data sources for the virtual tree; there can be more than one source for the tree.
+						</p><div class="orderedlist"><ol><li><p>
+									Select the source to use from the list in the <span><strong class="guilabel">Sources</strong></span> tab.
+								</p><div class="informalfigure"><div class="mediaobject"><img src="images/newdynamic2.png"/></div></div></li><li><p>
+									Click the <span><strong class="guilabel">Properties</strong></span> tab, and select the required way to handle the source for the different operations performed against the virtual directory, such as bind, search, and modify.
+								</p><div class="informalfigure"><div class="mediaobject"><img src="images/newdynamic3.png"/></div></div><p>
+									The properties for a bind operation can be any of the following:
+								</p><div class="itemizedlist"><ul><li><p>
+											<span class="emphasis"><em>required</em></span>, which means that the users must bind against this source to connect to the virtual directory.
+										</p></li><li><p>
+											<span class="emphasis"><em>sufficient</em></span>, which means that the user can be authenticated against any of the allowed (<code class="command">sufficient</code>) sources.
+										</p></li><li><p>
+											<span class="emphasis"><em>ignore</em></span>, which means that Penrose Virtual Directory will not use that source for authentication.
+										</p></li></ul></div><p>
+									All other LDAP operations have the following options:
+								</p><div class="itemizedlist"><ul><li><p>
+											<span class="emphasis"><em>required</em></span>, which means that the source must have the identity present for the entry to exist in the virtual directory. This is the default.
+										</p></li><li><p>
+											<span class="emphasis"><em>optional</em></span>, which means that Penrose Virtual Directory will create a virtual entry out of all available sources, even if the specific source does not have the identity.
+										</p></li><li><p>
+											<span class="emphasis"><em>ignored</em></span>, which means that Penrose Virtual Directory will not used this source to perform that specific operation.
+										</p></li></ul></div></li></ol></div></li><li><p>
+							If there is more than one data source selected for the directory, map the relationships between the different source entry attributes. For example, link the <em class="parameter"><code>cn</code></em> attribute in a Red Hat Directory Server source to the <em class="parameter"><code>name</code></em> attribute in a Microsoft Active Directory source. 
+							<a id="d0e5726" class="indexterm"/>
+							<a id="d0e5732" class="indexterm"/>
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newdynamic4.png"/></div></div></li><li><p>
+							Select the object classes for the entries in the virtual directory subtree on the left, then click the <span><strong class="guilabel">&gt;</strong></span> arrows to move the object class to the list on the right. These object classes are used to define the entries displayed in the virtual directory, which also defines what attributes are allowed and required for the entries and how they are named.
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newdynamic5.png"/></div></div></li><li><p>
+							Check the checkbox by an attribute to set the relative DN (RDN). This is the attribute that appears first in the entry name, also called the <span class="emphasis"><em>naming attribute</em></span>. The selected attributes are <span class="emphasis"><em>primary keys</em></span>, meaning those attributes must be present in the source entry for it to be included in the virtual directory.
+						</p><a id="d0e5761" class="indexterm"/><a id="d0e5766" class="indexterm"/><div class="informalfigure"><div class="mediaobject"><img src="images/newdynamic61.png"/></div></div><p>
+							The naming attribute determines what entry attribute is when entries are displayed in the tree. For example, if the naming attribute is <em class="parameter"><code>dc</code></em>, then the name of an entry could be <code class="command">dc=example</code>; if it is <em class="parameter"><code>ou</code></em>, the name could be <code class="command">ou=People</code>; or if it is <em class="parameter"><code>cn</code></em>, the name could be <code class="command">cn=John Smith</code>.
+						</p></li><li><p>
+							Select attributes which will be available to the entries. By default, only the required attributes for the previously-selected object classes are listed. To add more attributes, click the <span><strong class="guibutton">Add</strong></span> button. In the window, select the object class and then attributes from its list.<sup>[<a href="#ftn.rootdse-attribute">1</a>]</sup>
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newdynamic62.png"/></div></div></li><li><p>
+							Optionally, double-click an attribute, and set rules for the possible attribute values. These are mappings which define the values of the virtual directory entry attributes.
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/newdynamic6.png"/></div></div><div class="itemizedlist"><ul><li><p>
+									<span class="emphasis"><em>text</em></span> is an exact string of what the attribute value should be.
+								</p></li><li><p>
+									<span class="emphasis"><em>binary</em></span> means that the attribute values are binary, such as for the <em class="parameter"><code>jpegPhoto</code></em>, <em class="parameter"><code>objectGID</code></em>, or <em class="parameter"><code>userCertificate</code></em> attributes. When <code class="command">binary</code> is selected, no value needs to be supplied.
+								</p></li><li><p>
+									<span class="emphasis"><em>variable</em></span> means to use whatever value is in a given attribute in a specific data source. For example, for the <em class="parameter"><code>cn</code></em> attribute, use the <em class="parameter"><code>cn</code></em> attribute from the LDAP1 source, <code class="command">LDAP1.cn</code>.
+								</p></li><li><p>
+									<span class="emphasis"><em>expression</em></span> is a BeanShell script which transforms the attribute value in some way, such as generating it from other attribute values.
+								</p></li></ul></div></li><li><p>
+							Click the <span><strong class="guibutton">Finish</strong></span> button at the bottom of the attributes window to save the new dynamic entry.
+						</p></li></ol></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="configuration-directory-editing-studio">8.2.2. Editing the Virtual Directory in Penrose Studio</h3></div></div></div><p>
+				Editing a virtual directory's base DN or a static or dynamic subtree can edit the sources and attributes properties that the entry was created with.
+			</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="editing-virt-ldap">8.2.2.1. Editing the Directory Configuration</h4></div></div></div><a id="d0e5874" class="indexterm"/><div class="orderedlist"><ol><li><p>
+							In Penrose Studio, open the server entry, then expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+						</p></li><li><p>
+							Open the <span><strong class="guilabel">Directory</strong></span> folder.
+						</p></li><li><p>
+							Double-click the directory entry to edit.
+						</p></li><li><p>
+							Edit the virtual directory configuration in the <span><strong class="guilabel">LDAP</strong></span> tab.
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/edit-virtdir-ldap.png"/></div></div><p>
+							The virtual tree can be edited in several ways:
+						</p><div class="itemizedlist"><ul><li><p>
+									Changing the parent DN or the class associated with the entry.
+								</p></li><li><p>
+									Changing the object classes assigned to the entry.
+								</p></li><li><p>
+									Adding or removing attributes, creating mappings to sources, and setting naming attributes
+								</p></li></ul></div></li><li><p>
+							Close the window and save the changes when prompted.
+						</p></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="editing-virt-source">8.2.2.2. Editing the Directory Sources</h4></div></div></div><a id="d0e5923" class="indexterm"/><div class="note"><h2>NOTE</h2><p>
+						Dynamic entries automatically have sources configured for them, but base DN and static entries do not, so sources need to be added by editing the entry.
+					</p></div><div class="orderedlist"><ol><li><p>
+							In Penrose Studio, open the server entry, then expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+						</p></li><li><p>
+							Open the <span><strong class="guilabel">Directory</strong></span> folder.
+						</p></li><li><p>
+							Double-click the directory entry to edit.
+						</p><p>
+							Alternatively, right-click the subtree entry and select <span><strong class="guimenuitem">Edit Sources</strong></span>.
+						</p></li><li><p>
+							Click the <span><strong class="guilabel">Sources</strong></span> tab.
+						</p></li><li><p>
+							Add new sources or edit existing sources.
+						</p><div class="informalfigure"><div class="mediaobject"><img src="images/edit-virtdir-sources.png"/></div></div><p>
+							Additional fields or mappings can be added or edited to the sources, as in <a href="Mapping.html#configuring-basic-mapping" title="9.3. Configuring Basic Mapping">Section 9.3, “Configuring Basic Mapping”</a>, and new sources can be created, as described in <a href="chap-Admin_Guide-Configuring_sources.html#source-studio" title="7.2. Configuring Sources in Penrose Studio">Section 7.2, “Configuring Sources in Penrose Studio”</a>.
+						</p></li><li><p>
+							Close the window and save the changes when prompted.
+						</p></li></ol></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="configuration-directory-cmd">8.2.3. Configuring the Virtual Directory Manually</h3></div></div></div><a id="d0e5979" class="indexterm"/><a id="d0e5986" class="indexterm"/><p>
+				There is a single directory file. Each root DN or subtree within the partition is added as an entry in this file. This is <code class="filename">directory.xml</code>, which is located in <code class="filename">/opt/vd-server-2.0/conf</code> for the default partition and in <code class="filename">/opt/vd-server-2.0/partitions/</code><span class="emphasis"><em>partition_name</em></span><code class="filename">/DIR-INF</code> for additional partitions. This file is illustrated in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#ex.annotated-directory.xml" title="Example 8.1. Annotated directory.xml File">Example 8.1, “Annotated directory.xml File”</a>.
+			</p><a id="d0e6008" class="indexterm"/><div class="example" id="ex.annotated-directory.xml"><div class="example-contents"><pre class="screen"> &lt;directory&gt;  <em class="lineannotation"><span class="lineannotation">main file tag</span></em> 
+  &lt;entry dn="..."&gt;  <em class="lineannotation"><span class="lineannotation">the subtree dn</span></em> 
+    &lt;oc&gt;...&lt;/oc&gt;  <em class="lineannotation"><span class="lineannotation">an object class for the subtree entry</span></em> 
+    &lt;at name="..." rdn="..."&gt;  <em class="lineannotation"><span class="lineannotation">an attribute with the subtree entry</span></em>        
+        &lt;<em class="replaceable"><code>mapping_type</code></em>&gt;...&lt;<em class="replaceable"><code>/mapping_type</code></em>&gt;  <em class="lineannotation"><span class="lineannotation">the mapping for the attribute</span></em>       
+    &lt;/at&gt;
+ 
+    &lt;aci&gt;   <em class="lineannotation"><span class="lineannotation">an access control instruction for the subtree</span></em> 
+      &lt;permission&gt;...&lt;/permission&gt;
+    &lt;/aci&gt;
+ 
+    &lt;source&gt;  <em class="lineannotation"><span class="lineannotation">a source entry to use with the subtree</span></em>    
+      &lt;source-name&gt;...&lt;/source-name&gt;  <em class="lineannotation"><span class="lineannotation">the source name, as it is in the Penrose Virtual Directory source entry</span></em>     
+      &lt;field name="..."&gt;  <em class="lineannotation"><span class="lineannotation">a reverse mapping entry for the source attribute</span></em>     
+        &lt;<em class="replaceable"><code>mapping_type</code></em>&gt;...&lt;<em class="replaceable"><code>/mapping_type</code></em>&gt;  <em class="lineannotation"><span class="lineannotation">the mapping for the attribute</span></em>   
+      &lt;/field&gt;  
+    &lt;/source&gt;
+  &lt;/entry&gt;
+ &lt;/directory&gt;</pre></div><h6>Example 8.1. Annotated directory.xml File</h6></div><br class="example-break"/><p>
+				Not every parameter in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#ex.annotated-directory.xml" title="Example 8.1. Annotated directory.xml File">Example 8.1, “Annotated directory.xml File”</a> is required simply to create the entry. For example, mapping attributes requires the <code class="command">&lt;field&gt;</code> parameter, but the entry can exist without the mapping. Likewise, a dynamic subtree requires a <code class="command">&lt;source&gt;</code> definition, but a static one does not.
+			</p><p>
+				To create a subtree, add a new entry to the <code class="filename">directory.xml</code> file. To edit a subtree, add, remove, or edit parameters within the entry. <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#ex.directory.xml-example" title="Example 8.2. Example directory.xml File">Example 8.2, “Example directory.xml File”</a> shows three different subtree entries for a base DN, static subtree, and dynamic subtree.
+			</p><div class="important"><h2>IMPORTANT</h2><p>
+					Always restart Penrose Server after editing the configuration file. For example:
+				</p><pre class="screen">service vd-server restart</pre></div><div class="example" id="ex.directory.xml-example"><div class="example-contents"><pre class="screen"> &lt;directory&gt;
+ <strong class="userinput"><code>base DN entry</code></strong> 
+   &lt;entry dn="dc=example,dc=com"&gt;
+     &lt;oc&gt;dcObject&lt;/oc&gt;
+     &lt;oc&gt;groupOfUniqueNames&lt;/oc&gt;
+     &lt;oc&gt;inetOrgPerson&lt;/oc&gt;
+     &lt;oc&gt;organizationalPerson&lt;/oc&gt;
+     &lt;oc&gt;organizationalUnit&lt;/oc&gt;
+     &lt;oc&gt;person&lt;/oc&gt;
+     &lt;oc&gt;top&lt;/oc&gt;
+     &lt;at name="dc" rdn="true"&gt;
+       &lt;constant&gt;example&lt;/constant&gt;
+     &lt;/at&gt;
+     &lt;aci&gt;
+       &lt;permission&gt;rs&lt;/permission&gt;
+     &lt;/aci&gt;
+   &lt;/entry&gt;
+
+ <strong class="userinput"><code>static subtree entry</code></strong> 
+   &lt;entry dn="ou=people,dc=example,dc=com"&gt;
+     &lt;oc&gt;organizationalUnit&lt;/oc&gt;
+     &lt;oc&gt;top&lt;/oc&gt;
+     &lt;at name="ou" rdn="true"&gt;
+       &lt;variable&gt;LDAP1.ou&lt;/variable&gt;
+       &lt;expression var="person"&gt;<em class="replaceable"><code>source_name</code></em>.<em class="replaceable"><code>attribute</code></em>&lt;/expression&gt;
+     &lt;/at&gt;
+   &lt;/entry&gt;
+
+ <strong class="userinput"><code>dynamic subtree entry</code></strong> 
+   &lt;entry dn="cn=...,ou=people,dc=example,dc=com"&gt;
+     &lt;oc&gt;inetOrgPerson&lt;/oc&gt;
+     &lt;oc&gt;organizationalPerson&lt;/oc&gt;
+     &lt;oc&gt;person&lt;/oc&gt;
+     &lt;oc&gt;top&lt;/oc&gt;
+     &lt;at name="cn" rdn="true"&gt;
+       &lt;expression var="person"&gt;cn=*&lt;/expression&gt;
+     &lt;/at&gt;
+     &lt;source alias="LDAP1" search="required" bind="required" add="required" delete="required" modify="required" modrdn="required"&gt;
+       &lt;source-name&gt;LDAP1&lt;/source-name&gt;
+       &lt;field name="ou"&gt;
+         &lt;constant&gt;example&lt;/constant&gt;
+       &lt;/field&gt;
+     &lt;/source&gt;
+   &lt;/entry&gt;
+
+ &lt;/directory&gt;</pre></div><h6>Example 8.2. Example directory.xml File</h6></div><br class="example-break"/><p>
+				The parameters available for any kind of Penrose Virtual Directory subtree entry are listed in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#tab.subtree-parameters" title="Table 8.1. Parameters for Subtree Entries">Table 8.1, “Parameters for Subtree Entries”</a>.
+			</p><a id="d0e6108" class="indexterm"/><p>
+				A base DN entry must contain enough information to define the DN, required object classes and attributes for the virtual directory tree, and the ACIs for the entry:
+			</p><div class="itemizedlist"><ul><li><p>
+						An <code class="command">&lt;entry&gt;</code> tag with the <code class="option">dn="..."</code> argument
+					</p></li><li><p>
+						An <code class="command">&lt;oc&gt;</code> tag
+					</p></li><li><p>
+						An <code class="command">&lt;at&gt;</code> tag with the <code class="option">name="..."</code> argument and some kind of mapping sub-tag, identified as <span class="emphasis"><em>&lt;mapping_type&gt;</em></span> in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#ex.directory.xml-example" title="Example 8.2. Example directory.xml File">Example 8.2, “Example directory.xml File”</a>
+					</p></li><li><p>
+						An <code class="command">&lt;aci&gt;</code> tag with a <code class="command">&lt;permission&gt;</code> sub-tag to define directory access (more specific access control is possible, as described in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-editing-acls-cmd" title="8.6.4. Setting Access Controls Manually">Section 8.6.4, “Setting Access Controls Manually”</a>)
+					</p></li></ul></div><p>
+				A static entry has similar definition requirements as the base DN, only it does not have an ACI by default:
+			</p><a id="d0e6158" class="indexterm"/><div class="itemizedlist"><ul><li><p>
+						An <code class="command">&lt;entry&gt;</code> tag with the <code class="option">dn="..."</code> argument
+					</p></li><li><p>
+						An <code class="command">&lt;oc&gt;</code> tag
+					</p></li><li><p>
+						An <code class="command">&lt;at&gt;</code> tag with the <code class="option">name="..."</code> argument
+					</p></li></ul></div><a id="d0e6188" class="indexterm"/><p>
+				A dynamic entry has the most complex definition by default, allowing additional information about the source mapping:
+			</p><div class="itemizedlist"><ul><li><p>
+						An <code class="command">&lt;entry&gt;</code> tag with the <code class="option">dn="..."</code> argument
+					</p></li><li><p>
+						An <code class="command">&lt;oc&gt;</code> tag
+					</p></li><li><p>
+						An <code class="command">&lt;at&gt;</code> tag with the <code class="option">name="..."</code> argument
+					</p></li><li><p>
+						A <code class="command">&lt;source&gt;</code> entry with an optional <code class="option">alias="..."</code> argument to give a nickname to the source and with optional tags for different LDAP operations.
+					</p></li><li><p>
+						<code class="command">&lt;source-name&gt;</code> subtag which identifies an existing Penrose Server source
+					</p></li><li><p>
+						<code class="command">&lt;field&gt;</code> subtags which define reverse mappings for the source attributes, and &lt;<span class="emphasis"><em>mapping_type</em></span>&gt; tags defining the type of linking
+					</p></li></ul></div><a id="d0e6244" class="indexterm"/><div class="table" id="tab.subtree-parameters"><div class="table-contents"><table summary="Parameters for Subtree Entries" border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+								Tag or Parameter
+							</th><th>
+								Description
+							</th><th>
+								Example
+							</th></tr></thead><tbody><tr><td>
+								&lt;entry&gt;
+							</td><td>
+								Opens and closes the entire subtree entry. There is one parameter for the <code class="command">&lt;entry&gt;</code> tag, <em class="parameter"><code>dn</code></em>.
+							</td><td>
+							</td></tr><tr><td>
+								dn="..."
+							</td><td>
+								Gives the full distinguished name for the entry. For the base DN, this must be explicitly defined.
+							</td><td>
+<pre class="screen">dn="dc=example,dc=com"</pre>
+							</td></tr><tr><td>
+								fetch="true|false"
+							</td><td>
+								Retrieves the entry from the sources before running any operations on the entry, such as <code class="command">modify</code> or <code class="command">add</code>. This can slow down operations.
+							</td><td>
+<pre class="screen">&lt;entry dn="dc=example,dc=com" <strong class="userinput"><code>fetch="true"</code></strong>&gt;</pre>
+							</td></tr><tr><td>
+								&lt;oc&gt;
+							</td><td>
+								Contains an object class defined for the base DN. There can be more than one <code class="command">&lt;oc&gt;</code>, for each object class and superior object class defined for the entry.
+							</td><td>
+<pre class="screen">&lt;oc&gt;dcObject&lt;/oc&gt;
+&lt;oc&gt;top&lt;/oc&gt;</pre>
+							</td></tr><tr><td>
+								&lt;at&gt;
+							</td><td>
+								Contains an attribute defined for the base DN. There can be more than one <code class="command">&lt;at&gt;</code> line. An <code class="command">&lt;at&gt;</code> tag can have two arguments, <code class="option">name=</code> and <code class="option">rdn=</code>. <code class="command">&lt;at&gt;</code> also contains a sub-tag which defines the mapping type for the virtual attribute to the source attribute: constant, variable, or expression.
+							</td><td>
+<pre class="screen">&lt;at name="dc" rdn="true"&gt;
+&lt;constant&gt;example&lt;/constant&gt;
+&lt;/at&gt;</pre>
+							</td></tr><tr><td>
+								name="<span class="emphasis"><em>attribute</em></span>"
+							</td><td>
+								Contains the LDAP attribute which is allowed for the entry.
+							</td><td>
+<pre class="screen">&lt;at <strong class="userinput"><code>name="cn"</code></strong> rdn="true"&gt;</pre>
+							</td></tr><tr><td>
+								rdn="true|false"
+							</td><td>
+								Identifies a naming attribute or <span class="emphasis"><em>primary key</em></span>. If this argument is missing, the default value is false.
+							</td><td>
+<pre class="screen">&lt;at name="cn" <strong class="userinput"><code>rdn="true"</code></strong>&gt;</pre>
+							</td></tr><tr><td>
+								&lt;<span class="emphasis"><em>mapping_type</em></span>&gt;
+							</td><td>
+								These are any of three sub-tags which are used with a <code class="command">&lt;at&gt;</code> or <code class="command">&lt;field&gt;</code> tag to define the method of mapping attributes. There are three options: 
+								<div class="itemizedlist"><ul><li><p>
+											&lt;constant&gt; (specific text value)
+										</p></li><li><p>
+											&lt;variable&gt; (link to the source and attribute in the format <span class="emphasis"><em>source_name</em></span>.<span class="emphasis"><em>attribute</em></span>)
+										</p></li><li><p>
+											&lt;expression&gt; (BeanShell script to generate or extract the value)
+										</p></li></ul></div>
+							</td><td>
+<pre class="screen">&lt;variable&gt;LDAP1.cn&lt;/variable&gt;</pre>
+							</td></tr><tr><td>
+								&lt;aci&gt;
+							</td><td>
+								Defines the access control instructions to the virtual directory subtree. By default, this contains a <code class="command">&lt;permission&gt;</code> sub-tag, but the ACI can also define a target DN, target attributes, the scope, and whether to grant or deny access. This is explained more in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#configuration-directory-editing-acls-cmd" title="8.6.4. Setting Access Controls Manually">Section 8.6.4, “Setting Access Controls Manually”</a>.
+							</td><td>
+<pre class="screen">&lt;aci&gt;
+&lt;permission&gt;rs&lt;/permission&gt;
+&lt;/aci&gt;</pre>
+							</td></tr><tr><td>
+								&lt;source&gt;
+							</td><td>
+								Contains the source entry definition for the directory.
+							</td><td>
+							</td></tr><tr><td>
+								<span class="emphasis"><em>ldap_operation</em></span>="..."
+							</td><td>
+								Optional argument for the <code class="command">&lt;source&gt;</code> tag which indicates what authentication to require to connect to the source for different LDAP operations. The properties for a bind operation can be any of the following: 
+								<div class="itemizedlist"><ul><li><p>
+											<span class="emphasis"><em>required</em></span>, which means that the users must bind against this source to connect to the virtual directory.
+										</p></li><li><p>
+											<span class="emphasis"><em>sufficient</em></span>, which means that the user can be authenticated against any of the allowed (<code class="command">sufficient</code>) sources.
+										</p></li><li><p>
+											<span class="emphasis"><em>ignore</em></span>, which means that Penrose Virtual Directory will not use that source for authentication.
+										</p></li></ul></div>
+								 All other LDAP operations have the following options: 
+								<div class="itemizedlist"><ul><li><p>
+											<span class="emphasis"><em>required</em></span>, which means that the source must have the identity present for the entry to exist in the virtual directory. This is the default.
+										</p></li><li><p>
+											<span class="emphasis"><em>optional</em></span>, which means that Penrose Virtual Directory will create a virtual entry out of all available sources, even if the specific source does not have the identity.
+										</p></li><li><p>
+											<span class="emphasis"><em>ignored</em></span>, which means that Penrose Virtual Directory will not used this source to perform that specific operation.
+										</p></li></ul></div>
+							</td><td>
+<pre class="screen">&lt;source <strong class="userinput"><code>bind="required"</code></strong></pre>
+							</td></tr><tr><td>
+								alias="..."
+							</td><td>
+								Optional argument for the <code class="command">&lt;source&gt;</code> tag which contains a nickname for the source.
+							</td><td>
+<pre class="screen">&lt;source <strong class="userinput"><code>alias="DBnickname"</code></strong>&gt;</pre>
+							</td></tr><tr><td>
+								&lt;source-name&gt;
+							</td><td>
+								Contains the name of the source. This source must already be configured; for instructions, see <a href="chap-Admin_Guide-Configuring_sources.html" title="Chapter 7. Configuring Data Sources">Chapter 7, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring Data Sources</i></a>.
+							</td><td>
+<pre class="screen">&lt;source-name&gt;LDAP1&lt;/source-name&gt;</pre>
+							</td></tr><tr><td>
+								&lt;field&gt;
+							</td><td>
+								Defines a reverse mapping from a source attribute to a virtual entry attribute. Like the <code class="command">&lt;at&gt;</code> mapping, this has a <code class="option">name&gt;</code> parameter to identify the virtual entry's LDAP attribute and a sub-tag which defines the mapping from the source attribute to the virtual attribute: constant, variable, or expression.
+							</td><td>
+<pre class="screen">&lt;field&gt;
+&lt;variable&gt;cn&lt;/variable&gt;
+&lt;/field&gt;</pre>
+							</td></tr></tbody></table></div><h6>Table 8.1. Parameters for Subtree Entries</h6></div><br class="table-break"/></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-special-dit-entries">8.3. Creating Special Directory Entries</h2></div></div></div><a id="d0e6543" class="indexterm"/><a id="d0e6548" class="indexterm"/><a id="d0e6553" class="indexterm"/><a id="d0e6556" class="indexterm"/><p>
+			In some virtual directory configurations or for identity federation, it can be necessary to have operational entries defined for the directory, such as a root DSE or <code class="command">cn=subschema</code>.
+		</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="sect-Admin_Guide-ldap-snapshot">8.4. Duplicating Existing LDAP Servers</h2></div></div></div><p>
+			Penrose Virtual Directory provides several ways to duplicate, exactly, an existing LDAP directory source. This can be an effective way to proxy LDAP services or to mimic an existing LDAP structure in the virtual directory hierarchy.
+		</p><div class="informalfigure"><div class="mediaobject"><img src="images/directory1.png"/></div></div><p>
+			Penrose Server can duplicate an existing directory's subtree or entire DIT. It is also possible to duplicate other definitions for the directory, such as its root directory entry (which identifies the instance) and its schema. Duplicating these special configuration entries makes the Penrose Virtual Directory appear to clients as the existing LDAP source.
+		</p><p>
+			Because these mappings duplicate the <span class="emphasis"><em>configuration</em></span> of the source directory, they differ from other partitions or subtrees which connect with the user databases of the LDAP server. In this case, the mapping copies the configuration database, such as <code class="command">o=NetscapeRoot</code> in Red Hat Directory Server, as the base DN.
+		</p><div class="informalfigure"><div class="mediaobject"><img src="images/snapshot-connection.png"/></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="map-ldap-tree">8.4.1. Mapping an LDAP Tree</h3></div></div></div><a id="d0e6590" class="indexterm"/><a id="d0e6595" class="indexterm"/><p>
+				Mapping an LDAP tree copies the subtree or entire directory in the existing LDAP source and duplicates it in the virtua directory.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="map-root-dse">8.4.2. Mapping the Root DSE</h3></div></div></div><a id="d0e6603" class="indexterm"/><a id="d0e6608" class="indexterm"/><p>
+				The <span class="emphasis"><em>root DSE</em></span> is a special entry which defines the directory server instance, hence the name <span class="emphasis"><em>directory server entry</em></span>. This special entry defines the supported types of LDAP protocols, supported password and authentication schemes, the vendor name and version number, and other features of the instance. Duplicating the root DSE of an existing server means that LDAP clients will treat Penrose Virtual Directory as if they were talking to the original LDAP source directly. This is one way of using Penrose Virtual Directory as a proxy for the other server.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="map-ad-schema">8.4.3. Mapping Active Directory Schema</h3></div></div></div><a id="d0e6622" class="indexterm"/><a id="d0e6627" class="indexterm"/><a id="d0e6632" class="indexterm"/><p>
+				By default, Penrose Virtual Directory's schema configuration is based on OpenDS. It is possible to reconfigure the schema configuration, stored in the <code class="command">cn=subschema</code> entry, to match Active Directory's <code class="command">cn=subschema</code> configuration.
+			</p></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="Proxy">8.5. Using Proxy Services</h2></div></div></div><p>
+			Penrose Virtual Directory can function as a proxy for an LDAP server. In this configuration, Penrose Virtual Directory flattens the namespaces between sources, but all operations are still transmitted to and carried out on the original source directly.
+		</p><p>
+			This chapter explains how to configure proxy entries, different proxy configurations, and authentication methods for users connecting to Penrose Virtual Directory as an LDAP proxy.
+		</p><a id="d0e6652" class="indexterm"/><a id="d0e6657" class="indexterm"/><div class="note"><h2>NOTE</h2><p>
+				Penrose Virtual Directory can be used as a proxy to a database or LDAP server. By setting the cache expiration to 0, no data will be cached by Penrose Virtual Directory, so all requests from the clients will be forwarded directly to the data sources.
+			</p></div><p>
+			Penrose Virtual Directory can be configured to work as a proxy to another LDAP server, allowing Penrose Virtual Directory to control the access to the LDAP server. There are two primary configurations for an LDAP proxy in Penrose Virtual Directory:
+		</p><div class="itemizedlist"><ul><li><p>
+					In a <span class="emphasis"><em>basic proxy</em></span>, only certain parts of the directory are exposed. A mapping is created for the subtree, such as <code class="command">ou=people,dc=example,dc=com</code>, and the operation passes through Penrose Server and is performed on the source, <code class="command">ou=users,dc=source,dc=com</code>. 
+					<a id="d0e6680" class="indexterm"/>
+					<a id="d0e6684" class="indexterm"/>
+				</p></li><li><p>
+					In an <span class="emphasis"><em>aggregated proxy</em></span>, Penrose Virtual Directory serves as a proxy for multiple LDAP servers or sources. In this case, a separate subtree is created for each source, such as <code class="command">ou=people,</code>   <code class="command">ou=source1,</code> <code class="command">dc=example,dc=com</code> and <code class="command">ou=people,</code>   <code class="command">ou=source2,</code> <code class="command">dc=example,dc=com</code>. Searching the base DN, <code class="command">dc=example,dc=com</code>, returns entries from both sources. 
+					<a id="d0e6717" class="indexterm"/>
+					<a id="d0e6721" class="indexterm"/>
+				</p></li></ul></div><a id="d0e6727" class="indexterm"/><a id="d0e6732" class="indexterm"/><p>
+			For any proxy configuration, Penrose Server performs two translations to the data:
+		</p><div class="orderedlist"><ol><li><p>
+					The DN in the LDAP request is translated into the original name space.
+				</p></li><li><p>
+					The DNs of the search results are renamed into the proxy name space.
+				</p></li></ol></div><p>
+			This data translation is an important function of proxy LDAP services in Penrose Server. All operations performed within an organization can use a standardized naming format without having to reconstruct existing servers. A standard namespace also makes it significantly easier and faster to find directory information or perform directory operations.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="sect-Admin_Guide-ldap-proxy">8.5.1. Creating an LDAP Proxy</h3></div></div></div><p>
+				Penrose Virtual Directory can be used as a proxy of an LDAP directory, including any LDAPv3-compliant directory and Active Directory. A proxy is configured through a simple wizard in Penrose Studio.
+			</p><div class="orderedlist"><ol><li><p>
+						In Penrose Studio, open the <span><strong class="guimenu">Partitions</strong></span> in the top menu and select the <span><strong class="guimenuitem">New LDAP Proxy Partition</strong></span> option.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/proxy1.png"/></div></div><p>
+						Alternatively, open the server entry, and then right-click the <span><strong class="guilabel">Partitions</strong></span> folder, and select the <span><strong class="guimenuitem">New LDAP Proxy Partition</strong></span> option.
+					</p></li><li><p>
+						Enter the name for the proxy entry, and select whether to map (mirror) the directory hierarchy and, optionally, schema.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/proxy2.png"/></div></div><p>
+						The root directory server entry (root DSE) is a vital resource for finding information about a directory server instance because the root DSE defines all of the characteristics of the directory itself. For mapping an Active Directory instance, start at the root DSE to identify the available naming context, supported controls, and locations for the domain, schema, and configuration entries.
+					</p><p>
+						The schema mapping is another important consideration when creating a proxy to an Active Directory server. For the proxied virtual namespace, Penrose Server can use Active Directory schema to define entries or can map the Active Directory schema to LDAPv3 standard schema.
+					</p></li><li><p>
+						Click the <span><strong class="guibutton">Add</strong></span> button to add the LDAP server host and port.
+					</p></li><li><p>
+						Enter the connection information for the LDAP directory, including the server and port, log in name and password, and subtree or base DN to map.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/snapshot3.png"/></div></div></li><li><p>
+						Optionally, enter any additional configuration parameters, such as a Java class to extend the Penrose Server operations.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/snapshot4.png"/></div></div></li></ol></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="prox-manualy">8.5.2. Configuring an LDAP Proxy Manually</h3></div></div></div><a id="d0e6809" class="indexterm"/><a id="d0e6814" class="indexterm"/><a id="d0e6821" class="indexterm"/><p>
+				A proxy entry essentially consists of a connection entry, a source entry, and a mapping entry. These entries can be configured manually by editing the appropriate configuration files for the partition.
+			</p><div class="orderedlist"><ol><li><p>
+						Add the connection for the target LDAP server to <code class="filename">connections.xml</code>. Include the required connection information:
+					</p><a id="d0e6835" class="indexterm"/><div class="itemizedlist"><ul><li><p>
+								The URL to the server which is being proxied
+							</p></li><li><p>
+								The username and password to use to bind to the server
+							</p></li></ul></div><p>
+						For example:
+					</p><pre class="screen">&lt;connections&gt;
+
+  &lt;connection name="Proxy"&gt;
+    &lt;adapter-name&gt;LDAP&lt;/adapter-name&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.provider.url&lt;/param-name&gt;
+      &lt;param-value&gt;ldap://ldap.example.com&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.security.principal&lt;/param-name&gt;
+      &lt;param-value&gt;cn=proxy user,dc=example,dc=com&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;java.naming.security.credentials&lt;/param-name&gt;
+      &lt;param-value&gt;password&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/connection&gt;
+
+&lt;/connections&gt;</pre><p>
+						Creating connections is described in <a href="chap-Admin_Guide-Configuring_connections.html" title="Chapter 6. Configuring Connections">Chapter 6, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring Connections</i></a>.
+					</p></li><li><p>
+						Create a source entry for the original subtree in the target server, which will be proxied in a virtual subtree on Penrose Server. Include the original subtree DN and, optionally, the authentication method allowed to that subtree. For example: 
+						<a id="d0e6858" class="indexterm"/>
+					</p><pre class="screen">&lt;sources&gt;
+
+  &lt;source name="users"&gt;
+    &lt;connection-name&gt;Proxy&lt;/connection-name&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;baseDn&lt;/param-name&gt;
+      &lt;param-value&gt;dc=source1,dc=com&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;authentication&lt;/param-name&gt;
+      &lt;param-value&gt;full&lt;/param-value&gt;
+    &lt;/parameter&gt;
+  &lt;/source&gt;
+
+&lt;/sources&gt;</pre><p>
+						Creating sources is described in <a href="chap-Admin_Guide-Configuring_sources.html" title="Chapter 7. Configuring Data Sources">Chapter 7, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring Data Sources</i></a>.
+					</p></li><li><p>
+						For a proxy configuration, simply create a mapping entry in <code class="filename">mapping.xml</code> which points to the source and identifies it as a proxy. The DN specified is the virtual namespace, not the original namespace. For example: 
+						<a id="d0e6876" class="indexterm"/>
+					</p><pre class="screen">&lt;mapping&gt;
+
+  &lt;entry dn="ou=proxy,dc=example,dc=com"&gt;
+    &lt;source name="users"&gt;
+      &lt;source-name&gt;source1&lt;/source-name&gt;
+    &lt;/source&gt;
+    &lt;handler&gt;PROXY&lt;/handler&gt;
+  &lt;/entry&gt;
+
+&lt;/mapping&gt;</pre></li><li><p>
+						Restart Penrose Server.
+					</p><pre class="screen">service vd-server restart</pre><div class="important"><h2>IMPORTANT</h2><p>
+							Always restart Penrose Server after editing the configuration file.
+						</p></div></li></ol></div><a id="d0e6894" class="indexterm"/><div class="note"><h2>TIP</h2><p>
+					A sample proxy configuration is available in <code class="filename">/opt/vd-server-2.0/samples/proxy</code>. To create a new proxy partition quickly, copy the files from <code class="filename">/opt/vd-server-2.0/samples/proxy/partition</code> into a new proxy directory in the <code class="filename">/opt/vd-server-2.0/partitions</code> folder. Update the Penrose Server configuration files:
+				</p><div class="orderedlist"><ol><li><p>
+							Edit the listed connections in proxy partition's <code class="filename">connections.xml</code> file.
+						</p></li><li><p>
+							Edit the server configuration file in <code class="filename">/opt/vd-server-2.0/conf/server.xml</code> to include the new proxy entry.
+						</p><pre class="screen">&lt;server&gt;
+  &lt;partition name="proxy" path="partitions/proxy"/&gt;
+&lt;/server&gt;</pre></li><li><p>
+							Restart Penrose Server, and point the LDAP browser to the new proxy DN.
+						</p></li></ol></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="auth-proxy">8.5.3. Configuring Authentication for Proxies</h3></div></div></div><a id="d0e6934" class="indexterm"/><a id="d0e6939" class="indexterm"/><a id="d0e6944" class="indexterm"/><a id="d0e6949" class="indexterm"/><a id="d0e6954" class="indexterm"/><p>
+				When Penrose Virtual Directory works as a proxy for an LDAP server, all operations for that server pass through Penrose Virtual Directory transparently and are sent to the LDAP directory. That means, in some way, Penrose Virtual Directory interacts with the target LDAP server as one of its users. Authentication between Penrose Virtual Directory and the LDAP server can be handled in three different ways:
+			</p><a id="d0e6959" class="indexterm"/><div class="itemizedlist"><ul><li><p>
+						<span class="emphasis"><em>Simple PTA.</em></span> The simplest method is for a user to bind to the virtual directory as a user in the proxy subtree, and that user and its credentials are used by Penrose Server to bind to the LDAP server. Because The user binding to the virtual directory passes through Penrose Server to bind as the same user on the LDAP directory, this is called <span class="emphasis"><em>pass-through authentication</em></span>.
+					</p><p>
+						Only authentication is performed as the user; any other operation, such as search and modify operations, is performed as the Penrose Virtual Directory user which is configured in the <code class="filename">connections.xml</code> file.
+					</p><p>
+						This is the default.
+					</p></li><li><p>
+						<span class="emphasis"><em>Full PTA.</em></span> Like simple PTA, full PTA uses the bind credentials (username and password) sent to Penrose Virtual Directory to bind to the LDAP server. However, for full PTA, every operation — authentication, as well as searches, modifies, and deletes — is performed using the user's bind credentials.
+					</p></li><li><p>
+						<span class="emphasis"><em>Disabled.</em></span> When authentication is disabled, any attempts for a user to bind to the LDAP server is rejected. Only the Penrose Virtual Directory user configured in the <code class="filename">connections.xml</code> file is allowed to access the LDAP server.
+					</p></li></ul></div><a id="d0e6996" class="indexterm"/><a id="d0e7001" class="indexterm"/><a id="d0e7008" class="indexterm"/><a id="d0e7015" class="indexterm"/><a id="d0e7020" class="indexterm"/><a id="d0e7025" class="indexterm"/><p>
+				To configure authentication for proxy access in Penrose Virtual Directory, add the <em class="parameter"><code>authentication</code></em> parameter with the appropriate value (<code class="option">default</code>, <code class="option">full</code>, or <code class="option">disabled</code>) to the source entry in <code class="filename">sources.xml</code>. For example:
+			</p><pre class="screen">&lt;source name="users"&gt;
+    &lt;connection-name&gt;Proxy&lt;/connection-name&gt;
+    &lt;parameter&gt;
+      &lt;param-name&gt;baseDn&lt;/param-name&gt;
+      &lt;param-value&gt;dc=source1,dc=com&lt;/param-value&gt;
+    &lt;/parameter&gt;
+    <strong class="userinput"><code>&lt;parameter&gt;</code></strong>  
+      <strong class="userinput"><code>&lt;param-name&gt;authentication&lt;/param-name&gt;</code></strong>  
+      <strong class="userinput"><code>&lt;param-value&gt;full&lt;/param-value&gt;</code></strong>  
+    <strong class="userinput"><code>&lt;/parameter&gt;</code></strong>  
+  &lt;/source&gt;</pre><p>
+				Creating sources is described in <a href="chap-Admin_Guide-Configuring_sources.html" title="Chapter 7. Configuring Data Sources">Chapter 7, <i xmlns:xlink="http://www.w3.org/1999/xlink">Configuring Data Sources</i></a>.
+			</p><div class="important"><h2>IMPORTANT</h2><p>
+					Always restart Penrose Server after editing the configuration file. For example:
+				</p><pre class="screen">service vd-server restart</pre></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" id="configuration-directory-editing-acls">8.6. Setting Access Controls on the Virtual Directory</h2></div></div></div><a id="d0e7075" class="indexterm"/><a id="d0e7078" class="indexterm"/><p>
+			Penrose Virtual Directory allows restrictions to be placed on what parts of the virtual directory can be accessed, by whom, and what operations they are allowed to perform. These <span class="emphasis"><em>access control instructions</em></span> are enforced before any transaction is sent to the source, so these ACIs are enforced in addition to whatever ACIs are already set on the source.
+		</p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="aci-inheritance">8.6.1. Placing ACIs and ACI Inheritance</h3></div></div></div><a id="d0e7091" class="indexterm"/><a id="d0e7096" class="indexterm"/><p>
+				Penrose Virtual Directory also support <span class="emphasis"><em>inherited ACIs</em></span>. If an ACI is set on the base DN or a subtree, then the ACI is automatically applied to every entry below that subtree in the virtual directory, unless the scope is limited specifically.
+			</p><p>
+				If an ACI is placed on an entry, it overrides any inherited ACIs which conflict with it, except for deny ACIs. Deny ACIs always supersede allow ACIs.
+			</p><p>
+				Those two ACI behaviors — inheritance and overrides — make organizing and placing ACIs very important. To be effective and manageable, plan out where ACIs should be placed carefully. Make ACIs at high levels in the directory tree as general as possible, and set very specific ACIs to the entry which will be modified.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="aci-default">8.6.2. Default ACIs</h3></div></div></div><a id="d0e7115" class="indexterm"/><a id="d0e7120" class="indexterm"/><p>
+				When a base DN entry is created in Penrose Studio, there is a single ACI set automatically which allows full read and search access to the virtual directory. This is inherited by any subtrees created beneath the base DN. This ACI configuration is shown in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#ex.default-aci" title="Example 8.3. Example Default ACI">Example 8.3, “Example Default ACI”</a>.
+			</p><p>
+				If a base DN entry is simply added to <code class="filename">directory.xml</code>, then no ACI is required. If no ACI is set for a subtree, then the default setting is to restrict all users but the superuser.
+			</p><div class="example" id="ex.default-aci"><div class="example-contents"><pre class="screen">&lt;entry dn="dc=example,dc=com"&gt;
+  ...
+  &lt;aci&gt;
+    &lt;permission&gt;rs&lt;/permission&gt;
+  &lt;/aci&gt;
+&lt;/entry&gt;</pre></div><h6>Example 8.3. Example Default ACI</h6></div><br class="example-break"/><a id="d0e7141" class="indexterm"/><a id="d0e7146" class="indexterm"/><p>
+				The only required parameter for the ACI entry is the <code class="command">&lt;permission&gt;</code> line. In the default, the scope, subject, and propagation are assumed.
+			</p></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="configuration-directory-editing-acls-studio">8.6.3. Setting Access Controls in Penrose Studio</h3></div></div></div><a id="d0e7161" class="indexterm"/><a id="d0e7168" class="indexterm"/><div class="orderedlist"><ol><li><p>
+						Open the server entry in Penrose Studio, and expand the <span><strong class="guilabel">Partitions</strong></span> folder.
+					</p></li><li><p>
+						Open the <span><strong class="guilabel">Directory</strong></span> folder, and select the base DN or subtree to which to set the access control.
+					</p></li><li><p>
+						Right-click the subtree entry, and select <span><strong class="guimenuitem">Edit ACLs</strong></span> from the menu.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/acls1.png"/></div></div><p>
+						Alternatively, double-click the subtree, and, when the editor opens in the main window, click the <span><strong class="guilabel">ACLs</strong></span> table.
+					</p></li><li><p>
+						Set the <span><strong class="guilabel">Subject</strong></span> for the ACI. This is the kind of user to whom the ACI is applied.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/acls2a.png"/></div></div><p>
+						There are several different options for the users for the ACI:
+					</p><div class="itemizedlist"><ul><li><p>
+								<span class="emphasis"><em>anybody</em></span> applies the ACI to all users
+							</p></li><li><p>
+								<span class="emphasis"><em>authenticated</em></span> applies the ACI to users who are logged into the source
+							</p></li><li><p>
+								<span class="emphasis"><em>anonymous</em></span> applies the ACI to users who are <span class="emphasis"><em>not</em></span> logged into the source
+							</p></li><li><p>
+								<span class="emphasis"><em>self</em></span> applies the ACI to users who are accessing their personal entries
+							</p></li><li><p>
+								<span class="emphasis"><em>user</em></span> applies the ACI to whatever users are specified in the <span><strong class="guilabel">User/Group DN</strong></span> field
+							</p></li></ul></div></li><li><p>
+						If the subject for the ACI is <code class="command">user</code>, enter the DN of the user or users to target.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/acls2b.png"/></div></div></li><li><p>
+						Set what part of the entry is affected by the ACI.
+					</p><div class="itemizedlist"><ul><li><p>
+								If the entire entry is the target, then set the target to <span><strong class="guimenuitem">OBJECT</strong></span>.
+							</p></li><li><p>
+								If only a subset of attributes in the entry are affected, then select the <span><strong class="guimenuitem">ATTRIBUTE</strong></span> menu item, and fill in a comma-separated list of LDAP attributes in the <span><strong class="guilabel">Attributes</strong></span> field.
+							</p></li></ul></div><div class="informalfigure"><div class="mediaobject"><img src="images/acls3.png"/></div></div></li><li><p>
+						Check the <span><strong class="guilabel">Propagate ACL</strong></span> checkbox if this ACL should be applied to entries below the subject DN in the virtual directory tree. If the ACI should only apply to the specified entry, then uncheck the box.
+					</p></li><li><p>
+						Set the action for the ACI. There are two options: to allow the specified actions or to deny the specified actions.
+					</p><div class="informalfigure"><div class="mediaobject"><img src="images/acls4.png"/></div></div></li><li><p>
+						Select what actions to or on the source will be allowed or denied.
+					</p><div class="itemizedlist"><ul><li><p>
+								<span class="emphasis"><em>read</em></span> allows the user to view an entry or attribute; this is allowed by default
+							</p></li><li><p>
+								<span class="emphasis"><em>search</em></span> allows the user to search for an entry or attribute
+							</p></li><li><p>
+								<span class="emphasis"><em>write</em></span> allows the user to change the entry or attribute
+							</p></li><li><p>
+								<span class="emphasis"><em>delete</em></span> allows the user to remove the entry or attribute
+							</p></li><li><p>
+								<span class="emphasis"><em>add child</em></span> allows the user to add a new entry beneath this entry
+							</p></li></ul></div></li><li><p>
+						Close the editor window, and save the changes when prompted.
+					</p></li></ol></div><p>
+				The new ACI is listed in the <span><strong class="guilabel">Access Control List</strong></span> section for the entry.
+			</p><div class="informalfigure"><div class="mediaobject"><img src="images/acls5.png"/></div></div><p>
+				If the <span><strong class="guilabel">Propagate ACL</strong></span> checkbox is selected, then the ACI is also listed in all of the child entries under the subtree.
+			</p><div class="informalfigure"><div class="mediaobject"><img src="images/acls6.png"/></div></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="configuration-directory-editing-acls-cmd">8.6.4. Setting Access Controls Manually</h3></div></div></div><a id="d0e7356" class="indexterm"/><a id="d0e7363" class="indexterm"/><p>
+				Access controls are set on each individual subtree or base DN entry for the virtual directory in the <code class="filename">directory.xml</code> file. The <code class="filename">directory.xml</code> file is in <code class="filename">/opt/vd-server-2.0/conf/</code> for the default partition and in <code class="filename">/opt/vd-server-2.0/partitions/</code><span class="emphasis"><em>partition_name</em></span><code class="filename">/DIR-INF</code> for any additional partition.
+			</p><p>
+				An ACI defines <span class="emphasis"><em>what</em></span> operations can be done, <span class="emphasis"><em>who</em></span> the permissions apply to, and <span class="emphasis"><em>where</em></span> in the directory tree the permissions are set. Since the ACI is related to the virtual directory tree, this ACI entry is set in the <code class="filename">directory.xml</code> file in the subtree entry.
+			</p><a id="d0e7402" class="indexterm"/><p>
+				An ACI entry defines the following information:
+			</p><div class="itemizedlist"><ul><li><p>
+						The <span class="emphasis"><em>subject</em></span>, which is the virtual directory users to whom the ACI applies; for certain kinds of subjects, the <span class="emphasis"><em>DN</em></span> is required to identify the entries to whom the ACI applies
+					</p></li><li><p>
+						The <span class="emphasis"><em>target</em></span>, which is the part of the entry which is controlled by the ACI, and, possibly, a list of <span class="emphasis"><em>attributes</em></span> which are controlled by the ACI
+					</p></li><li><p>
+						The <span class="emphasis"><em>scope</em></span>, which sets whether the ACI applies only to the subject entry or to every entry beneath it in the directory (meaning, whether it is inherited)
+					</p></li><li><p>
+						The <span class="emphasis"><em>action</em></span>, which is whether the operations listed are allowed or denied to the subject
+					</p></li><li><p>
+						The <span class="emphasis"><em>permission</em></span>, which is the operations, such as search and modify, which can be performed by the subject
+					</p></li></ul></div><p>
+				The only required information is the permission.
+			</p><div class="important"><h2>IMPORTANT</h2><p>
+					Always restart Penrose Server after editing the configuration file. For example:
+				</p><pre class="screen">service vd-server restart</pre></div><p>
+				An example ACI is in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#ex.aci" title="Example 8.4. Annotated Example ACI">Example 8.4, “Annotated Example ACI”</a>. The different options and parameters for configuring the ACI are listed in <a href="chap-Admin_Guide-Configuring_Entry_Mapping.html#tab.aci-parameters" title="Table 8.2. ACI Entry Tags and Parameters">Table 8.2, “ACI Entry Tags and Parameters”</a>.
+			</p><a id="d0e7461" class="indexterm"/><div class="example" id="ex.aci"><div class="example-contents"><pre class="screen">&lt;entry dn="cn="...",ou=People,dc=example,dc=com"&gt;
+...
+   &lt;aci subject="user"&gt; <em class="lineannotation"><span class="lineannotation">defines the users affected by the ACI</span></em>  
+      &lt;dn&gt;cn="...",ou=People,dc=example,dc=com&lt;/dn&gt;   <em class="lineannotation"><span class="lineannotation">gives the DN of the subject entry</span></em>  
+      &lt;target&gt;ATTRIBUTES&lt;/target&gt;  <em class="lineannotation"><span class="lineannotation">defines whether the ACI is for the entire entry or an attribute</span></em>  
+      &lt;attributes&gt;userPassword&lt;/attributes&gt;  <em class="lineannotation"><span class="lineannotation">lists attributes controlled by the ACI</span></em>   
+      &lt;action&gt;deny&lt;/action&gt; <em class="lineannotation"><span class="lineannotation">whether the action is allowed or denied for the user</span></em>   
+      &lt;scope&gt;OBJECT&lt;/scope&gt; <em class="lineannotation"><span class="lineannotation">whether the ACI is for the entire subtree or just the subject</span></em>   
+      &lt;permission&gt;rswd&lt;/permission&gt;  <em class="lineannotation"><span class="lineannotation">the operations which are affected b the ACI</span></em>   
+   &lt;/aci&gt;
+...
+&lt;/entry&gt;</pre></div><h6>Example 8.4. Annotated Example ACI</h6></div><br class="example-break"/><a id="d0e7494" class="indexterm"/><a id="d0e7501" class="indexterm"/><div class="table" id="tab.aci-parameters"><div class="table-contents"><table summary="ACI Entry Tags and Parameters" border="1"><colgroup><col/><col/><col/><col/></colgroup><thead><tr><th>
+								Tag or Parameter
+							</th><th>
+								Description
+							</th><th>
+								Default Value
+							</th><th>
+								Example
+							</th></tr></thead><tbody><tr><td>
+								subject=
+							</td><td>
+								Defines to what users this ACI applies. This is an option set on the <code class="command">&lt;aci&gt;</code> tab. There are five possible values: 
+								<table class="simplelist" border="0" summary="Simple list"><tr><td><span class="emphasis"><em>anybody</em></span> applies the ACI to all users</td></tr><tr><td><span class="emphasis"><em>authenticated</em></span> applies the ACI to users who are logged into the source</td></tr><tr><td><span class="emphasis"><em>anonymous</em></span> applies the ACI to users who are <span class="emphasis"><em>not</em></span> logged into the source</td></tr><tr><td><span class="emphasis"><em>self</em></span> applies the ACI to users who are accessing their personal entries</td></tr><tr><td><span class="emphasis"><em>user</em></span> applies the ACI to whatever users are specified in the <span><strong class="guilabel">User/Group DN</strong></span> field</td></tr></table>
+							</td><td>
+								anybody
+							</td><td>
+								&lt;aci subject="user"
+							</td></tr><tr><td>
+								&lt;dn&gt;
+							</td><td>
+								Gives the DN of the user to which the ACI is applied. <span class="emphasis"><em>Only required with the argument</em></span> <code class="option">subject=user</code>.
+							</td><td>
+							</td><td>
+								&lt;dn&gt;cn=*,ou=people, dc=example,dc=com&lt;/dn&gt;
+							</td></tr><tr><td>
+								&lt;target&gt;
+							</td><td>
+								Sets whether the ACI applies to the entire entry or to a subset of attributes in the entry. There are two options: 
+								<table class="simplelist" border="0" summary="Simple list"><tr><td><span class="emphasis"><em>OBJECT</em></span>, meaning the entire entry</td></tr><tr><td><span class="emphasis"><em>ATTRIBUTES</em></span>, meaning a subset of attributes</td></tr></table>
+							</td><td>
+								OBJECT
+							</td><td>
+								&lt;target&gt;OBJECT&lt;/target&gt;
+							</td></tr><tr><td>
+								&lt;attributes&gt;
+							</td><td>
+								Gives the attributes to which the ACI applies, in a comma-separate list. <span class="emphasis"><em>Only required if the target is set to ATTRIBUTES.</em></span>
+							</td><td>
+							</td><td>
+								&lt;attributes&gt;userPassword, userCertificate&lt;/attributes&gt;
+							</td></tr><tr><td>
+								&lt;scope&gt;
+							</td><td>
+								Determines whether the ACI is inherited by entries beneath this entry in the subtree or only applies to the entry on which it is set. There are two options: 
+								<table class="simplelist" border="0" summary="Simple list"><tr><td><span class="emphasis"><em>SUBTREE</em></span> means the ACI is inherited by all entries beneath this entry</td></tr><tr><td><span class="emphasis"><em>OBJECT</em></span> applies only to the entry</td></tr></table>
+							</td><td>
+								SUBTREE
+							</td><td>
+								&lt;scope&gt;OBJECT&lt;/scope&gt;
+							</td></tr><tr><td>
+								&lt;action&gt;
+							</td><td>
+								Determines whether the ACI allows a certain action or prohibits a certain action. 
+								<table class="simplelist" border="0" summary="Simple list"><tr><td><span class="emphasis"><em>grant</em></span> allows the operations</td></tr><tr><td><span class="emphasis"><em>deny</em></span> restricts the operations</td></tr></table>
+								<div class="important"><h2>IMPORTANT</h2><p>
+										<code class="command">deny</code> ACIs take precedence over <code class="command">grant</code> ACIs if there is a conflict.
+									</p></div>
+							</td><td>
+								grant
+							</td><td>
+								&lt;action&gt;deny&lt;/action&gt;
+							</td></tr><tr><td>
+								&lt;permission&gt;
+							</td><td>
+								Defines what operations are being allowed or denied. There are five operations allowed through Penrose Virtual Directory: 
+								<table class="simplelist" border="0" summary="Simple list"><tr><td><span class="emphasis"><em>r</em></span> means read (view) access</td></tr><tr><td><span class="emphasis"><em>s</em></span> means search access</td></tr><tr><td><span class="emphasis"><em>w</em></span> means write (modify) access</td></tr><tr><td><span class="emphasis"><em>d</em></span> means an entry or attribute can be deleted</td></tr><tr><td><span class="emphasis"><em>a</em></span> means a child entry can be added beneath this entry</td></tr></table>
+							</td><td>
+								n/a
+							</td><td>
+								&lt;permission&gt;rwsd&lt;/permission&gt;
+							</td></tr></tbody></table></div><h6>Table 8.2. ACI Entry Tags and Parameters</h6></div><br class="table-break"/></div></div><div class="footnotes"><br/><hr/><div class="footnote"><p><sup>[<a id="ftn.rootdse-attribute" href="#rootdse-attribute">1</a>] </sup>
+								It is possible to select an attribute which does not belong to any of the selected object classes for the DN. Penrose Virtual Directory does not enforce or validate schema elements.
+							</p></div></div></div><ul class="docnav"><li class="previous"><a accesskey="p" href="chap-Admin_Guide-Configuring_sources.html"><strong>Prev</strong>Chapter 7. Configuring Data Sources</a></li><li class="up"><a accesskey="u" href="#"><strong>Up</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>Home</strong></a></li><li class="next"><a accesskey="n" href="Mapping.html"><strong>Next</strong>Chapter 9. Mapping Entries and Attributes</a></li></ul></body></html>
